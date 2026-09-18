@@ -1,0 +1,21 @@
+<resources>
+    <!-- VaaniSetu Dark Tactical Theme (Material 3) -->
+    <style name="Theme.VaaniSetu" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#D8C9A9</item>
+        <item name="colorOnPrimary">#16171B</item>
+        <item name="colorPrimaryContainer">#3A3B40</item>
+        <item name="colorOnPrimaryContainer">#E8DCBE</item>
+        <item name="colorSecondary">#4ADE80</item>
+        <item name="colorOnSecondary">#16171B</item>
+        <item name="colorError">#EF4444</item>
+        <item name="colorOnError">#FFFFFF</item>
+        <item name="colorSurface">#16171B</item>
+        <item name="colorOnSurface">#E8DCBE</item>
+        <item name="colorSurfaceVariant">#1E2026</item>
+        <item name="android:statusBarColor">#07080B</item>
+        <item name="android:navigationBarColor">#07080B</item>
+        <item name="android:windowBackground">#07080B</item>
+        <item name="android:windowSplashScreenBackground">#07080B</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+    </style>
+</resources>

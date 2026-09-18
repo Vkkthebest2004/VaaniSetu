@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#121319"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- Handle Bar -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="#353846" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:letterSpacing="0.1"
+        android:text="⚡ TACTICAL MACROS"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="1-Click Emergency MicroRadio Broadcast (6 Bytes • 99.96% Saved)"
+        android:textColor="#8C91A0"
+        android:textSize="11sp" />
+
+    <!-- 4 Clean Macro Buttons in 2x2 Grid -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:columnCount="2"
+        android:rowCount="2">
+
+        <Button
+            android:id="@+id/btn_sheet_medevac"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_dock_button"
+            app:backgroundTint="@null"
+            android:text="🚑  MEDEVAC"
+            android:textColor="#FF5252"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_sheet_fire"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_dock_button"
+            app:backgroundTint="@null"
+            android:text="🔥  FIRE RESCUE"
+            android:textColor="#FFA726"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_sheet_flood"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_dock_button"
+            app:backgroundTint="@null"
+            android:text="🌊  FLOOD EVAC"
+            android:textColor="#42A5F5"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_sheet_ambush"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_dock_button"
+            app:backgroundTint="@null"
+            android:text="🚨  AMBUSH / SOS"
+            android:textColor="#FF1744"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </GridLayout>
+
+</LinearLayout>

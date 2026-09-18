@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Cyber-Green Tactical Speaker / Listening Dish -->
+    <path
+        android:fillColor="#00E676"
+        android:pathData="M48,40 L38,48 L28,48 L28,60 L38,60 L48,68 Z"/>
+    
+    <!-- Concentric Acoustic Ingress Waves -->
+    <path
+        android:strokeColor="#00E676"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round"
+        android:pathData="M56,46 c3.5,4.5 3.5,11.5 0,16"/>
+    <path
+        android:strokeColor="#00E676"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M64,39 c7.5,8 7.5,22 0,30"/>
+    <path
+        android:strokeColor="#00B0FF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M72,32 c11.5,12 11.5,32 0,44"/>
+    <path
+        android:strokeColor="#00E5FF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M80,25 c15.5,16 15.5,42 0,58"/>
+</vector>

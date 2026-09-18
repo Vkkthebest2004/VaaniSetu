@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">VaaniSetu Sender</string>
+    <string name="notification_channel_name">VaaniSetu Sender Service</string>
+    <string name="notification_channel_desc">Handles tactical voice transmission and emergency broadcasts</string>
+</resources>

@@ -14,15 +14,20 @@ By fusing on-device neural Speech-to-Text (STT), neural Text-to-Speech (TTS), an
 
 ---
 
-## 📱 Visual Showcase (Live Android App)
+## 📱 Separate Sender & Receiver Applications (Live Android Apps)
 
-| Startup Radar Animation | Clean Transceiver (TX Mode) | 1-Tap Listening (RX Mode) |
-| :---: | :---: | :---: |
-| <img src="docs/screenshots/splash_boot_animation.png" width="260" alt="Startup Animation" /> | <img src="docs/screenshots/walkie_talkie_tx_mode.png" width="260" alt="TX Mode" /> | <img src="docs/screenshots/walkie_talkie_rx_mode.png" width="260" alt="RX Mode" /> |
+VaaniSetu provides **two dedicated standalone Android applications** that install and run side-by-side:
 
-| Slide-Up Tactical Macros | Emergency Override Broadcast |
+| VaaniSetu Sender (`com.vaanisetu.sender`) | VaaniSetu Receiver (`com.vaanisetu.receiver`) |
 | :---: | :---: |
-| <img src="docs/screenshots/tactical_macros_drawer.png" width="260" alt="Tactical Macros" /> | <img src="docs/screenshots/emergency_broadcast_active.png" width="260" alt="Emergency Override" /> |
+| <img src="docs/screenshots/sender_app_transceiver.png" width="280" alt="VaaniSetu Sender App" /> | <img src="docs/screenshots/receiver_app_station.png" width="280" alt="VaaniSetu Receiver App" /> |
+| **Field Transceiver Unit**: 3D PTT Button, offline STT, 6-byte binary broadcast, tactical emergency macros | **Command Listening Station**: Acoustic spectrum monitor, packet decode, auto-neural Indic TTS readout |
+
+### Additional Interactive Features
+
+| Startup Radar Animation | Slide-Up Tactical Macros | Emergency Override Broadcast |
+| :---: | :---: | :---: |
+| <img src="docs/screenshots/splash_boot_animation.png" width="240" alt="Startup Animation" /> | <img src="docs/screenshots/tactical_macros_drawer.png" width="240" alt="Tactical Macros" /> | <img src="docs/screenshots/emergency_broadcast_active.png" width="240" alt="Emergency Override" /> |
 
 ---
 
@@ -165,19 +170,24 @@ VaaniSetu/
 
 ## 🛠️ Multi-Platform Run Guides
 
-### 1. Android Application (Kotlin + NDK)
-The Android app is fully configured with automated Gradle wrapper and C++ NDK toolchains:
+### 1. Android Applications (Separate Sender & Receiver)
+The Android project builds two standalone applications sharing the `:vaanisetu-core` library:
 ```bash
 cd android
 
-# Build Debug APK (produces app-debug.apk in app/build/outputs/apk/debug/)
+# Build both standalone APKs (Sender & Receiver)
 ./gradlew assembleDebug
 
-# Run unit tests
+# Or build specifically either app:
+./gradlew :app-sender:assembleDebug      # Output: app-sender/build/outputs/apk/debug/app-sender-debug.apk
+./gradlew :app-receiver:assembleDebug    # Output: app-receiver/build/outputs/apk/debug/app-receiver-debug.apk
+
+# Run unit tests across all modules
 ./gradlew test
 
-# Install directly to a connected phone or emulator
-./gradlew installDebug
+# Install both applications side-by-side to a connected phone or emulator:
+adb install -r app-sender/build/outputs/apk/debug/app-sender-debug.apk
+adb install -r app-receiver/build/outputs/apk/debug/app-receiver-debug.apk
 ```
 
 ### 2. Tactical Web Walkie-Talkie Simulator

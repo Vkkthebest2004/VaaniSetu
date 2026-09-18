@@ -17,3 +17,5 @@ dependencyResolutionManagement {
 rootProject.name = "VaaniSetu"
 include(":vaanisetu-core")
 include(":app")
+include(":app-sender")
+include(":app-receiver")

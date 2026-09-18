@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#07080B"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="20dp">
+
+    <!-- ============================================== -->
+    <!-- 1. TOP BAR: CHANNEL PILL & RECEIVER RX BADGE   -->
+    <!-- ============================================== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!-- Channel Navigation Pill -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_tactical_card"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp">
+
+            <Button
+                android:id="@+id/btn_rx_prev_channel"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:background="@drawable/bg_channel_arrow"
+                app:backgroundTint="@null"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="◀"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_rx_channel_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-bold"
+                android:gravity="center"
+                android:letterSpacing="0.05"
+                android:text="CH 08 • 433.750 MHz"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/btn_rx_next_channel"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:background="@drawable/bg_channel_arrow"
+                app:backgroundTint="@null"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="▶"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Receiver Mode Badge -->
+        <TextView
+            android:id="@+id/tv_rx_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_chip_callsign"
+            android:fontFamily="sans-serif-black"
+            android:gravity="center"
+            android:letterSpacing="0.08"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:text="RX • LISTENING"
+            android:textColor="#00E676"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- ============================================== -->
+    <!-- 2. CENTER HERO STAGE: ACOUSTIC RADAR ORB       -->
+    <!-- ============================================== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- Glowing Halo & Acoustic Speaker Container -->
+        <FrameLayout
+            android:layout_width="220dp"
+            android:layout_height="220dp">
+
+            <!-- Breathing Halo Pulse Ring -->
+            <View
+                android:id="@+id/view_rx_halo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_radar_ring" />
+
+            <!-- Primary Listening Wave Button / Indicator -->
+            <ImageButton
+                android:id="@+id/btn_rx_indicator"
+                android:layout_width="170dp"
+                android:layout_height="170dp"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_ptt_3d_selector"
+                android:contentDescription="Receiver Listening"
+                android:elevation="12dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_speaker_wave" />
+        </FrameLayout>
+
+        <!-- Dynamic Hero Status Label -->
+        <TextView
+            android:id="@+id/tv_rx_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-black"
+            android:letterSpacing="0.12"
+            android:text="MONITORING CH 08"
+            android:textColor="#00E676"
+            android:textSize="15sp" />
+
+        <!-- Subtitle Context Hint -->
+        <TextView
+            android:id="@+id/tv_rx_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Auto-synthesizing incoming speech via Neural TTS"
+            android:textColor="#6C7182"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+
+    <!-- ============================================== -->
+    <!-- 3. BOTTOM FLOATING MESSAGE CARD                -->
+    <!-- ============================================== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="14dp"
+        android:background="@drawable/bg_tactical_card"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Card Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_rx_msg_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-bold"
+                android:letterSpacing="0.08"
+                android:text="INCOMING VOICE INGRESS (ALPHA-01)"
+                android:textColor="#00E676"
+                android:textSize="11sp" />
+
+            <ImageButton
+                android:id="@+id/btn_rx_replay_audio"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:background="@drawable/bg_chip_callsign"
+                android:contentDescription="Replay Audio"
+                android:src="@drawable/ic_replay_audio" />
+        </LinearLayout>
+
+        <!-- Main Readable Text -->
+        <TextView
+            android:id="@+id/tv_rx_msg_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="3dp"
+            android:text="गश्त दल सुरक्षित है • सीमा चौकी पर सब ठीक है"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
+
+        <!-- Clean Metric Footer -->
+        <TextView
+            android:id="@+id/tv_rx_msg_telemetry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="monospace"
+            android:text="18 Bytes • 99.92% Saved • 380 ms"
+            android:textColor="#00E676"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- ============================================== -->
+    <!-- 4. BOTTOM ACTION DOCK: 3 CLEAN BUTTONS         -->
+    <!-- ============================================== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Simulate Field Ingress -->
+        <Button
+            android:id="@+id/btn_dock_ingress"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dock_button"
+            app:backgroundTint="@null"
+            android:text="🎙️ INGRESS"
+            android:textColor="#00E5FF"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <!-- Test Distress Decode -->
+        <Button
+            android:id="@+id/btn_dock_distress"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dock_button"
+            app:backgroundTint="@null"
+            android:text="🚨 DISTRESS"
+            android:textColor="#FF5252"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <!-- Auto-TTS Toggle -->
+        <Button
+            android:id="@+id/btn_dock_auto_tts"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dock_button"
+            app:backgroundTint="@null"
+            android:text="🔊 AUTO-TTS"
+            android:textColor="#00E676"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

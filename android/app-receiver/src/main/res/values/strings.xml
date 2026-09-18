@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">VaaniSetu Receiver</string>
+    <string name="notification_channel_name">VaaniSetu Receiver Service</string>
+    <string name="notification_channel_desc">Monitors channels and synthesizes incoming voice broadcasts</string>
+</resources>

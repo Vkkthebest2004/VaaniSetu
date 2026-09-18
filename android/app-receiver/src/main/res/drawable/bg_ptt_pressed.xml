@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Depressed Inset Shadow Layer -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#040507" />
+            <stroke android:width="3dp" android:color="#00E676" />
+        </shape>
+    </item>
+    <!-- Inset Rim -->
+    <item android:top="8dp" android:bottom="8dp" android:left="8dp" android:right="8dp">
+        <shape android:shape="oval">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="60dp"
+                android:startColor="#0D1A13"
+                android:endColor="#050806" />
+            <stroke android:width="2dp" android:color="#00E676" />
+        </shape>
+    </item>
+</layer-list>
