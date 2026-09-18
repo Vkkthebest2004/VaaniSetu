@@ -1,0 +1,199 @@
+audio_path,language,category,condition,reference_text,duration_sec
+datasets/evaluation/hi/0_clean_evacuation.wav,hi,evacuation,clean,बाढ़ का पानी बढ़ रहा है तुरंत खाली करें,2.73
+datasets/evaluation/hi/0_drone_0db_evacuation.wav,hi,evacuation,drone_0db,बाढ़ का पानी बढ़ रहा है तुरंत खाली करें,2.73
+datasets/evaluation/hi/0_telephone_g711_evacuation.wav,hi,evacuation,telephone_g711,बाढ़ का पानी बढ़ रहा है तुरंत खाली करें,2.73
+datasets/evaluation/hi/0_artillery_blast_evacuation.wav,hi,evacuation,artillery_blast,बाढ़ का पानी बढ़ रहा है तुरंत खाली करें,2.73
+datasets/evaluation/hi/0_whisper_low_evacuation.wav,hi,evacuation,whisper_low,बाढ़ का पानी बढ़ रहा है तुरंत खाली करें,2.73
+datasets/evaluation/hi/0_urgent_fast_evacuation.wav,hi,evacuation,urgent_fast,बाढ़ का पानी बढ़ रहा है तुरंत खाली करें,2.69
+datasets/evaluation/hi/1_clean_medical.wav,hi,medical,clean,चिकित्सा आपातकाल तत्काल सहायता चाहिए,3.12
+datasets/evaluation/hi/1_drone_0db_medical.wav,hi,medical,drone_0db,चिकित्सा आपातकाल तत्काल सहायता चाहिए,3.12
+datasets/evaluation/hi/1_telephone_g711_medical.wav,hi,medical,telephone_g711,चिकित्सा आपातकाल तत्काल सहायता चाहिए,3.12
+datasets/evaluation/hi/1_artillery_blast_medical.wav,hi,medical,artillery_blast,चिकित्सा आपातकाल तत्काल सहायता चाहिए,3.12
+datasets/evaluation/hi/1_whisper_low_medical.wav,hi,medical,whisper_low,चिकित्सा आपातकाल तत्काल सहायता चाहिए,3.12
+datasets/evaluation/hi/1_urgent_fast_medical.wav,hi,medical,urgent_fast,चिकित्सा आपातकाल तत्काल सहायता चाहिए,2.78
+datasets/evaluation/hi/2_clean_checkin.wav,hi,checkin,clean,नमस्ते आप कैसे हैं यह वाणी सेतु है,3.11
+datasets/evaluation/hi/2_drone_0db_checkin.wav,hi,checkin,drone_0db,नमस्ते आप कैसे हैं यह वाणी सेतु है,3.11
+datasets/evaluation/hi/2_telephone_g711_checkin.wav,hi,checkin,telephone_g711,नमस्ते आप कैसे हैं यह वाणी सेतु है,3.11
+datasets/evaluation/hi/2_artillery_blast_checkin.wav,hi,checkin,artillery_blast,नमस्ते आप कैसे हैं यह वाणी सेतु है,3.11
+datasets/evaluation/hi/2_whisper_low_checkin.wav,hi,checkin,whisper_low,नमस्ते आप कैसे हैं यह वाणी सेतु है,3.11
+datasets/evaluation/hi/2_urgent_fast_checkin.wav,hi,checkin,urgent_fast,नमस्ते आप कैसे हैं यह वाणी सेतु है,2.86
+datasets/evaluation/bn/0_clean_evacuation.wav,bn,evacuation,clean,বন্যার জল বাড়ছে অবিলম্বে খালি করুন,2.88
+datasets/evaluation/bn/0_drone_0db_evacuation.wav,bn,evacuation,drone_0db,বন্যার জল বাড়ছে অবিলম্বে খালি করুন,2.88
+datasets/evaluation/bn/0_telephone_g711_evacuation.wav,bn,evacuation,telephone_g711,বন্যার জল বাড়ছে অবিলম্বে খালি করুন,2.88
+datasets/evaluation/bn/0_artillery_blast_evacuation.wav,bn,evacuation,artillery_blast,বন্যার জল বাড়ছে অবিলম্বে খালি করুন,2.88
+datasets/evaluation/bn/0_whisper_low_evacuation.wav,bn,evacuation,whisper_low,বন্যার জল বাড়ছে অবিলম্বে খালি করুন,2.88
+datasets/evaluation/bn/0_urgent_fast_evacuation.wav,bn,evacuation,urgent_fast,বন্যার জল বাড়ছে অবিলম্বে খালি করুন,2.48
+datasets/evaluation/bn/1_clean_medical.wav,bn,medical,clean,জরুরী চিকিৎসা প্রয়োজন অবিলম্বে দল পাঠান,3.86
+datasets/evaluation/bn/1_drone_0db_medical.wav,bn,medical,drone_0db,জরুরী চিকিৎসা প্রয়োজন অবিলম্বে দল পাঠান,3.86
+datasets/evaluation/bn/1_telephone_g711_medical.wav,bn,medical,telephone_g711,জরুরী চিকিৎসা প্রয়োজন অবিলম্বে দল পাঠান,3.86
+datasets/evaluation/bn/1_artillery_blast_medical.wav,bn,medical,artillery_blast,জরুরী চিকিৎসা প্রয়োজন অবিলম্বে দল পাঠান,3.86
+datasets/evaluation/bn/1_whisper_low_medical.wav,bn,medical,whisper_low,জরুরী চিকিৎসা প্রয়োজন অবিলম্বে দল পাঠান,3.86
+datasets/evaluation/bn/1_urgent_fast_medical.wav,bn,medical,urgent_fast,জরুরী চিকিৎসা প্রয়োজন অবিলম্বে দল পাঠান,3.43
+datasets/evaluation/bn/2_clean_checkin.wav,bn,checkin,clean,নমস্কার আপনি কেমন আছেন এটি বাণী সেতু,3.41
+datasets/evaluation/bn/2_drone_0db_checkin.wav,bn,checkin,drone_0db,নমস্কার আপনি কেমন আছেন এটি বাণী সেতু,3.41
+datasets/evaluation/bn/2_telephone_g711_checkin.wav,bn,checkin,telephone_g711,নমস্কার আপনি কেমন আছেন এটি বাণী সেতু,3.41
+datasets/evaluation/bn/2_artillery_blast_checkin.wav,bn,checkin,artillery_blast,নমস্কার আপনি কেমন আছেন এটি বাণী সেতু,3.41
+datasets/evaluation/bn/2_whisper_low_checkin.wav,bn,checkin,whisper_low,নমস্কার আপনি কেমন আছেন এটি বাণী সেতু,3.41
+datasets/evaluation/bn/2_urgent_fast_checkin.wav,bn,checkin,urgent_fast,নমস্কার আপনি কেমন আছেন এটি বাণী সেতু,3.05
+datasets/evaluation/ta/0_clean_evacuation.wav,ta,evacuation,clean,வெள்ள நீர் உயர்கிறது உடனடியாக வெளியேறுங்கள்,2.59
+datasets/evaluation/ta/0_drone_0db_evacuation.wav,ta,evacuation,drone_0db,வெள்ள நீர் உயர்கிறது உடனடியாக வெளியேறுங்கள்,2.59
+datasets/evaluation/ta/0_telephone_g711_evacuation.wav,ta,evacuation,telephone_g711,வெள்ள நீர் உயர்கிறது உடனடியாக வெளியேறுங்கள்,2.59
+datasets/evaluation/ta/0_artillery_blast_evacuation.wav,ta,evacuation,artillery_blast,வெள்ள நீர் உயர்கிறது உடனடியாக வெளியேறுங்கள்,2.59
+datasets/evaluation/ta/0_whisper_low_evacuation.wav,ta,evacuation,whisper_low,வெள்ள நீர் உயர்கிறது உடனடியாக வெளியேறுங்கள்,2.59
+datasets/evaluation/ta/0_urgent_fast_evacuation.wav,ta,evacuation,urgent_fast,வெள்ள நீர் உயர்கிறது உடனடியாக வெளியேறுங்கள்,2.36
+datasets/evaluation/ta/1_clean_medical.wav,ta,medical,clean,அவசர மருத்துவ உதவி தேவை உடனடியாக வாருங்கள்,3.28
+datasets/evaluation/ta/1_drone_0db_medical.wav,ta,medical,drone_0db,அவசர மருத்துவ உதவி தேவை உடனடியாக வாருங்கள்,3.28
+datasets/evaluation/ta/1_telephone_g711_medical.wav,ta,medical,telephone_g711,அவசர மருத்துவ உதவி தேவை உடனடியாக வாருங்கள்,3.28
+datasets/evaluation/ta/1_artillery_blast_medical.wav,ta,medical,artillery_blast,அவசர மருத்துவ உதவி தேவை உடனடியாக வாருங்கள்,3.28
+datasets/evaluation/ta/1_whisper_low_medical.wav,ta,medical,whisper_low,அவசர மருத்துவ உதவி தேவை உடனடியாக வாருங்கள்,3.28
+datasets/evaluation/ta/1_urgent_fast_medical.wav,ta,medical,urgent_fast,அவசர மருத்துவ உதவி தேவை உடனடியாக வாருங்கள்,2.97
+datasets/evaluation/ta/2_clean_checkin.wav,ta,checkin,clean,வணக்கம் நீங்கள் எப்படி இருக்கிறீர்கள் இது வாணி சேது,3.9
+datasets/evaluation/ta/2_drone_0db_checkin.wav,ta,checkin,drone_0db,வணக்கம் நீங்கள் எப்படி இருக்கிறீர்கள் இது வாணி சேது,3.9
+datasets/evaluation/ta/2_telephone_g711_checkin.wav,ta,checkin,telephone_g711,வணக்கம் நீங்கள் எப்படி இருக்கிறீர்கள் இது வாணி சேது,3.9
+datasets/evaluation/ta/2_artillery_blast_checkin.wav,ta,checkin,artillery_blast,வணக்கம் நீங்கள் எப்படி இருக்கிறீர்கள் இது வாணி சேது,3.9
+datasets/evaluation/ta/2_whisper_low_checkin.wav,ta,checkin,whisper_low,வணக்கம் நீங்கள் எப்படி இருக்கிறீர்கள் இது வாணி சேது,3.9
+datasets/evaluation/ta/2_urgent_fast_checkin.wav,ta,checkin,urgent_fast,வணக்கம் நீங்கள் எப்படி இருக்கிறீர்கள் இது வாணி சேது,3.42
+datasets/evaluation/te/0_clean_evacuation.wav,te,evacuation,clean,వరద నీరు పెరుగుతోంది వెంటనే ఖాళీ చేయండి,2.91
+datasets/evaluation/te/0_drone_0db_evacuation.wav,te,evacuation,drone_0db,వరద నీరు పెరుగుతోంది వెంటనే ఖాళీ చేయండి,2.91
+datasets/evaluation/te/0_telephone_g711_evacuation.wav,te,evacuation,telephone_g711,వరద నీరు పెరుగుతోంది వెంటనే ఖాళీ చేయండి,2.91
+datasets/evaluation/te/0_artillery_blast_evacuation.wav,te,evacuation,artillery_blast,వరద నీరు పెరుగుతోంది వెంటనే ఖాళీ చేయండి,2.91
+datasets/evaluation/te/0_whisper_low_evacuation.wav,te,evacuation,whisper_low,వరద నీరు పెరుగుతోంది వెంటనే ఖాళీ చేయండి,2.91
+datasets/evaluation/te/0_urgent_fast_evacuation.wav,te,evacuation,urgent_fast,వరద నీరు పెరుగుతోంది వెంటనే ఖాళీ చేయండి,2.61
+datasets/evaluation/te/1_clean_medical.wav,te,medical,clean,తక్షణ వైద్య సహాయం అవసరం వెంటనే రండి,3.32
+datasets/evaluation/te/1_drone_0db_medical.wav,te,medical,drone_0db,తక్షణ వైద్య సహాయం అవసరం వెంటనే రండి,3.32
+datasets/evaluation/te/1_telephone_g711_medical.wav,te,medical,telephone_g711,తక్షణ వైద్య సహాయం అవసరం వెంటనే రండి,3.32
+datasets/evaluation/te/1_artillery_blast_medical.wav,te,medical,artillery_blast,తక్షణ వైద్య సహాయం అవసరం వెంటనే రండి,3.32
+datasets/evaluation/te/1_whisper_low_medical.wav,te,medical,whisper_low,తక్షణ వైద్య సహాయం అవసరం వెంటనే రండి,3.32
+datasets/evaluation/te/1_urgent_fast_medical.wav,te,medical,urgent_fast,తక్షణ వైద్య సహాయం అవసరం వెంటనే రండి,2.84
+datasets/evaluation/te/2_clean_checkin.wav,te,checkin,clean,నమస్కారం మీరు ఎలా ఉన్నారు ఇది వాణి సేతు,3.26
+datasets/evaluation/te/2_drone_0db_checkin.wav,te,checkin,drone_0db,నమస్కారం మీరు ఎలా ఉన్నారు ఇది వాణి సేతు,3.26
+datasets/evaluation/te/2_telephone_g711_checkin.wav,te,checkin,telephone_g711,నమస్కారం మీరు ఎలా ఉన్నారు ఇది వాణి సేతు,3.26
+datasets/evaluation/te/2_artillery_blast_checkin.wav,te,checkin,artillery_blast,నమస్కారం మీరు ఎలా ఉన్నారు ఇది వాణి సేతు,3.26
+datasets/evaluation/te/2_whisper_low_checkin.wav,te,checkin,whisper_low,నమస్కారం మీరు ఎలా ఉన్నారు ఇది వాణి సేతు,3.26
+datasets/evaluation/te/2_urgent_fast_checkin.wav,te,checkin,urgent_fast,నమస్కారం మీరు ఎలా ఉన్నారు ఇది వాణి సేతు,2.88
+datasets/evaluation/mr/0_clean_evacuation.wav,mr,evacuation,clean,पुराचे पाणी वाढत आहे त्वरित रिकामे करा,2.88
+datasets/evaluation/mr/0_drone_0db_evacuation.wav,mr,evacuation,drone_0db,पुराचे पाणी वाढत आहे त्वरित रिकामे करा,2.88
+datasets/evaluation/mr/0_telephone_g711_evacuation.wav,mr,evacuation,telephone_g711,पुराचे पाणी वाढत आहे त्वरित रिकामे करा,2.88
+datasets/evaluation/mr/0_artillery_blast_evacuation.wav,mr,evacuation,artillery_blast,पुराचे पाणी वाढत आहे त्वरित रिकामे करा,2.88
+datasets/evaluation/mr/0_whisper_low_evacuation.wav,mr,evacuation,whisper_low,पुराचे पाणी वाढत आहे त्वरित रिकामे करा,2.88
+datasets/evaluation/mr/0_urgent_fast_evacuation.wav,mr,evacuation,urgent_fast,पुराचे पाणी वाढत आहे त्वरित रिकामे करा,2.63
+datasets/evaluation/mr/1_clean_medical.wav,mr,medical,clean,तातडीची वैद्यकीय मदत हवी आहे त्वरित या,3.24
+datasets/evaluation/mr/1_drone_0db_medical.wav,mr,medical,drone_0db,तातडीची वैद्यकीय मदत हवी आहे त्वरित या,3.24
+datasets/evaluation/mr/1_telephone_g711_medical.wav,mr,medical,telephone_g711,तातडीची वैद्यकीय मदत हवी आहे त्वरित या,3.24
+datasets/evaluation/mr/1_artillery_blast_medical.wav,mr,medical,artillery_blast,तातडीची वैद्यकीय मदत हवी आहे त्वरित या,3.24
+datasets/evaluation/mr/1_whisper_low_medical.wav,mr,medical,whisper_low,तातडीची वैद्यकीय मदत हवी आहे त्वरित या,3.24
+datasets/evaluation/mr/1_urgent_fast_medical.wav,mr,medical,urgent_fast,तातडीची वैद्यकीय मदत हवी आहे त्वरित या,3.09
+datasets/evaluation/mr/2_clean_checkin.wav,mr,checkin,clean,नमस्कार तुम्ही कसे आहात हे वाणी सेतू आहे,3.33
+datasets/evaluation/mr/2_drone_0db_checkin.wav,mr,checkin,drone_0db,नमस्कार तुम्ही कसे आहात हे वाणी सेतू आहे,3.33
+datasets/evaluation/mr/2_telephone_g711_checkin.wav,mr,checkin,telephone_g711,नमस्कार तुम्ही कसे आहात हे वाणी सेतू आहे,3.33
+datasets/evaluation/mr/2_artillery_blast_checkin.wav,mr,checkin,artillery_blast,नमस्कार तुम्ही कसे आहात हे वाणी सेतू आहे,3.33
+datasets/evaluation/mr/2_whisper_low_checkin.wav,mr,checkin,whisper_low,नमस्कार तुम्ही कसे आहात हे वाणी सेतू आहे,3.33
+datasets/evaluation/mr/2_urgent_fast_checkin.wav,mr,checkin,urgent_fast,नमस्कार तुम्ही कसे आहात हे वाणी सेतू आहे,3.04
+datasets/evaluation/gu/0_clean_evacuation.wav,gu,evacuation,clean,પૂરનું પાણી વધી રહ્યું છે તરત જ ખાલી કરો,2.82
+datasets/evaluation/gu/0_drone_0db_evacuation.wav,gu,evacuation,drone_0db,પૂરનું પાણી વધી રહ્યું છે તરત જ ખાલી કરો,2.82
+datasets/evaluation/gu/0_telephone_g711_evacuation.wav,gu,evacuation,telephone_g711,પૂરનું પાણી વધી રહ્યું છે તરત જ ખાલી કરો,2.82
+datasets/evaluation/gu/0_artillery_blast_evacuation.wav,gu,evacuation,artillery_blast,પૂરનું પાણી વધી રહ્યું છે તરત જ ખાલી કરો,2.82
+datasets/evaluation/gu/0_whisper_low_evacuation.wav,gu,evacuation,whisper_low,પૂરનું પાણી વધી રહ્યું છે તરત જ ખાલી કરો,2.82
+datasets/evaluation/gu/0_urgent_fast_evacuation.wav,gu,evacuation,urgent_fast,પૂરનું પાણી વધી રહ્યું છે તરત જ ખાલી કરો,2.75
+datasets/evaluation/gu/1_clean_medical.wav,gu,medical,clean,તાત્કાલિક તબીબી સહાયની જરૂર છે ટીમ મોકલો,3.21
+datasets/evaluation/gu/1_drone_0db_medical.wav,gu,medical,drone_0db,તાત્કાલિક તબીબી સહાયની જરૂર છે ટીમ મોકલો,3.21
+datasets/evaluation/gu/1_telephone_g711_medical.wav,gu,medical,telephone_g711,તાત્કાલિક તબીબી સહાયની જરૂર છે ટીમ મોકલો,3.21
+datasets/evaluation/gu/1_artillery_blast_medical.wav,gu,medical,artillery_blast,તાત્કાલિક તબીબી સહાયની જરૂર છે ટીમ મોકલો,3.21
+datasets/evaluation/gu/1_whisper_low_medical.wav,gu,medical,whisper_low,તાત્કાલિક તબીબી સહાયની જરૂર છે ટીમ મોકલો,3.21
+datasets/evaluation/gu/1_urgent_fast_medical.wav,gu,medical,urgent_fast,તાત્કાલિક તબીબી સહાયની જરૂર છે ટીમ મોકલો,3.07
+datasets/evaluation/gu/2_clean_checkin.wav,gu,checkin,clean,નમસ્તે તમે કેમ છો આ વાણી સેતુ છે,2.75
+datasets/evaluation/gu/2_drone_0db_checkin.wav,gu,checkin,drone_0db,નમસ્તે તમે કેમ છો આ વાણી સેતુ છે,2.75
+datasets/evaluation/gu/2_telephone_g711_checkin.wav,gu,checkin,telephone_g711,નમસ્તે તમે કેમ છો આ વાણી સેતુ છે,2.75
+datasets/evaluation/gu/2_artillery_blast_checkin.wav,gu,checkin,artillery_blast,નમસ્તે તમે કેમ છો આ વાણી સેતુ છે,2.75
+datasets/evaluation/gu/2_whisper_low_checkin.wav,gu,checkin,whisper_low,નમસ્તે તમે કેમ છો આ વાણી સેતુ છે,2.75
+datasets/evaluation/gu/2_urgent_fast_checkin.wav,gu,checkin,urgent_fast,નમસ્તે તમે કેમ છો આ વાણી સેતુ છે,2.97
+datasets/evaluation/kn/0_clean_evacuation.wav,kn,evacuation,clean,ಪ್ರವಾಹದ ನೀರು ಏರುತ್ತಿದೆ ತಕ್ಷಣವೇ ಖಾಲಿ ಮಾಡಿ,3.06
+datasets/evaluation/kn/0_drone_0db_evacuation.wav,kn,evacuation,drone_0db,ಪ್ರವಾಹದ ನೀರು ಏರುತ್ತಿದೆ ತಕ್ಷಣವೇ ಖಾಲಿ ಮಾಡಿ,3.06
+datasets/evaluation/kn/0_telephone_g711_evacuation.wav,kn,evacuation,telephone_g711,ಪ್ರವಾಹದ ನೀರು ಏರುತ್ತಿದೆ ತಕ್ಷಣವೇ ಖಾಲಿ ಮಾಡಿ,3.06
+datasets/evaluation/kn/0_artillery_blast_evacuation.wav,kn,evacuation,artillery_blast,ಪ್ರವಾಹದ ನೀರು ಏರುತ್ತಿದೆ ತಕ್ಷಣವೇ ಖಾಲಿ ಮಾಡಿ,3.06
+datasets/evaluation/kn/0_whisper_low_evacuation.wav,kn,evacuation,whisper_low,ಪ್ರವಾಹದ ನೀರು ಏರುತ್ತಿದೆ ತಕ್ಷಣವೇ ಖಾಲಿ ಮಾಡಿ,3.06
+datasets/evaluation/kn/0_urgent_fast_evacuation.wav,kn,evacuation,urgent_fast,ಪ್ರವಾಹದ ನೀರು ಏರುತ್ತಿದೆ ತಕ್ಷಣವೇ ಖಾಲಿ ಮಾಡಿ,2.73
+datasets/evaluation/kn/1_clean_medical.wav,kn,medical,clean,ತುರ್ತು ವೈದ್ಯಕೀಯ ನೆರವು ಬೇಕು ತಂಡವನ್ನು ಕಳುಹಿಸಿ,3.51
+datasets/evaluation/kn/1_drone_0db_medical.wav,kn,medical,drone_0db,ತುರ್ತು ವೈದ್ಯಕೀಯ ನೆರವು ಬೇಕು ತಂಡವನ್ನು ಕಳುಹಿಸಿ,3.51
+datasets/evaluation/kn/1_telephone_g711_medical.wav,kn,medical,telephone_g711,ತುರ್ತು ವೈದ್ಯಕೀಯ ನೆರವು ಬೇಕು ತಂಡವನ್ನು ಕಳುಹಿಸಿ,3.51
+datasets/evaluation/kn/1_artillery_blast_medical.wav,kn,medical,artillery_blast,ತುರ್ತು ವೈದ್ಯಕೀಯ ನೆರವು ಬೇಕು ತಂಡವನ್ನು ಕಳುಹಿಸಿ,3.51
+datasets/evaluation/kn/1_whisper_low_medical.wav,kn,medical,whisper_low,ತುರ್ತು ವೈದ್ಯಕೀಯ ನೆರವು ಬೇಕು ತಂಡವನ್ನು ಕಳುಹಿಸಿ,3.51
+datasets/evaluation/kn/1_urgent_fast_medical.wav,kn,medical,urgent_fast,ತುರ್ತು ವೈದ್ಯಕೀಯ ನೆರವು ಬೇಕು ತಂಡವನ್ನು ಕಳುಹಿಸಿ,3.05
+datasets/evaluation/kn/2_clean_checkin.wav,kn,checkin,clean,ನಮಸ್ಕಾರ ನೀವು ಹೇಗಿದ್ದೀರಿ ಇದು ವಾಣಿ ಸೇತು,3.24
+datasets/evaluation/kn/2_drone_0db_checkin.wav,kn,checkin,drone_0db,ನಮಸ್ಕಾರ ನೀವು ಹೇಗಿದ್ದೀರಿ ಇದು ವಾಣಿ ಸೇತು,3.24
+datasets/evaluation/kn/2_telephone_g711_checkin.wav,kn,checkin,telephone_g711,ನಮಸ್ಕಾರ ನೀವು ಹೇಗಿದ್ದೀರಿ ಇದು ವಾಣಿ ಸೇತು,3.24
+datasets/evaluation/kn/2_artillery_blast_checkin.wav,kn,checkin,artillery_blast,ನಮಸ್ಕಾರ ನೀವು ಹೇಗಿದ್ದೀರಿ ಇದು ವಾಣಿ ಸೇತು,3.24
+datasets/evaluation/kn/2_whisper_low_checkin.wav,kn,checkin,whisper_low,ನಮಸ್ಕಾರ ನೀವು ಹೇಗಿದ್ದೀರಿ ಇದು ವಾಣಿ ಸೇತು,3.24
+datasets/evaluation/kn/2_urgent_fast_checkin.wav,kn,checkin,urgent_fast,ನಮಸ್ಕಾರ ನೀವು ಹೇಗಿದ್ದೀರಿ ಇದು ವಾಣಿ ಸೇತು,2.72
+datasets/evaluation/ml/0_clean_evacuation.wav,ml,evacuation,clean,വെള്ളപ്പൊക്ക ജലം ഉയരുന്നു ഉടൻ മാറുക,3.83
+datasets/evaluation/ml/0_drone_0db_evacuation.wav,ml,evacuation,drone_0db,വെള്ളപ്പൊക്ക ജലം ഉയരുന്നു ഉടൻ മാറുക,3.83
+datasets/evaluation/ml/0_telephone_g711_evacuation.wav,ml,evacuation,telephone_g711,വെള്ളപ്പൊക്ക ജലം ഉയരുന്നു ഉടൻ മാറുക,3.83
+datasets/evaluation/ml/0_artillery_blast_evacuation.wav,ml,evacuation,artillery_blast,വെള്ളപ്പൊക്ക ജലം ഉയരുന്നു ഉടൻ മാറുക,3.83
+datasets/evaluation/ml/0_whisper_low_evacuation.wav,ml,evacuation,whisper_low,വെള്ളപ്പൊക്ക ജലം ഉയരുന്നു ഉടൻ മാറുക,3.83
+datasets/evaluation/ml/0_urgent_fast_evacuation.wav,ml,evacuation,urgent_fast,വെള്ളപ്പൊക്ക ജലം ഉയരുന്നു ഉടൻ മാറുക,3.44
+datasets/evaluation/ml/1_clean_medical.wav,ml,medical,clean,അടിയന്തിര വൈദ്യസഹായം വേണം സംഘത്തെ അയക്കുക,3.41
+datasets/evaluation/ml/1_drone_0db_medical.wav,ml,medical,drone_0db,അടിയന്തിര വൈദ്യസഹായം വേണം സംഘത്തെ അയക്കുക,3.41
+datasets/evaluation/ml/1_telephone_g711_medical.wav,ml,medical,telephone_g711,അടിയന്തിര വൈദ്യസഹായം വേണം സംഘത്തെ അയക്കുക,3.41
+datasets/evaluation/ml/1_artillery_blast_medical.wav,ml,medical,artillery_blast,അടിയന്തിര വൈദ്യസഹായം വേണം സംഘത്തെ അയക്കുക,3.41
+datasets/evaluation/ml/1_whisper_low_medical.wav,ml,medical,whisper_low,അടിയന്തിര വൈദ്യസഹായം വേണം സംഘത്തെ അയക്കുക,3.41
+datasets/evaluation/ml/1_urgent_fast_medical.wav,ml,medical,urgent_fast,അടിയന്തിര വൈദ്യസഹായം വേണം സംഘത്തെ അയക്കുക,3.03
+datasets/evaluation/ml/2_clean_checkin.wav,ml,checkin,clean,നമസ്കാരം സുഖമാണോ ഇത് വാണി സേതുവാണ്,2.72
+datasets/evaluation/ml/2_drone_0db_checkin.wav,ml,checkin,drone_0db,നമസ്കാരം സുഖമാണോ ഇത് വാണി സേതുവാണ്,2.72
+datasets/evaluation/ml/2_telephone_g711_checkin.wav,ml,checkin,telephone_g711,നമസ്കാരം സുഖമാണോ ഇത് വാണി സേതുവാണ്,2.72
+datasets/evaluation/ml/2_artillery_blast_checkin.wav,ml,checkin,artillery_blast,നമസ്കാരം സുഖമാണോ ഇത് വാണി സേതുവാണ്,2.72
+datasets/evaluation/ml/2_whisper_low_checkin.wav,ml,checkin,whisper_low,നമസ്കാരം സുഖമാണോ ഇത് വാണി സേതുവാണ്,2.72
+datasets/evaluation/ml/2_urgent_fast_checkin.wav,ml,checkin,urgent_fast,നമസ്കാരം സുഖമാണോ ഇത് വാണി സേതുവാണ്,2.48
+datasets/evaluation/pa/0_clean_evacuation.wav,pa,evacuation,clean,ਹੜ੍ਹ ਦਾ ਪਾਣੀ ਵੱਧ ਰਿਹਾ ਹੈ ਤੁਰੰਤ ਖਾਲੀ ਕਰੋ,3.8
+datasets/evaluation/pa/0_drone_0db_evacuation.wav,pa,evacuation,drone_0db,ਹੜ੍ਹ ਦਾ ਪਾਣੀ ਵੱਧ ਰਿਹਾ ਹੈ ਤੁਰੰਤ ਖਾਲੀ ਕਰੋ,3.8
+datasets/evaluation/pa/0_telephone_g711_evacuation.wav,pa,evacuation,telephone_g711,ਹੜ੍ਹ ਦਾ ਪਾਣੀ ਵੱਧ ਰਿਹਾ ਹੈ ਤੁਰੰਤ ਖਾਲੀ ਕਰੋ,3.8
+datasets/evaluation/pa/0_artillery_blast_evacuation.wav,pa,evacuation,artillery_blast,ਹੜ੍ਹ ਦਾ ਪਾਣੀ ਵੱਧ ਰਿਹਾ ਹੈ ਤੁਰੰਤ ਖਾਲੀ ਕਰੋ,3.8
+datasets/evaluation/pa/0_whisper_low_evacuation.wav,pa,evacuation,whisper_low,ਹੜ੍ਹ ਦਾ ਪਾਣੀ ਵੱਧ ਰਿਹਾ ਹੈ ਤੁਰੰਤ ਖਾਲੀ ਕਰੋ,3.8
+datasets/evaluation/pa/0_urgent_fast_evacuation.wav,pa,evacuation,urgent_fast,ਹੜ੍ਹ ਦਾ ਪਾਣੀ ਵੱਧ ਰਿਹਾ ਹੈ ਤੁਰੰਤ ਖਾਲੀ ਕਰੋ,3.54
+datasets/evaluation/pa/1_clean_medical.wav,pa,medical,clean,ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਚਾਹੀਦੀ ਹੈ ਟੀਮ ਭੇਜੋ,2.98
+datasets/evaluation/pa/1_drone_0db_medical.wav,pa,medical,drone_0db,ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਚਾਹੀਦੀ ਹੈ ਟੀਮ ਭੇਜੋ,2.98
+datasets/evaluation/pa/1_telephone_g711_medical.wav,pa,medical,telephone_g711,ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਚਾਹੀਦੀ ਹੈ ਟੀਮ ਭੇਜੋ,2.98
+datasets/evaluation/pa/1_artillery_blast_medical.wav,pa,medical,artillery_blast,ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਚਾਹੀਦੀ ਹੈ ਟੀਮ ਭੇਜੋ,2.98
+datasets/evaluation/pa/1_whisper_low_medical.wav,pa,medical,whisper_low,ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਚਾਹੀਦੀ ਹੈ ਟੀਮ ਭੇਜੋ,2.98
+datasets/evaluation/pa/1_urgent_fast_medical.wav,pa,medical,urgent_fast,ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਚਾਹੀਦੀ ਹੈ ਟੀਮ ਭੇਜੋ,2.71
+datasets/evaluation/pa/2_clean_checkin.wav,pa,checkin,clean,ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ ਇਹ ਵਾਣੀ ਸੇਤੂ ਹੈ,3.23
+datasets/evaluation/pa/2_drone_0db_checkin.wav,pa,checkin,drone_0db,ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ ਇਹ ਵਾਣੀ ਸੇਤੂ ਹੈ,3.23
+datasets/evaluation/pa/2_telephone_g711_checkin.wav,pa,checkin,telephone_g711,ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ ਇਹ ਵਾਣੀ ਸੇਤੂ ਹੈ,3.23
+datasets/evaluation/pa/2_artillery_blast_checkin.wav,pa,checkin,artillery_blast,ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ ਇਹ ਵਾਣੀ ਸੇਤੂ ਹੈ,3.23
+datasets/evaluation/pa/2_whisper_low_checkin.wav,pa,checkin,whisper_low,ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ ਇਹ ਵਾਣੀ ਸੇਤੂ ਹੈ,3.23
+datasets/evaluation/pa/2_urgent_fast_checkin.wav,pa,checkin,urgent_fast,ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਤੁਸੀਂ ਕਿਵੇਂ ਹੋ ਇਹ ਵਾਣੀ ਸੇਤੂ ਹੈ,2.85
+datasets/evaluation/or/0_clean_evacuation.wav,or,evacuation,clean,ବନ୍ୟା ଜଳ ବୃଦ୍ଧି ପାଉଛି ତୁରନ୍ତ ଖାଲି କରନ୍ତୁ,3.16
+datasets/evaluation/or/0_drone_0db_evacuation.wav,or,evacuation,drone_0db,ବନ୍ୟା ଜଳ ବୃଦ୍ଧି ପାଉଛି ତୁରନ୍ତ ଖାଲି କରନ୍ତୁ,3.16
+datasets/evaluation/or/0_telephone_g711_evacuation.wav,or,evacuation,telephone_g711,ବନ୍ୟା ଜଳ ବୃଦ୍ଧି ପାଉଛି ତୁରନ୍ତ ଖାଲି କରନ୍ତୁ,3.16
+datasets/evaluation/or/0_artillery_blast_evacuation.wav,or,evacuation,artillery_blast,ବନ୍ୟା ଜଳ ବୃଦ୍ଧି ପାଉଛି ତୁରନ୍ତ ଖାଲି କରନ୍ତୁ,3.16
+datasets/evaluation/or/0_whisper_low_evacuation.wav,or,evacuation,whisper_low,ବନ୍ୟା ଜଳ ବୃଦ୍ଧି ପାଉଛି ତୁରନ୍ତ ଖାଲି କରନ୍ତୁ,3.16
+datasets/evaluation/or/0_urgent_fast_evacuation.wav,or,evacuation,urgent_fast,ବନ୍ୟା ଜଳ ବୃଦ୍ଧି ପାଉଛି ତୁରନ୍ତ ଖାଲି କରନ୍ତୁ,2.89
+datasets/evaluation/or/1_clean_medical.wav,or,medical,clean,ତୁରନ୍ତ ଡାକ୍ତରୀ ସାହାଯ୍ୟ ଆବଶ୍ୟକ ଟିମ ପଠାନ୍ତୁ,3.13
+datasets/evaluation/or/1_drone_0db_medical.wav,or,medical,drone_0db,ତୁରନ୍ତ ଡାକ୍ତରୀ ସାହାଯ୍ୟ ଆବଶ୍ୟକ ଟିମ ପଠାନ୍ତୁ,3.13
+datasets/evaluation/or/1_telephone_g711_medical.wav,or,medical,telephone_g711,ତୁରନ୍ତ ଡାକ୍ତରୀ ସାହାଯ୍ୟ ଆବଶ୍ୟକ ଟିମ ପଠାନ୍ତୁ,3.13
+datasets/evaluation/or/1_artillery_blast_medical.wav,or,medical,artillery_blast,ତୁରନ୍ତ ଡାକ୍ତରୀ ସାହାଯ୍ୟ ଆବଶ୍ୟକ ଟିମ ପଠାନ୍ତୁ,3.13
+datasets/evaluation/or/1_whisper_low_medical.wav,or,medical,whisper_low,ତୁରନ୍ତ ଡାକ୍ତରୀ ସାହାଯ୍ୟ ଆବଶ୍ୟକ ଟିମ ପଠାନ୍ତୁ,3.13
+datasets/evaluation/or/1_urgent_fast_medical.wav,or,medical,urgent_fast,ତୁରନ୍ତ ଡାକ୍ତରୀ ସାହାଯ୍ୟ ଆବଶ୍ୟକ ଟିମ ପଠାନ୍ତୁ,2.89
+datasets/evaluation/or/2_clean_checkin.wav,or,checkin,clean,ନମସ୍କାର ଆପଣ କେମିତି ଅଛନ୍ତି ଏହା ବାଣୀ ସେତୁ,3.6
+datasets/evaluation/or/2_drone_0db_checkin.wav,or,checkin,drone_0db,ନମସ୍କାର ଆପଣ କେମିତି ଅଛନ୍ତି ଏହା ବାଣୀ ସେତୁ,3.6
+datasets/evaluation/or/2_telephone_g711_checkin.wav,or,checkin,telephone_g711,ନମସ୍କାର ଆପଣ କେମିତି ଅଛନ୍ତି ଏହା ବାଣୀ ସେତୁ,3.6
+datasets/evaluation/or/2_artillery_blast_checkin.wav,or,checkin,artillery_blast,ନମସ୍କାର ଆପଣ କେମିତି ଅଛନ୍ତି ଏହା ବାଣୀ ସେତୁ,3.6
+datasets/evaluation/or/2_whisper_low_checkin.wav,or,checkin,whisper_low,ନମସ୍କାର ଆପଣ କେମିତି ଅଛନ୍ତି ଏହା ବାଣୀ ସେତୁ,3.6
+datasets/evaluation/or/2_urgent_fast_checkin.wav,or,checkin,urgent_fast,ନମସ୍କାର ଆପଣ କେମିତି ଅଛନ୍ତି ଏହା ବାଣୀ ସେତୁ,3.33
+datasets/evaluation/en/0_clean_evacuation.wav,en,evacuation,clean,Flood water rising evacuate immediately,2.45
+datasets/evaluation/en/0_drone_0db_evacuation.wav,en,evacuation,drone_0db,Flood water rising evacuate immediately,2.45
+datasets/evaluation/en/0_telephone_g711_evacuation.wav,en,evacuation,telephone_g711,Flood water rising evacuate immediately,2.45
+datasets/evaluation/en/0_artillery_blast_evacuation.wav,en,evacuation,artillery_blast,Flood water rising evacuate immediately,2.45
+datasets/evaluation/en/0_whisper_low_evacuation.wav,en,evacuation,whisper_low,Flood water rising evacuate immediately,2.45
+datasets/evaluation/en/0_urgent_fast_evacuation.wav,en,evacuation,urgent_fast,Flood water rising evacuate immediately,2.18
+datasets/evaluation/en/1_clean_medical.wav,en,medical,clean,Urgent medical assistance needed send rescue team,2.99
+datasets/evaluation/en/1_drone_0db_medical.wav,en,medical,drone_0db,Urgent medical assistance needed send rescue team,2.99
+datasets/evaluation/en/1_telephone_g711_medical.wav,en,medical,telephone_g711,Urgent medical assistance needed send rescue team,2.99
+datasets/evaluation/en/1_artillery_blast_medical.wav,en,medical,artillery_blast,Urgent medical assistance needed send rescue team,2.99
+datasets/evaluation/en/1_whisper_low_medical.wav,en,medical,whisper_low,Urgent medical assistance needed send rescue team,2.99
+datasets/evaluation/en/1_urgent_fast_medical.wav,en,medical,urgent_fast,Urgent medical assistance needed send rescue team,2.77
+datasets/evaluation/en/2_clean_checkin.wav,en,checkin,clean,Hello how are you this is VaaniSetu radio,2.57
+datasets/evaluation/en/2_drone_0db_checkin.wav,en,checkin,drone_0db,Hello how are you this is VaaniSetu radio,2.57
+datasets/evaluation/en/2_telephone_g711_checkin.wav,en,checkin,telephone_g711,Hello how are you this is VaaniSetu radio,2.57
+datasets/evaluation/en/2_artillery_blast_checkin.wav,en,checkin,artillery_blast,Hello how are you this is VaaniSetu radio,2.57
+datasets/evaluation/en/2_whisper_low_checkin.wav,en,checkin,whisper_low,Hello how are you this is VaaniSetu radio,2.57
+datasets/evaluation/en/2_urgent_fast_checkin.wav,en,checkin,urgent_fast,Hello how are you this is VaaniSetu radio,2.46

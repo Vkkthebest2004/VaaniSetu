@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_splash_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#07080B"
+    android:fitsSystemWindows="true">
+
+    <!-- Center Radar Animation Container -->
+    <FrameLayout
+        android:id="@+id/frame_radar_container"
+        android:layout_width="260dp"
+        android:layout_height="260dp"
+        android:layout_centerInParent="true">
+
+        <!-- Outer Radar Wave Ring -->
+        <View
+            android:id="@+id/view_radar_ring_outer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_radar_ring" />
+
+        <!-- Inner Radar Wave Ring -->
+        <View
+            android:id="@+id/view_radar_ring_inner"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_radar_ring" />
+
+        <!-- Central Tactical Glow Orb -->
+        <ImageView
+            android:id="@+id/iv_splash_logo"
+            android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:layout_gravity="center"
+            android:contentDescription="VaaniSetu Tactical Emblem"
+            android:src="@drawable/ic_launcher_foreground" />
+    </FrameLayout>
+
+    <!-- App Identity & Ticker Section (Directly Below Center) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/frame_radar_container"
+        android:layout_marginTop="28dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:letterSpacing="0.25"
+            android:text="VAANISETU"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.12"
+            android:text="OFFLINE NEURAL TRANSCEIVER"
+            android:textColor="#E5A93C"
+            android:textSize="11sp" />
+
+        <!-- Dynamic Booting Ticker -->
+        <TextView
+            android:id="@+id/tv_splash_ticker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_chip_callsign"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.05"
+            android:paddingStart="14dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="6dp"
+            android:text="BOOTING NEURAL ONNX ENGINES..."
+            android:textColor="#00E676"
+            android:textSize="11sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="monospace"
+            android:text="MIL-SPEC SEC-L3 • 100% AIR-GAPPED"
+            android:textColor="#565B6B"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- Bottom Skip Cue -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.1"
+        android:text="TAP ANYWHERE TO ENTER"
+        android:textColor="#3D4150"
+        android:textSize="11sp" />
+
+</RelativeLayout>

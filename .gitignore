@@ -1,0 +1,52 @@
+# Virtual environment
+.venv/
+
+# Model files (large binaries — download separately)
+models/
+*.onnx
+*.onnx.data
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# C++ Build artifacts
+cpp/build/
+*.dylib
+*.so
+*.a
+
+# Android & Gradle
+.gradle/
+android/**/build/
+android/.gradle/
+android/local.properties
+android/**/.cxx/
+.cxx/
+*.apk
+*.aar
+*.hprof
+
+# Test outputs and audio
+*.wav
+!tests/fixtures/*.wav
+!audio/samples/*.wav
+
+# Pytest & Coverage
+.pytest_cache/
+.coverage
+htmlcov/

@@ -1,0 +1,7 @@
+# iTantra Mobile / Embedded Deployment Specification
+# Target: Android (JNI/C++), Flutter FFI, or Embedded ARM64
+
+sherpa-onnx-c-api
+onnxruntime-mobile
+libsamplerate
+libopus

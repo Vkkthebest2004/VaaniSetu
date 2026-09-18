@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>iTANTRA — Clean Neural Walkie-Talkie</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Custom Luxury Walkie-Talkie Stylesheet -->
+  <link rel="stylesheet" href="/static/style.css"/>
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            appDark: '#0D0E11',
+            cardDark: '#16171B',
+            borderDark: '#26282E',
+            champagne: '#D5C4A1',
+            champagneMuted: '#9B9078',
+            accentGold: '#E6D7B9',
+            subtleText: '#7D7E84',
+            crimsonAlert: '#E53935',
+            tacticalGreen: '#00E676',
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'Inter', 'sans-serif'],
+            mono: ['SF Mono', 'JetBrains Mono', 'Fira Code', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-[#050507] text-white min-h-screen flex flex-col items-center justify-start p-3 sm:p-5 select-none font-sans antialiased">
+
+  <!-- ============================================== -->
+  <!-- TOP MASTER BAR: CLEAN & ORGANIZED              -->
+  <!-- ============================================== -->
+  <header class="w-full max-w-6xl mb-4 flex flex-wrap items-center justify-between gap-3 p-3 bg-[#111216] border border-borderDark rounded-2xl shadow-xl">
+    
+    <!-- Brand Identity -->
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 rounded-lg bg-[#1D1F26] border border-champagne/30 flex items-center justify-center">
+        <!-- Stylized Delta Glyph -->
+        <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 48 48">
+          <path d="M24 6 L8 38 h10 l6 -14 l6 14 h10 Z" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M24 16 L17 32 h14 Z" opacity="0.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-sm font-semibold tracking-[0.2em] text-white/90 uppercase">iTANTRA NEURAL TRANSCEIVER</h1>
+        <p class="text-[10px] text-subtleText tracking-wider">SIDE-BY-SIDE WALKIE-TALKIE • 100% OFFLINE</p>
+      </div>
+    </div>
+
+    <!-- Quick Navigation & Option Buttons -->
+    <div class="flex flex-wrap items-center gap-2 text-xs">
+      
+      <!-- Radio Channel Pill Button (Opens Channels Drawer) -->
+      <button onclick="openDrawer('channels')" class="flex items-center space-x-1.5 bg-[#16171D] hover:bg-[#1E2028] border border-borderDark rounded-xl px-3 py-1.5 transition-colors cursor-pointer">
+        <span class="text-subtleText text-[10px] font-mono">CH:</span>
+        <span id="top-channel-label" class="text-white font-medium text-xs">CH 07</span>
+        <svg class="w-3 h-3 text-subtleText ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+
+      <!-- Language Mode Pill Button (Opens Languages Drawer) -->
+      <button onclick="openDrawer('languages')" class="flex items-center space-x-1.5 bg-[#16171D] hover:bg-[#1E2028] border border-borderDark rounded-xl px-3 py-1.5 transition-colors cursor-pointer">
+        <span class="text-subtleText text-[10px] font-mono">LANG:</span>
+        <span id="top-lang-label" class="text-champagne font-medium text-xs">Hindi (हिंदी)</span>
+        <svg class="w-3 h-3 text-subtleText ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+
+      <!-- Direct Native Status Button -->
+      <button id="direct-mode-btn" onclick="toggleDirectMode()" class="px-3 py-1.5 rounded-xl border border-green-700/60 bg-green-950/40 text-green-300 hover:bg-green-900/40 text-[11px] font-semibold tracking-wider flex items-center space-x-1.5 transition-all cursor-pointer">
+        <span id="direct-mode-pulse" class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+        <span id="direct-mode-label">DIRECT NATIVE: ON</span>
+      </button>
+
+      <!-- Tactical Macros Menu (Opens Macros Drawer) -->
+      <button onclick="openDrawer('macros')" class="px-3 py-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-[11px] font-semibold tracking-wider flex items-center space-x-1.5 transition-all cursor-pointer">
+        <span>⚡</span>
+        <span>MACROS (8)</span>
+      </button>
+
+      <!-- Emergency Distress Toggle -->
+      <button id="master-emergency-btn" onclick="toggleEmergencyMode()" class="px-3 py-1.5 rounded-xl border border-red-900/60 bg-red-950/40 text-red-400 hover:bg-red-900/40 text-[11px] font-semibold tracking-wider flex items-center space-x-1.5 transition-all cursor-pointer">
+        <span id="emergency-pulse" class="w-2 h-2 rounded-full bg-red-500"></span>
+        <span id="emergency-label">EMERGENCY: OFF</span>
+      </button>
+
+      <!-- Operator Identity & Mode Selector -->
+      <button onclick="openAuthModal()" class="flex items-center space-x-1.5 bg-[#16171D] hover:bg-[#1E2028] border border-amber-500/40 rounded-xl px-3 py-1.5 transition-colors cursor-pointer text-xs">
+        <span class="w-2 h-2 rounded-full bg-tacticalGreen animate-pulse"></span>
+        <span id="web-op-badge" class="text-champagne font-mono font-medium">ALPHA-01 [SENDER TX]</span>
+        <span class="text-[9px] bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded font-mono font-bold">SWITCH</span>
+      </button>
+
+      <!-- Audio Device Selector -->
+      <div class="flex items-center space-x-1.5 bg-[#16171D] border border-borderDark rounded-xl px-2.5 py-1.5">
+        <select id="master-mic-source" class="bg-transparent text-white text-xs focus:outline-none cursor-pointer">
+          <option value="hw_mic" selected>🎙️ CoreAudio Mic</option>
+          <option value="web_mic">🌐 Browser Mic</option>
+        </select>
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- ============================================== -->
+  <!-- MAIN DUAL-PHONE WALKIE-TALKIE SIMULATOR        -->
+  <!-- ============================================== -->
+  <div class="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-8">
+
+    <!-- -------------------------------------------- -->
+    <!-- LEFT PHONE: PHONE A (TRANSMITTER / SENDER)    -->
+    <!-- -------------------------------------------- -->
+    <div class="flex flex-col items-center">
+      <div class="flex items-center justify-between w-full max-w-[390px] mb-2 px-2 text-xs">
+        <span class="font-mono text-champagne tracking-wider font-semibold">📱 SENDER (DEVICE A)</span>
+        <div class="flex space-x-1">
+          <button onclick="switchView('tx', 'idle')" class="px-2 py-0.5 rounded text-[10px] bg-[#2E313A] text-white" id="tx-tab-idle">Home</button>
+          <button onclick="switchView('tx', 'listening')" class="px-2 py-0.5 rounded text-[10px] bg-[#1E2026] text-subtleText hover:text-white" id="tx-tab-listening">Listening</button>
+          <button onclick="switchView('tx', 'translated')" class="px-2 py-0.5 rounded text-[10px] bg-[#1E2026] text-subtleText hover:text-white" id="tx-tab-translated">Result</button>
+        </div>
+      </div>
+
+      <!-- Phone Body -->
+      <main id="phone-tx" class="w-full max-w-[390px] h-[830px] screen-bg border-[5px] border-[#222328] rounded-[52px] shadow-2xl relative overflow-hidden flex flex-col justify-between p-5 pb-6 transition-all duration-300">
+        
+        <!-- Status Bar -->
+        <header class="w-full flex items-center justify-between pt-1 px-3 text-[13px] tracking-tight font-semibold text-white/90">
+          <span>9:41</span>
+          <div class="w-24 h-4 bg-black/40 rounded-full mx-auto -mt-1 hidden sm:block"></div>
+          <div class="flex items-center space-x-1.5 text-xs text-white/90">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 18.25c-.2.2-.2.51 0 .71.2.2.51.2.71 0l.64-.64C7.24 19.34 9.49 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-1.9 0-3.64-.68-5-1.81l1.41-1.41C9.42 15.54 10.65 16 12 16c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4c0 .35.05.69.13 1.01l-1.51 1.51C6.23 13.63 6 12.84 6 12c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6z"></path></svg>
+            <div class="w-5 h-2.5 border border-white/70 rounded-sm p-0.5 flex items-center"><div class="h-full w-full bg-white rounded-2xs"></div></div>
+          </div>
+        </header>
+
+        <!-- Brand Header -->
+        <div class="flex items-center justify-between mt-2 px-1">
+          <div class="flex items-center space-x-2">
+            <button aria-label="Go back" class="text-subtleText hover:text-white transition-colors hidden pr-1 cursor-pointer" id="tx-back-btn" onclick="switchView('tx', 'idle')">
+              <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </button>
+            <span class="text-xs tracking-[0.25em] font-semibold text-white/90">iTANTRA</span>
+            <span class="px-1.5 py-0.5 rounded text-[8px] tracking-wider font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">TX</span>
+          </div>
+          <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded border border-[#2E3139] bg-[#121317]/80 text-[10px] tracking-wider text-subtleText uppercase">
+            <svg class="w-3 h-3 stroke-champagneMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L3 3m5.636 5.636a5 5 0 017.072 0m-7.072 0l2.829 2.829m-2.829-2.829L9 11m0 0l2.829 2.829" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path></svg>
+            <span class="font-mono text-champagneMuted">OFFLINE</span>
+          </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- VIEW 1: IDLE / HOME SCREEN     -->
+        <!-- ============================== -->
+        <section class="flex flex-col items-center justify-between flex-1 py-5 view-transition view-active" id="view-tx-idle">
+          
+          <div class="flex flex-col items-center text-center mt-6 space-y-4">
+            <div class="w-16 h-16 flex items-center justify-center">
+              <svg class="w-12 h-12 text-champagne" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 48 48">
+                <path d="M24 6 L8 38 h10 l6 -14 l6 14 h10 Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M24 16 L17 32 h14 Z" opacity="0.6" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <div class="space-y-1">
+              <p class="text-[11px] tracking-[0.28em] text-champagneMuted uppercase font-medium">India Speaks</p>
+              <p class="text-[11px] tracking-[0.28em] text-champagneMuted uppercase font-medium">iTantra Listens</p>
+            </div>
+          </div>
+
+          <!-- Large Concentric 3D Walkie-Talkie Button -->
+          <div class="flex flex-col items-center justify-center my-auto">
+            <button id="tx-mic-btn" 
+                    aria-label="Tap or hold to speak" 
+                    class="relative group focus:outline-none cursor-pointer ptt-press-target" 
+                    onclick="handleTxMicToggle()">
+              <div id="tx-mic-ring" class="w-36 h-36 rounded-full concentric-outer border border-champagne/20 flex items-center justify-center transition-transform group-hover:scale-105 duration-200">
+                <div class="w-24 h-24 rounded-full bg-[#1A1C22] border border-[#30333D] flex items-center justify-center shadow-inner">
+                  <svg class="w-8 h-8 text-champagne" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                    <path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </div>
+              </div>
+            </button>
+            <span id="tx-mic-status-label" class="text-xs text-subtleText tracking-wider mt-4 font-medium">Tap to speak</span>
+          </div>
+
+          <!-- Bottom Clean Navigation (Organized Menus) -->
+          <footer class="w-full flex items-center justify-between px-3 pt-4 border-t border-[#1C1E24]">
+            <button onclick="openDrawer('macros')" class="flex flex-col items-center text-subtleText hover:text-champagne transition-colors cursor-pointer">
+              <span class="text-base mb-0.5">⚡</span>
+              <span class="text-[9px] tracking-wider uppercase font-mono">Macros</span>
+            </button>
+            <button onclick="openDrawer('channels')" class="flex flex-col items-center text-subtleText hover:text-champagne transition-colors cursor-pointer">
+              <span class="text-base mb-0.5">📻</span>
+              <span class="text-[9px] tracking-wider uppercase font-mono">Channels</span>
+            </button>
+            <button onclick="openDrawer('languages')" class="flex flex-col items-center text-subtleText hover:text-champagne transition-colors cursor-pointer">
+              <span class="text-base mb-0.5">🌐</span>
+              <span class="text-[9px] tracking-wider uppercase font-mono">Languages</span>
+            </button>
+            <button onclick="openDrawer('telemetry')" class="flex flex-col items-center text-subtleText hover:text-champagne transition-colors cursor-pointer">
+              <span class="text-base mb-0.5">📊</span>
+              <span class="text-[9px] tracking-wider uppercase font-mono">Telemetry</span>
+            </button>
+          </footer>
+        </section>
+
+        <!-- ============================== -->
+        <!-- VIEW 2: LISTENING SCREEN       -->
+        <!-- ============================== -->
+        <section class="flex flex-col items-center justify-between flex-1 py-6 view-transition view-hidden" id="view-tx-listening">
+          <div class="mt-8 text-center">
+            <h2 class="text-champagne font-serif italic text-2xl tracking-wide">Listening...</h2>
+            <p id="tx-listening-lang-hint" class="text-xs text-subtleText tracking-widest uppercase mt-1">Speaking in Hindi</p>
+          </div>
+
+          <!-- Waveform Visualizer Display -->
+          <div class="w-full flex items-center justify-center space-x-1.5 py-12 px-6">
+            <div class="w-1 h-4 bg-champagneMuted/40 rounded-full animate-sound-wave" style="animation-delay: 0.1s"></div>
+            <div class="w-1 h-8 bg-champagneMuted/60 rounded-full animate-sound-wave" style="animation-delay: 0.25s"></div>
+            <div class="w-1 h-14 bg-champagne rounded-full animate-sound-wave" style="animation-delay: 0.4s"></div>
+            <div class="w-1.5 h-20 bg-accentGold rounded-full animate-sound-wave" style="animation-delay: 0.15s"></div>
+            <div class="w-1.5 h-28 bg-champagne rounded-full animate-sound-wave" style="animation-delay: 0.3s"></div>
+            <div class="w-1.5 h-36 bg-accentGold rounded-full animate-sound-wave" style="animation-delay: 0.05s"></div>
+            <div class="w-1.5 h-28 bg-champagne rounded-full animate-sound-wave" style="animation-delay: 0.2s"></div>
+            <div class="w-1.5 h-16 bg-accentGold rounded-full animate-sound-wave" style="animation-delay: 0.35s"></div>
+            <div class="w-1 h-10 bg-champagneMuted/70 rounded-full animate-sound-wave" style="animation-delay: 0.18s"></div>
+            <div class="w-1 h-4 bg-champagneMuted/40 rounded-full animate-sound-wave" style="animation-delay: 0.45s"></div>
+          </div>
+
+          <!-- Stop Recording Button -->
+          <div class="flex flex-col items-center justify-center pb-4">
+            <button aria-label="Tap to stop" class="w-20 h-20 rounded-full bg-[#18191E] border border-champagne/30 flex items-center justify-center shadow-lg active:scale-95 hover:border-champagne/60 transition-all cursor-pointer" onclick="handleTxMicToggle()">
+              <div class="w-5 h-5 bg-champagne rounded-xs"></div>
+            </button>
+            <span class="text-xs text-subtleText tracking-wider mt-3">Tap to stop</span>
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- VIEW 3: RESULT SCREEN          -->
+        <!-- ============================== -->
+        <section class="flex flex-col justify-between flex-1 py-3 view-transition view-hidden" id="view-tx-translated">
+          <div class="space-y-3 mt-1 overflow-y-auto max-h-[580px] pr-1">
+            <!-- Spoken Input Card -->
+            <article class="bg-cardDark border border-borderDark rounded-2xl p-4 shadow-sm relative">
+              <span id="tx-result-source-label" class="text-[10px] tracking-widest font-medium text-subtleText uppercase block mb-1.5 font-mono">
+                YOU SAID (HINDI)
+              </span>
+              <div class="flex items-center justify-between">
+                <p id="tx-result-source-text" class="text-lg font-medium text-white tracking-wide">मुझे दिल्ली जाना है</p>
+                <button aria-label="Play source audio" onclick="replayAudio('source')" class="p-2 text-subtleText hover:text-champagne transition-colors cursor-pointer">
+                  <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24"><path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"></path></svg>
+                </button>
+              </div>
+            </article>
+
+            <!-- Transmission Output Card -->
+            <article class="bg-cardDark border border-borderDark rounded-2xl p-4 shadow-sm relative">
+              <div class="flex items-center justify-between mb-1.5">
+                <span id="tx-result-target-label" class="text-[10px] tracking-widest font-medium text-green-400 uppercase font-mono block">
+                  DIRECT TRANSMISSION (HINDI)
+                </span>
+                <span id="tx-result-mode-badge" class="px-1.5 py-0.5 rounded text-[8px] tracking-wider font-mono font-bold bg-green-500/20 text-green-300 border border-green-500/30">
+                  DIRECT NATIVE
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <p id="tx-result-target-text" class="text-base text-gray-200 font-normal">मुझे दिल्ली जाना है</p>
+                <button aria-label="Play transmission audio" onclick="replayAudio('target')" class="p-2 text-subtleText hover:text-champagne transition-colors cursor-pointer">
+                  <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24"><path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"></path></svg>
+                </button>
+              </div>
+            </article>
+
+            <!-- 2x2 Clean Action Button Grid -->
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <button onclick="openDrawer('languages')" class="bg-[#17181D] hover:bg-[#1F2128] border border-borderDark rounded-xl p-3 flex flex-col items-center justify-center space-y-1.5 transition-all cursor-pointer">
+                <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+                <span class="text-xs text-subtleText font-mono">Translate</span>
+              </button>
+              <button onclick="openDrawer('telemetry')" class="bg-[#17181D] hover:bg-[#1F2128] border border-borderDark rounded-xl p-3 flex flex-col items-center justify-center space-y-1.5 transition-all cursor-pointer">
+                <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-width="1.5"/></svg>
+                <span class="text-xs text-subtleText font-mono">Telemetry</span>
+              </button>
+              <button onclick="openDrawer('macros')" class="bg-[#17181D] hover:bg-[#1F2128] border border-borderDark rounded-xl p-3 flex flex-col items-center justify-center space-y-1.5 transition-all cursor-pointer">
+                <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="1.5"/></svg>
+                <span class="text-xs text-subtleText font-mono">Macros</span>
+              </button>
+              <button onclick="playRogerBeep()" class="bg-[#17181D] hover:bg-[#1F2128] border border-borderDark rounded-xl p-3 flex flex-col items-center justify-center space-y-1.5 transition-all cursor-pointer">
+                <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke-width="1.5"/></svg>
+                <span class="text-xs text-subtleText font-mono">Roger Beep</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bottom CTA -->
+          <footer class="w-full flex items-center space-x-3 pt-2">
+            <button class="flex-1 py-3.5 px-6 rounded-full bg-gradient-to-b from-[#D8C9A9] to-[#BFB08E] hover:from-[#E4D7B9] hover:to-[#C7B997] text-[#16171B] font-semibold text-xs tracking-wider uppercase flex items-center justify-center space-x-2 shadow-lg active:scale-95 transition-all cursor-pointer" onclick="switchView('tx', 'listening'); handleTxMicToggle();">
+              <svg class="w-4 h-4 fill-current text-[#16171B]" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"></path></svg>
+              <span>Speak Again</span>
+            </button>
+            <button aria-label="Copy text" onclick="copyResultText()" class="w-12 h-12 rounded-full bg-[#202127] hover:bg-[#282a32] border border-[#2F313A] flex items-center justify-center text-white/80 hover:text-white transition-colors active:scale-95 cursor-pointer">
+              <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"></path></svg>
+            </button>
+          </footer>
+        </section>
+
+        <!-- Home Indicator -->
+        <div class="w-32 h-1 bg-white/20 rounded-full mx-auto self-end mt-2"></div>
+      </main>
+    </div>
+
+
+    <!-- -------------------------------------------- -->
+    <!-- CENTER: NEURAL RADIO BRIDGE & QUICK PRESETS  -->
+    <!-- -------------------------------------------- -->
+    <div class="w-full lg:w-72 flex flex-col items-center justify-center space-y-4 py-2">
+      
+      <!-- P2P Radio Link Status Beam -->
+      <div class="w-full flex flex-col items-center bg-[#111216] border border-borderDark rounded-2xl p-4 shadow-xl">
+        <div class="flex items-center justify-between w-full mb-2">
+          <span class="text-[10px] tracking-widest font-mono text-champagneMuted uppercase">WIRELESS LINK</span>
+          <span id="link-status-badge" class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-green-950/60 text-green-400 border border-green-800/40">ONLINE P2P</span>
+        </div>
+
+        <!-- Animated Transmission Beam -->
+        <div class="w-full h-2 rounded-full bg-[#181920] overflow-hidden my-2 relative">
+          <div id="wireless-beam" class="w-full h-full rounded-full opacity-40"></div>
+        </div>
+
+        <!-- Telemetry Data Grid -->
+        <div class="w-full grid grid-cols-2 gap-2 mt-2 font-mono text-[11px]">
+          <div class="bg-[#17181F] p-2 rounded-xl border border-borderDark flex flex-col">
+            <span class="text-subtleText text-[9px] uppercase">Micro-Packet</span>
+            <span id="tele-packet-size" class="text-champagne font-bold text-sm">24 B</span>
+          </div>
+          <div class="bg-[#17181F] p-2 rounded-xl border border-borderDark flex flex-col">
+            <span class="text-subtleText text-[9px] uppercase">Bandwidth Saved</span>
+            <span id="tele-bandwidth-saved" class="text-green-400 font-bold text-sm">99.96%</span>
+          </div>
+          <div class="bg-[#17181F] p-2 rounded-xl border border-borderDark flex flex-col">
+            <span class="text-subtleText text-[9px] uppercase">E2E Latency</span>
+            <span id="tele-latency" class="text-white font-bold text-sm">430 ms</span>
+          </div>
+          <div class="bg-[#17181F] p-2 rounded-xl border border-borderDark flex flex-col">
+            <span class="text-subtleText text-[9px] uppercase">Radio Band</span>
+            <span id="tele-channel" class="text-champagne font-bold text-sm">CH 07</span>
+          </div>
+        </div>
+
+        <!-- Binary Hex Inspector Preview -->
+        <div class="w-full mt-3 pt-3 border-t border-[#1C1E24]">
+          <div class="flex items-center justify-between text-[9px] font-mono text-subtleText uppercase mb-1">
+            <span>Hex Frame</span>
+            <button onclick="openDrawer('telemetry')" class="text-champagne hover:underline">Inspect →</button>
+          </div>
+          <div id="tele-hex-stream" class="w-full bg-[#0B0C0E] border border-borderDark rounded-lg p-2 font-mono text-[9px] text-champagneMuted break-all leading-tight">
+            A5 87 91 39 2E 80 06 17 47 80 2D 30 39 80 39 48 02 82 80 39 98 AD
+          </div>
+        </div>
+      </div>
+
+      <!-- Clean Direct Speech Presets -->
+      <div class="w-full bg-[#111216] border border-borderDark rounded-2xl p-3.5 shadow-xl flex flex-col space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] tracking-widest font-mono text-subtleText uppercase">Quick Presets:</span>
+          <span class="text-[9px] font-mono text-green-400 font-semibold">1-Click Test</span>
+        </div>
+        <div class="flex flex-col space-y-1.5 text-[11px]">
+          <button onclick="sendPresetDirect('मुझे दिल्ली जाना है')" class="text-left px-2.5 py-2 rounded-xl bg-[#181920] hover:bg-[#20222C] text-gray-200 border border-green-900/30 transition-all truncate cursor-pointer flex items-center justify-between">
+            <span>1. "मुझे दिल्ली जाना है"</span>
+            <span class="text-[8px] font-mono text-green-400">Direct</span>
+          </button>
+          <button onclick="sendPresetDirect('नमस्ते, क्या आप मुझे सुन सकते हैं?')" class="text-left px-2.5 py-2 rounded-xl bg-[#181920] hover:bg-[#20222C] text-gray-200 border border-green-900/30 transition-all truncate cursor-pointer flex items-center justify-between">
+            <span>2. "नमस्ते, क्या आप मुझे सुन सकते हैं?"</span>
+            <span class="text-[8px] font-mono text-green-400">Direct</span>
+          </button>
+          <button onclick="sendPresetDirect('हम आगे बढ़ रहे हैं, सब कुछ ठीक है')" class="text-left px-2.5 py-2 rounded-xl bg-[#181920] hover:bg-[#20222C] text-gray-200 border border-green-900/30 transition-all truncate cursor-pointer flex items-center justify-between">
+            <span>3. "हम आगे बढ़ रहे हैं, सब ठीक है"</span>
+            <span class="text-[8px] font-mono text-green-400">Direct</span>
+          </button>
+          <button onclick="sendPresetDirect('मदद की ज़रूरत है, तुरंत सहायता भेजें', true)" class="text-left px-2.5 py-2 rounded-xl bg-red-950/30 hover:bg-red-900/30 text-red-300 border border-red-900/40 transition-all truncate cursor-pointer flex items-center justify-between">
+            <span>4. 🚨 "मदद की ज़रूरत है"</span>
+            <span class="text-[8px] font-mono text-red-400">Distress</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- -------------------------------------------- -->
+    <!-- RIGHT PHONE: PHONE B (RECEIVER / RX MODE)    -->
+    <!-- -------------------------------------------- -->
+    <div class="flex flex-col items-center">
+      <div class="flex items-center justify-between w-full max-w-[390px] mb-2 px-2 text-xs">
+        <span class="font-mono text-champagne tracking-wider font-semibold">📱 RECEIVER (DEVICE B)</span>
+        <div class="flex space-x-1">
+          <button onclick="switchView('rx', 'idle')" class="px-2 py-0.5 rounded text-[10px] bg-[#2E313A] text-white" id="rx-tab-idle">Standby</button>
+          <button onclick="switchView('rx', 'receiving')" class="px-2 py-0.5 rounded text-[10px] bg-[#1E2026] text-subtleText hover:text-white" id="rx-tab-receiving">Rx Wave</button>
+          <button onclick="switchView('rx', 'result')" class="px-2 py-0.5 rounded text-[10px] bg-[#1E2026] text-subtleText hover:text-white" id="rx-tab-result">Message</button>
+        </div>
+      </div>
+
+      <!-- Phone Body -->
+      <main id="phone-rx" class="w-full max-w-[390px] h-[830px] screen-bg border-[5px] border-[#222328] rounded-[52px] shadow-2xl relative overflow-hidden flex flex-col justify-between p-5 pb-6 transition-all duration-300">
+        
+        <!-- Status Bar -->
+        <header class="w-full flex items-center justify-between pt-1 px-3 text-[13px] tracking-tight font-semibold text-white/90">
+          <span>9:41</span>
+          <div class="w-24 h-4 bg-black/40 rounded-full mx-auto -mt-1 hidden sm:block"></div>
+          <div class="flex items-center space-x-1.5 text-xs text-white/90">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 18.25c-.2.2-.2.51 0 .71.2.2.51.2.71 0l.64-.64C7.24 19.34 9.49 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-1.9 0-3.64-.68-5-1.81l1.41-1.41C9.42 15.54 10.65 16 12 16c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4c0 .35.05.69.13 1.01l-1.51 1.51C6.23 13.63 6 12.84 6 12c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6z"></path></svg>
+            <div class="w-5 h-2.5 border border-white/70 rounded-sm p-0.5 flex items-center"><div class="h-full w-full bg-white rounded-2xs"></div></div>
+          </div>
+        </header>
+
+        <!-- Brand Header -->
+        <div class="flex items-center justify-between mt-2 px-1">
+          <div class="flex items-center space-x-1.5">
+            <span class="text-xs tracking-[0.25em] font-semibold text-white/90">iTANTRA</span>
+            <span class="px-1.5 py-0.5 rounded text-[8px] tracking-wider font-mono font-bold bg-green-500/20 text-green-300 border border-green-500/30">RX</span>
+            <span id="rx-mode-header-tag" class="text-[10px] font-mono text-green-400 bg-[#17181F] px-2 py-0.5 rounded-lg border border-borderDark">🟢 Direct Native</span>
+          </div>
+          <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded border border-[#2E3139] bg-[#121317]/80 text-[10px] tracking-wider text-subtleText uppercase">
+            <svg class="w-3 h-3 stroke-champagneMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L3 3m5.636 5.636a5 5 0 017.072 0m-7.072 0l2.829 2.829m-2.829-2.829L9 11m0 0l2.829 2.829" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path></svg>
+            <span class="font-mono text-champagneMuted">OFFLINE</span>
+          </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- VIEW 1: STANDBY / IDLE         -->
+        <!-- ============================== -->
+        <section class="flex flex-col items-center justify-between flex-1 py-5 view-transition view-active" id="view-rx-idle">
+          
+          <div class="flex flex-col items-center text-center mt-6 space-y-4">
+            <div class="w-16 h-16 flex items-center justify-center">
+              <svg class="w-12 h-12 text-champagne" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 48 48">
+                <path d="M24 6 L8 38 h10 l6 -14 l6 14 h10 Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M24 16 L17 32 h14 Z" opacity="0.6" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <div class="space-y-1">
+              <p class="text-[11px] tracking-[0.28em] text-champagneMuted uppercase font-medium">Standby on CH 07</p>
+              <p class="text-[11px] tracking-[0.28em] text-champagneMuted uppercase font-medium">Listening for packets</p>
+            </div>
+          </div>
+
+          <!-- Radar Concentric Speaker Trigger -->
+          <div class="flex flex-col items-center justify-center my-auto">
+            <div class="relative">
+              <div class="w-36 h-36 rounded-full concentric-outer border border-champagne/20 flex items-center justify-center animate-radar">
+                <div class="w-24 h-24 rounded-full bg-[#1A1C22] border border-[#30333D] flex items-center justify-center shadow-inner">
+                  <svg class="w-8 h-8 text-champagne" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                    <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <span class="text-xs text-subtleText tracking-wider mt-4 font-medium">Awaiting Voice Note</span>
+          </div>
+
+          <!-- Bottom Footer Navigation -->
+          <footer class="w-full flex items-center justify-between px-4 pt-4 border-t border-[#1C1E24]">
+            <span class="text-xs font-medium text-white/90 tracking-wide font-mono">
+              CH 07 Active
+            </span>
+            <div class="flex items-center space-x-6">
+              <div class="flex flex-col items-center text-subtleText">
+                <span class="text-xs font-mono font-bold text-champagne">100%</span>
+                <span class="text-[9px] tracking-wider uppercase font-mono">Volume</span>
+              </div>
+              <div class="flex flex-col items-center text-subtleText">
+                <span class="text-xs font-mono font-bold text-green-400">22 kHz</span>
+                <span class="text-[9px] tracking-wider uppercase font-mono">Piper VITS</span>
+              </div>
+            </div>
+          </footer>
+        </section>
+
+        <!-- ============================== -->
+        <!-- VIEW 2: RECEIVING AUDIO STREAM -->
+        <!-- ============================== -->
+        <section class="flex flex-col items-center justify-between flex-1 py-6 view-transition view-hidden" id="view-rx-receiving">
+          <div class="mt-8 text-center">
+            <h2 class="text-champagne font-serif italic text-2xl tracking-wide">Receiving Voice Note...</h2>
+            <p class="text-xs text-subtleText tracking-widest uppercase mt-1 font-mono">Playing over Mac Speakers</p>
+          </div>
+
+          <!-- Waveform Visualizer Display -->
+          <div class="w-full flex items-center justify-center space-x-1.5 py-12 px-6">
+            <div class="w-1 h-4 bg-green-500/40 rounded-full animate-sound-wave" style="animation-delay: 0.15s"></div>
+            <div class="w-1 h-10 bg-green-500/60 rounded-full animate-sound-wave" style="animation-delay: 0.3s"></div>
+            <div class="w-1 h-18 bg-green-400 rounded-full animate-sound-wave" style="animation-delay: 0.05s"></div>
+            <div class="w-1.5 h-26 bg-emerald-300 rounded-full animate-sound-wave" style="animation-delay: 0.25s"></div>
+            <div class="w-1.5 h-34 bg-green-400 rounded-full animate-sound-wave" style="animation-delay: 0.1s"></div>
+            <div class="w-1.5 h-24 bg-emerald-300 rounded-full animate-sound-wave" style="animation-delay: 0.35s"></div>
+            <div class="w-1.5 h-16 bg-green-400 rounded-full animate-sound-wave" style="animation-delay: 0.2s"></div>
+            <div class="w-1 h-12 bg-emerald-300 rounded-full animate-sound-wave" style="animation-delay: 0.4s"></div>
+            <div class="w-1 h-6 bg-green-500/70 rounded-full animate-sound-wave" style="animation-delay: 0.12s"></div>
+            <div class="w-1 h-3 bg-green-500/40 rounded-full animate-sound-wave" style="animation-delay: 0.5s"></div>
+          </div>
+
+          <!-- Status Indicator -->
+          <div class="flex flex-col items-center justify-center pb-6">
+            <div class="w-16 h-16 rounded-full bg-[#18191E] border border-champagne/30 flex items-center justify-center shadow-lg">
+              <svg class="w-6 h-6 text-champagne fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+            </div>
+            <span class="text-xs text-champagne tracking-wider mt-3 font-mono">Synthesizing Speech...</span>
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- VIEW 3: RECEIVED RESULT        -->
+        <!-- ============================== -->
+        <section class="flex flex-col justify-between flex-1 py-3 view-transition view-hidden" id="view-rx-result">
+          <div class="space-y-3 mt-1 overflow-y-auto max-h-[580px] pr-1">
+            <!-- Received Message Card -->
+            <article class="bg-cardDark border border-borderDark rounded-2xl p-4 shadow-sm relative">
+              <div class="flex items-center justify-between mb-1.5">
+                <span id="rx-result-channel-label" class="text-[10px] tracking-widest font-medium text-champagne uppercase font-mono">
+                  RECEIVED ON CH 07 (HINDI)
+                </span>
+                <span id="rx-result-badge" class="px-1.5 py-0.5 rounded text-[8px] tracking-wider font-mono font-bold bg-green-500/20 text-green-300 border border-green-500/30">
+                  DIRECT NATIVE
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <p id="rx-result-text" class="text-lg font-medium text-white tracking-wide">मुझे दिल्ली जाना है</p>
+                <button aria-label="Play received audio" onclick="replayAudio('receiver')" class="p-2 text-subtleText hover:text-champagne transition-colors cursor-pointer">
+                  <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24"><path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"></path></svg>
+                </button>
+              </div>
+            </article>
+
+            <!-- Voice Synthesis Details Card -->
+            <article class="bg-cardDark border border-borderDark rounded-2xl p-4 shadow-sm relative">
+              <span class="text-[10px] tracking-widest font-medium text-subtleText uppercase block mb-1.5 font-mono">
+                VOICE SYNTHESIS (ROHAN VITS - 22 KHZ)
+              </span>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                  <p id="rx-result-synth-info" class="text-xs text-gray-300 font-mono">Audio Rendered (100% Offline)</p>
+                </div>
+                <button aria-label="Replay audio note" onclick="replayAudio('receiver')" class="p-2 text-champagne hover:text-white transition-colors cursor-pointer">
+                  <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                </button>
+              </div>
+            </article>
+
+            <!-- Quick Action 2x2 Grid -->
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <button onclick="actionReplyBack()" class="bg-[#17181D] hover:bg-[#1F2128] border border-borderDark rounded-xl p-3 flex flex-col items-center justify-center space-y-1.5 transition-all cursor-pointer">
+                <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"></path></svg>
+                <span class="text-xs text-subtleText font-mono">Reply Back</span>
+              </button>
+              <button onclick="openDrawer('languages')" class="bg-[#17181D] hover:bg-[#1F2128] border border-borderDark rounded-xl p-3 flex flex-col items-center justify-center space-y-1.5 transition-all cursor-pointer">
+                <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+                <span class="text-xs text-subtleText font-mono">Translate</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bottom Replay Button -->
+          <footer class="w-full flex items-center space-x-3 pt-2">
+            <button class="flex-1 py-3.5 px-6 rounded-full bg-gradient-to-b from-[#D8C9A9] to-[#BFB08E] hover:from-[#E4D7B9] hover:to-[#C7B997] text-[#16171B] font-semibold text-xs tracking-wider uppercase flex items-center justify-center space-x-2 shadow-lg active:scale-95 transition-all cursor-pointer" onclick="replayAudio('receiver')">
+              <svg class="w-4 h-4 fill-current text-[#16171B]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+              <span>Replay Audio</span>
+            </button>
+            <button aria-label="Reply back" onclick="actionReplyBack()" class="w-12 h-12 rounded-full bg-[#202127] hover:bg-[#282a32] border border-[#2F313A] flex items-center justify-center text-white/80 hover:text-white transition-colors active:scale-95 cursor-pointer">
+              <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"></path></svg>
+            </button>
+          </footer>
+        </section>
+
+        <!-- Home Indicator -->
+        <div class="w-32 h-1 bg-white/20 rounded-full mx-auto self-end mt-2"></div>
+      </main>
+    </div>
+
+  </div>
+
+
+  <!-- ============================================== -->
+  <!-- CLEAN SLIDE-UP DRAWERS (ORGANIZED OPTIONS)     -->
+  <!-- ============================================== -->
+
+  <!-- DRAWER 1: TACTICAL MACROS (8-GRID) -->
+  <div id="drawer-macros" class="drawer-backdrop" onclick="closeDrawerOnBackdrop(event, 'macros')">
+    <div class="drawer-sheet">
+      <div class="drawer-handle"></div>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-base font-semibold text-white tracking-wide">⚡ Tactical Macros</h2>
+          <p class="text-[11px] text-subtleText font-mono">1-Click Emergency Distress Broadcast (6 Bytes)</p>
+        </div>
+        <button onclick="closeDrawer('macros')" class="text-subtleText hover:text-white p-1 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
+        <button onclick="sendMacroAndClose(1)" class="macro-card-btn">
+          <span class="text-2xl mb-1">🚑</span>
+          <span class="text-xs font-semibold text-red-400">Medevac</span>
+          <span class="text-[9px] text-subtleText text-center mt-0.5">Medical Evac</span>
+        </button>
+        <button onclick="sendMacroAndClose(2)" class="macro-card-btn">
+          <span class="text-2xl mb-1">🔥</span>
+          <span class="text-xs font-semibold text-orange-400">Fire Rescue</span>
+          <span class="text-[9px] text-subtleText text-center mt-0.5">Dispatch Fire</span>
+        </button>
+        <button onclick="sendMacroAndClose(3)" class="macro-card-btn">
+          <span class="text-2xl mb-1">🌊</span>
+          <span class="text-xs font-semibold text-blue-400">Flood Evac</span>
+          <span class="text-[9px] text-subtleText text-center mt-0.5">Water Level Rising</span>
+        </button>
+        <button onclick="sendMacroAndClose(4)" class="macro-card-btn">
+          <span class="text-2xl mb-1">🚨</span>
+          <span class="text-xs font-semibold text-red-500">Ambush</span>
+          <span class="text-[9px] text-subtleText text-center mt-0.5">Hostage / Attack</span>
+        </button>
+        <button onclick="sendMacroAndClose(5)" class="macro-card-btn">
+          <span class="text-2xl mb-1">⚡</span>
+          <span class="text-xs font-semibold text-amber-300">Need Support</span>
+          <span class="text-[9px] text-subtleText text-center mt-0.5">Ammo & Logistics</span>
+        </button>
+        <button onclick="sendMacroAndClose(6)" class="macro-card-btn">
+          <span class="text-2xl mb-1">🛡️</span>
+          <span class="text-xs font-semibold text-indigo-400">Perimeter</span>
+          <span class="text-[9px] text-subtleText text-center mt-0.5">Security Alert</span>
+        </button>
+        <button onclick="sendMacroAndClose(7)" class="macro-card-btn">
+          <span class="text-2xl mb-1">🟢</span>
+          <span class="text-xs font-semibold text-green-400">All Clear</span>
+          <span class="text-[9px] text-subtleText text-center mt-0.5">Area Secured</span>
+        </button>
+        <button onclick="sendMacroAndClose(8)" class="macro-card-btn">
+          <span class="text-2xl mb-1">🧭</span>
+          <span class="text-xs font-semibold text-teal-300">Regroup</span>
+          <span class="text-[9px] text-subtleText text-center mt-0.5">Rendezvous Point</span>
+        </button>
+      </div>
+
+      <div class="p-3 bg-red-950/30 border border-red-900/40 rounded-xl flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <span class="text-lg">🚨</span>
+          <span class="text-xs font-medium text-red-300">Continuous Warble Siren Mode</span>
+        </div>
+        <button onclick="toggleEmergencyMode()" class="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-bold font-mono">
+          TOGGLE SOS
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- DRAWER 2: RADIO CHANNELS -->
+  <div id="drawer-channels" class="drawer-backdrop" onclick="closeDrawerOnBackdrop(event, 'channels')">
+    <div class="drawer-sheet">
+      <div class="drawer-handle"></div>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-base font-semibold text-white tracking-wide">📻 Radio Channels</h2>
+          <p class="text-[11px] text-subtleText font-mono">Select Active Transceiver Net (Channels 1-16)</p>
+        </div>
+        <button onclick="closeDrawer('channels')" class="text-subtleText hover:text-white p-1 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 mb-4 font-mono text-xs">
+        <button onclick="selectChannel(1)" class="p-3 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between items-center cursor-pointer">
+          <span>CH 01 - Emergency Guard</span>
+          <span class="text-[10px] text-red-400">433.050 MHz</span>
+        </button>
+        <button onclick="selectChannel(2)" class="p-3 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between items-center cursor-pointer">
+          <span>CH 02 - Tactical Dispatch</span>
+          <span class="text-[10px] text-amber-400">433.150 MHz</span>
+        </button>
+        <button onclick="selectChannel(3)" class="p-3 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between items-center cursor-pointer">
+          <span>CH 03 - Medevac Net</span>
+          <span class="text-[10px] text-red-400">433.250 MHz</span>
+        </button>
+        <button onclick="selectChannel(4)" class="p-3 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between items-center cursor-pointer">
+          <span>CH 04 - Police Net</span>
+          <span class="text-[10px] text-blue-400">433.350 MHz</span>
+        </button>
+        <button onclick="selectChannel(5)" class="p-3 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between items-center cursor-pointer">
+          <span>CH 05 - Fire Rescue</span>
+          <span class="text-[10px] text-orange-400">433.450 MHz</span>
+        </button>
+        <button onclick="selectChannel(6)" class="p-3 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between items-center cursor-pointer">
+          <span>CH 06 - Logistics Transport</span>
+          <span class="text-[10px] text-yellow-400">433.550 MHz</span>
+        </button>
+        <button onclick="selectChannel(7)" class="p-3 rounded-xl bg-green-950/40 border border-green-700/60 text-left flex justify-between items-center cursor-pointer">
+          <span class="text-green-300 font-bold">CH 07 - Disaster Relief Main</span>
+          <span class="text-[10px] text-green-400">433.650 MHz</span>
+        </button>
+        <button onclick="selectChannel(8)" class="p-3 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between items-center cursor-pointer">
+          <span>CH 08 - Perimeter Guard</span>
+          <span class="text-[10px] text-indigo-400">433.750 MHz</span>
+        </button>
+        <button onclick="selectChannel(9)" class="p-3 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between items-center cursor-pointer">
+          <span>CH 09 - Civil Defense</span>
+          <span class="text-[10px] text-gray-400">433.850 MHz</span>
+        </button>
+        <button onclick="selectChannel(10)" class="p-3 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between items-center cursor-pointer">
+          <span>CH 10 - Search & Rescue</span>
+          <span class="text-[10px] text-teal-400">433.950 MHz</span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between p-3 bg-[#181920] border border-borderDark rounded-xl">
+        <span class="text-xs text-subtleText font-mono">Test Military Roger Beep (1.2 kHz Pip):</span>
+        <button onclick="playRogerBeep()" class="px-3 py-1.5 bg-[#252833] hover:bg-[#2E313E] text-champagne rounded-lg text-xs font-mono font-bold cursor-pointer">
+          🔊 PLAY BEEP
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- DRAWER 3: LANGUAGES & TRANSLATION -->
+  <div id="drawer-languages" class="drawer-backdrop" onclick="closeDrawerOnBackdrop(event, 'languages')">
+    <div class="drawer-sheet">
+      <div class="drawer-handle"></div>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-base font-semibold text-white tracking-wide">🌐 Indian Languages & Modes</h2>
+          <p class="text-[11px] text-subtleText font-mono">Choose Spoken Input & Reception Mode</p>
+        </div>
+        <button onclick="closeDrawer('languages')" class="text-subtleText hover:text-white p-1 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="mb-4">
+        <span class="text-[10px] font-mono text-subtleText uppercase tracking-wider block mb-2 font-semibold">Reception Mode:</span>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="setReceptionMode('direct')" id="rx-mode-btn-direct" class="p-3 rounded-xl border border-green-700/60 bg-green-950/50 text-green-300 flex flex-col items-start cursor-pointer">
+            <span class="text-xs font-bold">🟢 Direct Native (Hindi)</span>
+            <span class="text-[10px] text-green-400/80 mt-0.5">Exact natural speech, no translation</span>
+          </button>
+          <button onclick="setReceptionMode('translate')" id="rx-mode-btn-translate" class="p-3 rounded-xl border border-borderDark bg-[#1A1C23] text-gray-300 flex flex-col items-start cursor-pointer">
+            <span class="text-xs font-bold">🌐 Cross-Lingual Translation</span>
+            <span class="text-[10px] text-subtleText mt-0.5">Translate to recipient Indian language</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 10 Indic Languages -->
+      <span class="text-[10px] font-mono text-subtleText uppercase tracking-wider block mb-2 font-semibold">Target Translation Language:</span>
+      <div class="grid grid-cols-2 gap-2 mb-2 font-mono text-xs">
+        <button onclick="selectTargetLanguage('hi')" class="p-2.5 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between cursor-pointer">
+          <span>Hindi (हिंदी)</span><span class="text-champagne font-bold">HI</span>
+        </button>
+        <button onclick="selectTargetLanguage('ta')" class="p-2.5 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between cursor-pointer">
+          <span>Tamil (தமிழ்)</span><span class="text-champagne font-bold">TA</span>
+        </button>
+        <button onclick="selectTargetLanguage('bn')" class="p-2.5 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between cursor-pointer">
+          <span>Bengali (বাংলা)</span><span class="text-champagne font-bold">BN</span>
+        </button>
+        <button onclick="selectTargetLanguage('te')" class="p-2.5 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between cursor-pointer">
+          <span>Telugu (తెలుగు)</span><span class="text-champagne font-bold">TE</span>
+        </button>
+        <button onclick="selectTargetLanguage('mr')" class="p-2.5 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between cursor-pointer">
+          <span>Marathi (मराठी)</span><span class="text-champagne font-bold">MR</span>
+        </button>
+        <button onclick="selectTargetLanguage('gu')" class="p-2.5 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between cursor-pointer">
+          <span>Gujarati (ગુજરાતી)</span><span class="text-champagne font-bold">GU</span>
+        </button>
+        <button onclick="selectTargetLanguage('kn')" class="p-2.5 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between cursor-pointer">
+          <span>Kannada (ಕನ್ನಡ)</span><span class="text-champagne font-bold">KN</span>
+        </button>
+        <button onclick="selectTargetLanguage('pa')" class="p-2.5 rounded-xl bg-[#1A1C23] hover:bg-[#252833] border border-borderDark text-left flex justify-between cursor-pointer">
+          <span>Punjabi (ਪੰਜਾਬੀ)</span><span class="text-champagne font-bold">PA</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- DRAWER 4: TELEMETRY & HEX INSPECTOR -->
+  <div id="drawer-telemetry" class="drawer-backdrop" onclick="closeDrawerOnBackdrop(event, 'telemetry')">
+    <div class="drawer-sheet">
+      <div class="drawer-handle"></div>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-base font-semibold text-white tracking-wide">📊 Airtime Telemetry</h2>
+          <p class="text-[11px] text-subtleText font-mono">MicroRadio Binary Frame Inspector</p>
+        </div>
+        <button onclick="closeDrawer('telemetry')" class="text-subtleText hover:text-white p-1 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 mb-4 font-mono text-xs">
+        <div class="bg-[#181920] p-3 rounded-xl border border-borderDark">
+          <span class="text-subtleText text-[10px] block uppercase">Packet Size</span>
+          <span id="drawer-pkt-size" class="text-champagne font-bold text-base">24 Bytes</span>
+        </div>
+        <div class="bg-[#181920] p-3 rounded-xl border border-borderDark">
+          <span class="text-subtleText text-[10px] block uppercase">Bandwidth Saved</span>
+          <span id="drawer-saved-pct" class="text-green-400 font-bold text-base">99.96%</span>
+        </div>
+        <div class="bg-[#181920] p-3 rounded-xl border border-borderDark">
+          <span class="text-subtleText text-[10px] block uppercase">End-to-End Latency</span>
+          <span id="drawer-e2e-lat" class="text-white font-bold text-base">430 ms</span>
+        </div>
+        <div class="bg-[#181920] p-3 rounded-xl border border-borderDark">
+          <span class="text-subtleText text-[10px] block uppercase">CRC16 Checksum</span>
+          <span class="text-green-400 font-bold text-base">VERIFIED OK</span>
+        </div>
+      </div>
+
+      <div class="bg-[#0B0C0E] border border-borderDark rounded-xl p-3 font-mono text-xs mb-3">
+        <span class="text-subtleText text-[10px] block uppercase mb-1 font-bold">Raw Hexadecimal Payload:</span>
+        <div id="drawer-hex-full" class="text-champagne break-all leading-relaxed">
+          A5 87 91 39 2E 80 06 17 47 80 2D 30 39 80 39 48 02 82 80 39 98 AD
+        </div>
+      </div>
+
+      <div class="text-[11px] text-subtleText font-mono">
+        Protocol: Tier 1 Bit-Packed (3-bit channel, 4-bit language, 2-bit seq) + Tier 2 Brahmi phonetic compression.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================== -->
+  <!-- JAVASCRIPT CONTROLLER & AUDIO PIPELINE         -->
+  <!-- ============================================== -->
+  <script>
+    // State Management
+    let isRecording = false;
+    let isEmergency = false;
+    let currentChannel = 7;
+    let currentLanguage = 'hi';
+    let targetLanguage = 'direct';
+    let latestAudioBase64 = null;
+    let latestSourceAudioBase64 = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let audioContext = null;
+
+    // Web Audio Synthesizers for authentic sound effects
+    function getAudioCtx() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+      return audioContext;
+    }
+
+    function playSquelchNoise(durationMs = 50) {
+      try {
+        const ctx = getAudioCtx();
+        const bufferSize = ctx.sampleRate * (durationMs / 1000);
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.4));
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = ctx.createBiquadFilter();
+        filter.type = "bandpass";
+        filter.frequency.value = 1400;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start();
+      } catch (e) {}
+    }
+
+    function playRogerBeep() {
+      try {
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.frequency.setValueAtTime(1000, now);
+        gain1.gain.setValueAtTime(0.18, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.035);
+
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.frequency.setValueAtTime(1200, now + 0.035);
+        gain2.gain.setValueAtTime(0.22, now + 0.035);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.070);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now + 0.035);
+        osc2.stop(now + 0.070);
+        setTimeout(() => playSquelchNoise(30), 70);
+      } catch (e) {}
+    }
+
+    // Drawer System Handlers (Clean slide-up options)
+    function openDrawer(name) {
+      const drawer = document.getElementById(`drawer-${name}`);
+      if (drawer) drawer.classList.add('active');
+    }
+
+    function closeDrawer(name) {
+      const drawer = document.getElementById(`drawer-${name}`);
+      if (drawer) drawer.classList.remove('active');
+    }
+
+    function closeDrawerOnBackdrop(e, name) {
+      if (e.target.id === `drawer-${name}`) {
+        closeDrawer(name);
+      }
+    }
+
+    // View Navigation Controller (Prevents View Stacking!)
+    function switchView(device, viewName) {
+      const views = device === 'tx' ? ['idle', 'listening', 'translated'] : ['idle', 'receiving', 'result'];
+      views.forEach(v => {
+        const viewEl = document.getElementById(`view-${device}-${v}`);
+        const tabEl = document.getElementById(`${device}-tab-${v}`);
+        if (!viewEl) return;
+
+        if (v === viewName) {
+          viewEl.classList.remove('view-hidden');
+          viewEl.classList.add('view-active');
+          if (tabEl) {
+            tabEl.classList.remove('text-subtleText', 'bg-[#1E2026]');
+            tabEl.classList.add('text-white', 'bg-[#2E313A]');
+          }
+        } else {
+          viewEl.classList.add('view-hidden');
+          viewEl.classList.remove('view-active');
+          if (tabEl) {
+            tabEl.classList.remove('text-white', 'bg-[#2E313A]');
+            tabEl.classList.add('text-subtleText', 'bg-[#1E2026]');
+          }
+        }
+      });
+
+      if (device === 'tx') {
+        const backBtn = document.getElementById('tx-back-btn');
+        if (backBtn) {
+          if (viewName === 'translated') {
+            backBtn.classList.remove('hidden');
+          } else {
+            backBtn.classList.add('hidden');
+          }
+        }
+      }
+    }
+
+    // Channel Selection
+    function selectChannel(ch) {
+      currentChannel = ch;
+      document.getElementById('top-channel-label').textContent = `CH 0${ch}`;
+      document.getElementById('tele-channel').textContent = `CH 0${ch}`;
+      closeDrawer('channels');
+      playSquelchNoise(40);
+    }
+
+    // Direct Native Mode Toggle
+    function toggleDirectMode() {
+      if (targetLanguage === 'direct') {
+        setReceptionMode('translate');
+        selectTargetLanguage('ta');
+      } else {
+        setReceptionMode('direct');
+      }
+    }
+
+    function setReceptionMode(mode) {
+      const directBtn = document.getElementById('direct-mode-btn');
+      const directLabel = document.getElementById('direct-mode-label');
+      const directPulse = document.getElementById('direct-mode-pulse');
+      const rxHeaderTag = document.getElementById('rx-mode-header-tag');
+
+      if (mode === 'direct') {
+        targetLanguage = 'direct';
+        directLabel.textContent = "DIRECT NATIVE: ON";
+        directPulse.className = "w-2 h-2 rounded-full bg-green-400 animate-pulse";
+        directBtn.className = "px-3 py-1.5 rounded-xl border border-green-700/60 bg-green-950/40 text-green-300 hover:bg-green-900/40 text-[11px] font-semibold tracking-wider flex items-center space-x-1.5 transition-all cursor-pointer";
+        if (rxHeaderTag) rxHeaderTag.textContent = "🟢 Direct Native";
+      } else {
+        targetLanguage = 'ta';
+        directLabel.textContent = "TRANSLATE: TAMIL";
+        directPulse.className = "w-2 h-2 rounded-full bg-blue-400 animate-pulse";
+        directBtn.className = "px-3 py-1.5 rounded-xl border border-blue-700/60 bg-blue-950/40 text-blue-300 hover:bg-blue-900/40 text-[11px] font-semibold tracking-wider flex items-center space-x-1.5 transition-all cursor-pointer";
+        if (rxHeaderTag) rxHeaderTag.textContent = "🌐 Translating";
+      }
+    }
+
+    function selectTargetLanguage(lang) {
+      targetLanguage = lang;
+      const names = { hi: 'Hindi', ta: 'Tamil', bn: 'Bengali', te: 'Telugu', mr: 'Marathi', gu: 'Gujarati', kn: 'Kannada', pa: 'Punjabi' };
+      const directLabel = document.getElementById('direct-mode-label');
+      if (directLabel) directLabel.textContent = `TRANSLATE: ${(names[lang] || lang).toUpperCase()}`;
+      closeDrawer('languages');
+    }
+
+    // Emergency Distress SOS Mode
+    function toggleEmergencyMode() {
+      isEmergency = !isEmergency;
+      const btn = document.getElementById('master-emergency-btn');
+      const pulse = document.getElementById('emergency-pulse');
+      const label = document.getElementById('emergency-label');
+      const phoneTx = document.getElementById('phone-tx');
+      const phoneRx = document.getElementById('phone-rx');
+      const micRing = document.getElementById('tx-mic-ring');
+
+      if (isEmergency) {
+        btn.classList.add('border-red-500', 'bg-red-600', 'text-white', 'animate-pulse');
+        pulse.classList.add('bg-white');
+        label.textContent = "EMERGENCY: ON";
+
+        phoneTx.classList.remove('screen-bg');
+        phoneTx.classList.add('screen-bg-emergency', 'border-red-800');
+        phoneRx.classList.remove('screen-bg');
+        phoneRx.classList.add('screen-bg-emergency', 'border-red-800');
+        micRing.classList.remove('concentric-outer');
+        micRing.classList.add('concentric-outer-emergency');
+
+        fetch('/api/siren').then(r => r.blob()).then(b => {
+          new Audio(URL.createObjectURL(b)).play();
+        });
+      } else {
+        btn.classList.remove('border-red-500', 'bg-red-600', 'text-white', 'animate-pulse');
+        pulse.classList.remove('bg-white');
+        label.textContent = "EMERGENCY: OFF";
+
+        phoneTx.classList.remove('screen-bg-emergency', 'border-red-800');
+        phoneTx.classList.add('screen-bg');
+        phoneRx.classList.remove('screen-bg-emergency', 'border-red-800');
+        phoneRx.classList.add('screen-bg');
+        micRing.classList.remove('concentric-outer-emergency');
+        micRing.classList.add('concentric-outer');
+      }
+    }
+
+    // Push-to-Talk Mic Trigger
+    async function handleTxMicToggle() {
+      const micSource = document.getElementById('master-mic-source').value;
+      const micBtn = document.getElementById('tx-mic-btn');
+
+      if (!isRecording) {
+        // START RECORDING
+        isRecording = true;
+        playSquelchNoise(70);
+        if (micBtn) micBtn.classList.add('is-pressed');
+        switchView('tx', 'listening');
+
+        if (micSource === 'hw_mic') {
+          try {
+            await fetch('/api/hw_ptt_start', { method: 'POST' });
+          } catch (e) {
+            console.error("Hardware mic start error:", e);
+          }
+        } else {
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            audioChunks = [];
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+            mediaRecorder.start();
+          } catch (err) {
+            console.warn("Browser mic error, falling back to hardware mic:", err);
+            await fetch('/api/hw_ptt_start', { method: 'POST' });
+          }
+        }
+      } else {
+        // STOP RECORDING & TRANSMIT
+        isRecording = false;
+        playRogerBeep();
+        if (micBtn) micBtn.classList.remove('is-pressed');
+        triggerTransmissionBeam();
+        switchView('rx', 'receiving');
+
+        if (micSource === 'hw_mic') {
+          try {
+            const res = await fetch('/api/hw_ptt_stop', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                language: currentLanguage,
+                target_language: targetLanguage,
+                channel: currentChannel,
+                is_emergency: isEmergency
+              })
+            });
+            const data = await res.json();
+            handleTransmissionResult(data);
+          } catch (e) {
+            console.error("Transmission error:", e);
+            switchView('tx', 'idle');
+            switchView('rx', 'idle');
+          }
+        } else {
+          if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            mediaRecorder.onstop = async () => {
+              const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+              const reader = new FileReader();
+              reader.onloadend = async () => {
+                const b64 = reader.result.split(',')[1];
+                try {
+                  const res = await fetch('/api/transmit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      audio: b64,
+                      language: currentLanguage,
+                      target_language: targetLanguage,
+                      channel: currentChannel,
+                      is_emergency: isEmergency
+                    })
+                  });
+                  const data = await res.json();
+                  handleTransmissionResult(data);
+                } catch (err) {
+                  console.error("Transmission error:", err);
+                  switchView('tx', 'idle');
+                  switchView('rx', 'idle');
+                }
+              };
+              reader.readAsDataURL(audioBlob);
+            };
+            mediaRecorder.stop();
+          }
+        }
+      }
+    }
+
+    // Transmission Beam Animation
+    function triggerTransmissionBeam() {
+      const beam = document.getElementById('wireless-beam');
+      if (beam) {
+        beam.classList.add('animate-beam');
+        setTimeout(() => beam.classList.remove('animate-beam'), 2000);
+      }
+    }
+
+    // Handle Transmission Result
+    function handleTransmissionResult(data) {
+      if (!data.success) {
+        alert(data.error || "Speech not recognized clearly. Please speak firmly into mic.");
+        switchView('tx', 'idle');
+        switchView('rx', 'idle');
+        return;
+      }
+
+      latestAudioBase64 = data.audio_base64;
+      latestSourceAudioBase64 = data.source_audio_base64 || data.audio_base64;
+      const text = data.text || "";
+      const translated = data.translated_text || data.text || "";
+      const isDirect = !!data.is_direct;
+      const tele = data.telemetry || {};
+
+      // 1. Update Sender View
+      document.getElementById('tx-result-source-text').textContent = text;
+      document.getElementById('tx-result-target-text').textContent = isDirect ? text : translated;
+      const txModeBadge = document.getElementById('tx-result-mode-badge');
+      if (txModeBadge) {
+        txModeBadge.textContent = isDirect ? "DIRECT NATIVE" : "TRANSLATED";
+        txModeBadge.className = isDirect ? "px-1.5 py-0.5 rounded text-[8px] tracking-wider font-mono font-bold bg-green-500/20 text-green-300 border border-green-500/30" : "px-1.5 py-0.5 rounded text-[8px] tracking-wider font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30";
+      }
+      switchView('tx', 'translated');
+
+      // 2. Update Center Telemetry HUD
+      document.getElementById('tele-packet-size').textContent = `${tele.packet_size_bytes || 24} B`;
+      document.getElementById('tele-bandwidth-saved').textContent = `${tele.bandwidth_saving_pct || 99.96}%`;
+      document.getElementById('tele-latency').textContent = `${tele.total_e2e_latency_ms || 430} ms`;
+      document.getElementById('tele-channel').textContent = `CH 0${data.channel || currentChannel}`;
+      if (tele.packet_hex) {
+        const hexFmt = tele.packet_hex.match(/.{1,2}/g).join(' ');
+        document.getElementById('tele-hex-stream').textContent = hexFmt;
+        document.getElementById('drawer-hex-full').textContent = hexFmt;
+      }
+      document.getElementById('drawer-pkt-size').textContent = `${tele.packet_size_bytes || 24} Bytes`;
+      document.getElementById('drawer-saved-pct').textContent = `${tele.bandwidth_saving_pct || 99.96}%`;
+      document.getElementById('drawer-e2e-lat').textContent = `${tele.total_e2e_latency_ms || 430} ms`;
+
+      // 3. Update Receiver View
+      document.getElementById('rx-result-text').textContent = isDirect ? text : translated;
+      const rxBadge = document.getElementById('rx-result-badge');
+      if (rxBadge) {
+        rxBadge.textContent = isDirect ? "DIRECT NATIVE" : "TRANSLATED";
+        rxBadge.className = isDirect ? "px-1.5 py-0.5 rounded text-[8px] tracking-wider font-mono font-bold bg-green-500/20 text-green-300 border border-green-500/30" : "px-1.5 py-0.5 rounded text-[8px] tracking-wider font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30";
+      }
+      switchView('rx', 'result');
+
+      // 4. Play Voice Note over Speaker
+      if (data.audio_base64) {
+        playBase64Audio(data.audio_base64);
+      }
+    }
+
+    function playBase64Audio(base64Wav) {
+      try {
+        const audio = new Audio(`data:audio/wav;base64,${base64Wav}`);
+        audio.play().catch(e => console.warn("Autoplay blocked:", e));
+      } catch (err) {}
+    }
+
+    function replayAudio(role) {
+      if (role === 'source' && latestSourceAudioBase64) {
+        playBase64Audio(latestSourceAudioBase64);
+      } else if (latestAudioBase64) {
+        playBase64Audio(latestAudioBase64);
+      }
+    }
+
+    // Tactical Macro 1-Click Send
+    async function sendMacroAndClose(macroId) {
+      closeDrawer('macros');
+      triggerTransmissionBeam();
+      playRogerBeep();
+      switchView('tx', 'listening');
+      switchView('rx', 'receiving');
+
+      try {
+        const res = await fetch('/api/transmit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            macro: macroId,
+            language: currentLanguage,
+            target_language: targetLanguage,
+            channel: currentChannel,
+            is_emergency: isEmergency
+          })
+        });
+        const data = await res.json();
+        handleTransmissionResult(data);
+      } catch (err) {
+        console.error("Macro send error:", err);
+      }
+    }
+
+    // Direct Speech Presets
+    async function sendPresetDirect(phrase, emergency = false) {
+      if (emergency && !isEmergency) toggleEmergencyMode();
+      setReceptionMode('direct');
+      triggerTransmissionBeam();
+      playRogerBeep();
+      switchView('tx', 'listening');
+      switchView('rx', 'receiving');
+
+      try {
+        const res = await fetch('/api/transmit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: phrase,
+            language: currentLanguage,
+            target_language: targetLanguage,
+            channel: currentChannel,
+            is_emergency: isEmergency
+          })
+        });
+        const data = await res.json();
+        handleTransmissionResult(data);
+      } catch (err) {
+        console.error("Preset send error:", err);
+      }
+    }
+
+    function copyResultText() {
+      const txt = document.getElementById('tx-result-source-text').textContent;
+      navigator.clipboard.writeText(txt).then(() => alert("Copied to clipboard: " + txt));
+    }
+
+    function actionReplyBack() {
+      switchView('rx', 'receiving');
+      handleTxMicToggle();
+    }
+
+    // Tactical Authentication & Mode Switching Controller
+    let currentWebMode = 'TX';
+    let currentWebCallsign = 'ALPHA-01';
+
+    function openAuthModal() {
+      const modal = document.getElementById('modal-auth');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      const modal = document.getElementById('modal-auth');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function selectWebMode(mode) {
+      currentWebMode = mode;
+      const txCard = document.getElementById('web-mode-tx-card');
+      const rxCard = document.getElementById('web-mode-rx-card');
+      const txRadio = document.getElementById('web-tx-radio');
+      const rxRadio = document.getElementById('web-rx-radio');
+      const submitBtn = document.getElementById('web-auth-submit-btn');
+
+      if (mode === 'TX') {
+        txCard.className = 'p-3 rounded-xl border-2 border-champagne bg-[#1A1C24] cursor-pointer transition-all';
+        rxCard.className = 'p-3 rounded-xl border border-borderDark bg-[#14151B] cursor-pointer transition-all';
+        txRadio.className = 'w-3 h-3 rounded-full bg-champagne';
+        rxRadio.className = 'w-3 h-3 rounded-full border border-subtleText';
+        submitBtn.textContent = 'AUTHORIZE & LOAD SENDER (TX)';
+      } else {
+        txCard.className = 'p-3 rounded-xl border border-borderDark bg-[#14151B] cursor-pointer transition-all';
+        rxCard.className = 'p-3 rounded-xl border-2 border-tacticalGreen bg-[#16221C] cursor-pointer transition-all';
+        txRadio.className = 'w-3 h-3 rounded-full border border-subtleText';
+        rxRadio.className = 'w-3 h-3 rounded-full bg-tacticalGreen';
+        submitBtn.textContent = 'AUTHORIZE & LOAD RECEIVER (RX)';
+      }
+    }
+
+    function setWebCallsign(cs) {
+      currentWebCallsign = cs;
+      const input = document.getElementById('web-callsign-input');
+      if (input) input.value = cs;
+      if (cs === 'COMMAND-HQ') {
+        selectWebMode('RX');
+      }
+    }
+
+    function submitWebAuth() {
+      const inputCs = document.getElementById('web-callsign-input').value.trim();
+      if (inputCs) currentWebCallsign = inputCs;
+      const badge = document.getElementById('web-op-badge');
+      if (badge) {
+        badge.textContent = `${currentWebCallsign} [${currentWebMode === 'TX' ? 'SENDER TX' : 'RECEIVER RX'}]`;
+      }
+      closeAuthModal();
+
+      // Scroll/focus to respective chassis
+      if (currentWebMode === 'RX') {
+        const rxEl = document.getElementById('phone-b-face');
+        if (rxEl) rxEl.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        const txEl = document.getElementById('phone-a-face');
+        if (txEl) txEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  </script>
+
+  <!-- ============================================== -->
+  <!-- TACTICAL AUTHENTICATION & ROLE MODAL           -->
+  <!-- ============================================== -->
+  <div id="modal-auth" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="w-full max-w-md bg-[#0F1015] border border-borderDark rounded-2xl p-6 shadow-2xl relative">
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-[#1E2028] border border-champagne/40 flex items-center justify-center text-champagne text-xl">
+          📡
+        </div>
+        <div>
+          <h2 class="text-base font-bold tracking-wider text-white uppercase">iTANTRA TACTICAL GATEWAY</h2>
+          <p class="text-xs text-champagne font-mono">AUTHENTICATION &amp; OPERATING ROLE</p>
+        </div>
+        <span class="ml-auto text-[10px] font-mono text-tacticalGreen border border-tacticalGreen/30 bg-tacticalGreen/10 px-2 py-0.5 rounded">SEC-L3</span>
+      </div>
+
+      <!-- Mode Selector -->
+      <label class="text-xs font-semibold text-subtleText uppercase tracking-wider block mb-2">Select Loading Mode</label>
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <div id="web-mode-tx-card" onclick="selectWebMode('TX')" class="p-3 rounded-xl border-2 border-champagne bg-[#1A1C24] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-lg">📡</span>
+            <span id="web-tx-radio" class="w-3 h-3 rounded-full bg-champagne"></span>
+          </div>
+          <p class="text-xs font-bold text-white">SENDER (TX)</p>
+          <p class="text-[10px] text-subtleText">Field Transceiver &amp; PTT</p>
+        </div>
+
+        <div id="web-mode-rx-card" onclick="selectWebMode('RX')" class="p-3 rounded-xl border border-borderDark bg-[#14151B] cursor-pointer transition-all">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-lg">📻</span>
+            <span id="web-rx-radio" class="w-3 h-3 rounded-full border border-subtleText"></span>
+          </div>
+          <p class="text-xs font-bold text-white/70">RECEIVER (RX)</p>
+          <p class="text-[10px] text-subtleText">Base Station &amp; Decoders</p>
+        </div>
+      </div>
+
+      <!-- Operator Callsign -->
+      <label class="text-xs font-semibold text-subtleText uppercase tracking-wider block mb-1">Operator Callsign</label>
+      <div class="flex flex-wrap gap-1.5 mb-2">
+        <button type="button" onclick="setWebCallsign('ALPHA-01')" class="px-2 py-1 text-[11px] rounded-lg bg-[#1C1E26] text-champagne border border-champagne/30">ALPHA-01</button>
+        <button type="button" onclick="setWebCallsign('COMMAND-HQ')" class="px-2 py-1 text-[11px] rounded-lg bg-[#1C1E26] text-subtleText hover:text-white border border-borderDark">COMMAND-HQ</button>
+        <button type="button" onclick="setWebCallsign('ECHO-07')" class="px-2 py-1 text-[11px] rounded-lg bg-[#1C1E26] text-subtleText hover:text-white border border-borderDark">ECHO-07</button>
+        <button type="button" onclick="setWebCallsign('BRAVO-02')" class="px-2 py-1 text-[11px] rounded-lg bg-[#1C1E26] text-subtleText hover:text-white border border-borderDark">BRAVO-02</button>
+      </div>
+      <input id="web-callsign-input" type="text" value="ALPHA-01" class="w-full bg-[#14151B] border border-borderDark rounded-xl px-3 py-2 text-sm text-white mb-4 focus:outline-none focus:border-champagne" />
+
+      <!-- Tactical PIN -->
+      <label class="text-xs font-semibold text-subtleText uppercase tracking-wider block mb-1">Tactical Security PIN</label>
+      <div class="flex space-x-2 mb-4">
+        <input id="web-pin-input" type="password" value="1947" class="flex-1 bg-[#14151B] border border-borderDark rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-champagne tracking-widest" />
+        <button type="button" onclick="document.getElementById('web-pin-input').value='1947'" class="px-3 py-2 bg-[#1C1E26] text-tacticalGreen text-xs rounded-xl border border-tacticalGreen/30 cursor-pointer">AUTO-PIN</button>
+      </div>
+
+      <button id="web-auth-submit-btn" onclick="submitWebAuth()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-sm tracking-wider uppercase rounded-xl transition-all shadow-lg cursor-pointer">
+        AUTHORIZE &amp; LOAD SENDER (TX)
+      </button>
+    </div>
+  </div>
+</body>
+</html>
