@@ -1,0 +1,188 @@
+/* ==========================================================================
+   iTantra Neural Walkie-Talkie — Clean Luxury Design System
+   Color Palette: Obsidian Dark (#0D0E11), Champagne Gold (#D5C4A1),
+   Muted Bronze (#9B9078), Tactical Green (#00E676), Crimson (#FF334B)
+   ========================================================================== */
+
+:root {
+  --app-dark: #0D0E11;
+  --card-dark: #16171B;
+  --card-elevated: #1C1E24;
+  --border-dark: #26282E;
+  --border-subtle: rgba(213, 196, 161, 0.12);
+  --champagne: #D5C4A1;
+  --champagne-muted: #9B9078;
+  --champagne-bright: #F0E2C2;
+  --tactical-green: #00E676;
+  --crimson-alert: #FF334B;
+  --subtle-text: #7D7E84;
+}
+
+/* Base Body */
+body {
+  background-color: #050507;
+  color: #FFFFFF;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* View Transition State Controllers (CRITICAL: Prevents View Stacking!) */
+.view-transition {
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+.view-hidden {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.view-active {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: scale(1) !important;
+}
+
+/* Sleek Screen Background */
+.screen-bg {
+  background-color: #0D0E11;
+  background-image: radial-gradient(circle at 50% 20%, rgba(213, 196, 161, 0.05) 0%, transparent 70%);
+}
+.screen-bg-emergency {
+  background-color: #120A0B;
+  background-image: radial-gradient(circle at 50% 20%, rgba(255, 51, 75, 0.15) 0%, transparent 70%);
+}
+
+/* Concentric 3D Microphone Outer Rings */
+.concentric-outer {
+  background: radial-gradient(circle, rgba(35, 36, 42, 0.9) 0%, rgba(20, 21, 25, 0.6) 100%);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 1px 1px rgba(213, 196, 161, 0.14);
+}
+.concentric-outer-emergency {
+  background: radial-gradient(circle, rgba(50, 20, 25, 0.95) 0%, rgba(25, 12, 15, 0.8) 100%);
+  box-shadow: 0 10px 45px rgba(255, 51, 75, 0.5), inset 0 0 2px 1px rgba(255, 51, 75, 0.4);
+}
+
+/* 3D Tactile PTT Depression */
+.ptt-press-target {
+  transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.12s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.ptt-press-target:active,
+.ptt-press-target.is-pressed {
+  transform: scale(0.94);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.9), inset 0 6px 14px rgba(0, 0, 0, 0.95), 0 0 25px rgba(213, 196, 161, 0.3) !important;
+}
+
+/* Radar Pulse Animation for Receiver */
+@keyframes radarPulse {
+  0% { transform: scale(0.94); opacity: 0.4; }
+  50% { transform: scale(1.06); opacity: 0.9; }
+  100% { transform: scale(0.94); opacity: 0.4; }
+}
+.animate-radar {
+  animation: radarPulse 2.8s ease-in-out infinite;
+}
+
+/* Sound Waveform Fluid Animation */
+@keyframes soundWaveBar {
+  0%, 100% { transform: scaleY(0.3); opacity: 0.45; }
+  50% { transform: scaleY(1.3); opacity: 1; }
+}
+.animate-sound-wave {
+  animation: soundWaveBar 1.2s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+
+/* Wireless Transmission Beam */
+@keyframes beamStream {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-beam {
+  background: linear-gradient(90deg, rgba(213, 196, 161, 0) 0%, rgba(213, 196, 161, 0.85) 50%, rgba(213, 196, 161, 0) 100%);
+  background-size: 200% 100%;
+  animation: beamStream 1.6s infinite linear;
+}
+
+/* Clean Slide-Up Bottom Drawer / Modal Sheets */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.drawer-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+.drawer-sheet {
+  background: #14151A;
+  border: 1px solid #2B2E38;
+  border-bottom: none;
+  border-radius: 28px 28px 0 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.9);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+  padding: 1.5rem;
+}
+.drawer-backdrop.active .drawer-sheet {
+  transform: translateY(0);
+}
+.drawer-handle {
+  width: 36px;
+  height: 4px;
+  background: #383C49;
+  border-radius: 2px;
+  margin: 0 auto 1.25rem auto;
+}
+
+/* Clean Macro Chip Button */
+.macro-card-btn {
+  background: #1A1C23;
+  border: 1px solid #2D303C;
+  border-radius: 14px;
+  padding: 0.85rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.macro-card-btn:hover {
+  background: #242732;
+  border-color: #D5C4A1;
+  transform: translateY(-2px);
+}
+.macro-card-btn:active {
+  transform: scale(0.96);
+  background: #14161C;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #2E313A;
+  border-radius: 4px;
+}

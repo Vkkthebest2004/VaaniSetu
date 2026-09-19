@@ -107,12 +107,17 @@ VaaniSetu/
 │   ├── build.gradle.kts           # Root gradle config
 │   ├── settings.gradle.kts        # Multi-module settings
 │   └── gradlew                    # Gradle 8.9 wrapper
+├── frontend/                      # User-Facing Client Interfaces
+│   ├── web/                       # Tactical Web Walkie-Talkie Interfaces
+│   │   ├── pages/                 # Clean HTML Templates (index.html, sender.html, receiver.html)
+│   │   └── static/                # Static assets (style.css, app.js)
+│   └── README.md                  # Frontend Architecture & Route Guide
 │
-├── web_walkie_talkie/             # Tactical Web Walkie-Talkie Simulator
-│   ├── index.html                 # Luxury obsidian/gold tactical walkie-talkie UI
-│   ├── style.css                  # Hardware-accelerated CSS3 animations & slide-up drawers
-│   ├── app.js                     # WebAudio API DSP & bidirectional WebSocket client
-│   └── server.py                  # AioHTTP tactical backend server (port 8080)
+├── backend/                       # Backend Transceiver & Processing Services
+│   ├── server/                    # Asynchronous AioHTTP Tactical Server (server.py)
+│   └── README.md                  # Backend Architecture & Service Guide
+│
+├── web_walkie_talkie/             # Backward-Compatibility Shim (delegates to backend/server)
 │
 ├── cpp/                           # High-Performance Native C++ Core Engine
 │   ├── CMakeLists.txt             # Dual cross-platform build (macOS / Linux / Android NDK)
@@ -233,13 +238,18 @@ python scripts/download_models.py --target all       # Downloads all models
 ```
 
 ### 4. Tactical Web Walkie-Talkie Simulator
-The web application provides a dual-phone tactical simulation interface with slide-up drawers:
+The web application provides dedicated Field Transmitter and Command Listening interfaces alongside a unified dual simulator:
 ```bash
-# Start the web backend server
+# Start the canonical backend server
+python backend/server/server.py
+
+# Or via backward-compatible entrypoint
 python web_walkie_talkie/server.py
 
 # Open your browser:
-# -> http://localhost:8080
+# -> Unified Simulator: http://localhost:8080/
+# -> Field Transmitter (TX): http://localhost:8080/sender
+# -> Command Receiver (RX): http://localhost:8080/receiver
 ```
 
 ### 5. Standalone Native C++ Core

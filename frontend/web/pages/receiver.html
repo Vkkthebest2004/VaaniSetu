@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>VaaniSetu — Command Listening Station</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            tacticalCyan: '#38BDF8',
+            tacticalCyanDark: '#0284C7',
+            tacticalAmber: '#F59E0B',
+            tacticalAmberDark: '#D97706',
+            stationBg: '#090D14',
+            panelDark: '#111722',
+            panelCard: '#161F2E',
+            borderNavy: '#243247',
+            borderNavyLight: '#3B4D68',
+            crimsonDistress: '#EF4444',
+            readoutText: '#F8FAFC'
+          },
+          fontFamily: {
+            sans: ['Outfit', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #080C13;
+      background-image: radial-gradient(circle at 50% 12%, rgba(56, 189, 248, 0.09) 0%, transparent 65%);
+      font-family: 'Outfit', sans-serif;
+    }
+    .station-border {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 24px 48px -12px rgba(0, 0, 0, 0.95);
+    }
+    .radar-container {
+      position: relative;
+      width: 220px;
+      height: 220px;
+    }
+    .radar-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      animation: radar-pulse 3s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
+    }
+    .radar-ring:nth-child(2) { animation-delay: 1s; }
+    .radar-ring:nth-child(3) { animation-delay: 2s; }
+    @keyframes radar-pulse {
+      0% { transform: scale(0.3); opacity: 0.85; }
+      100% { transform: scale(1.1); opacity: 0; }
+    }
+    .lcd-receiver {
+      background: radial-gradient(ellipse at 50% 30%, #152233 0%, #0c131d 100%);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: inset 0 0 30px rgba(56, 189, 248, 0.08), 0 6px 20px rgba(0, 0, 0, 0.65);
+    }
+    .emergency-strobe {
+      animation: strobe-alert 0.8s infinite alternate;
+    }
+    @keyframes strobe-alert {
+      0% { border-color: rgba(239, 68, 68, 0.4); background-color: rgba(239, 68, 68, 0.08); }
+      100% { border-color: rgba(239, 68, 68, 1); background-color: rgba(239, 68, 68, 0.28); }
+    }
+    /* Smooth button transitions */
+    .tactical-btn {
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tactical-btn:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+
+<body class="text-readoutText min-h-screen flex flex-col items-center justify-between p-3 sm:p-6 select-none">
+
+  <!-- ================= MASTER TOP NAVIGATION BAR ================= -->
+  <header class="w-full max-w-lg flex items-center justify-between p-3 px-4 bg-panelDark border border-borderNavy rounded-2xl shadow-xl">
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 rounded-xl bg-tacticalCyan/15 border border-tacticalCyan/40 flex items-center justify-center">
+        <!-- Radio Tower / Receiver Antenna SVG -->
+        <svg class="w-4 h-4 text-tacticalCyan" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M7.8 14.8a6 6 0 018.4 0M5 12a10 10 0 0114 0M12 6v6"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xs font-bold tracking-widest text-white uppercase">VAANISETU RECEIVER</h1>
+        <p class="text-[10px] text-tacticalCyan font-mono font-semibold">COMMAND LISTENING STATION</p>
+      </div>
+    </div>
+
+    <!-- Clean Vector Navigation Hub Buttons (Zero Emojis) -->
+    <nav class="flex items-center space-x-1.5 text-xs font-mono">
+      <a href="/sender" class="px-3 py-1.5 rounded-xl bg-panelCard border border-borderNavy text-gray-300 hover:text-white hover:border-tacticalAmber/60 transition-colors text-[11px] font-semibold flex items-center space-x-1.5 tactical-btn">
+        <svg class="w-3.5 h-3.5 text-tacticalAmber" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z"/>
+        </svg>
+        <span>SENDER</span>
+      </a>
+
+      <span class="px-3 py-1.5 rounded-xl bg-tacticalCyan/20 border border-tacticalCyan/60 text-tacticalCyan font-bold text-[11px] flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-tacticalCyan" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 18v-6a9 9 0 0118 0v6M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3v5zm-18 0a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3v5z"/>
+        </svg>
+        <span>RECEIVER</span>
+      </span>
+
+      <a href="/" class="px-3 py-1.5 rounded-xl bg-panelCard border border-borderNavy text-gray-300 hover:text-white hover:border-gray-400 transition-colors text-[11px] font-semibold flex items-center space-x-1.5 tactical-btn">
+        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+        </svg>
+        <span>DUAL LAB</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- ================= STANDALONE RECEIVER STATION CHASSIS ================= -->
+  <main class="w-full max-w-[420px] my-auto bg-panelDark border-2 border-borderNavy rounded-[44px] station-border p-5 flex flex-col justify-between shadow-2xl relative overflow-hidden" style="min-height: 700px;">
+    
+    <!-- Top Station Header & Auto-TTS Switch -->
+    <div class="flex items-center justify-between pb-3 border-b border-borderNavy text-xs font-mono">
+      <div class="flex items-center space-x-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-tacticalCyan animate-pulse shadow-[0_0_8px_#38BDF8]"></span>
+        <span class="text-tacticalCyan font-bold tracking-wider">RX • LISTENING ACTIVE</span>
+      </div>
+
+      <button id="btn-toggle-tts" class="flex items-center space-x-1.5 px-3 py-1 rounded-xl bg-tacticalCyan/15 border border-tacticalCyan/50 text-tacticalCyan hover:bg-tacticalCyan/25 transition-all cursor-pointer text-[11px] font-bold tactical-btn">
+        <span id="tts-icon-wrapper">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          </svg>
+        </span>
+        <span id="tts-status-label">AUTO-TTS: ON</span>
+      </button>
+    </div>
+
+    <!-- Channel Selector Header -->
+    <div class="flex items-center justify-between px-1 pt-3 text-xs font-mono">
+      <span class="text-gray-300 font-semibold tracking-wider text-[11px]">CHANNEL FREQUENCY</span>
+      <div class="flex items-center space-x-1.5">
+        <button id="btn-prev-channel" class="px-2.5 py-1 rounded-lg bg-panelCard border border-borderNavy text-tacticalCyan hover:bg-borderNavy font-bold cursor-pointer transition-colors tactical-btn">◀</button>
+        <span id="station-channel-label" class="px-3 py-1 rounded-lg bg-[#0A0E17] border border-borderNavy font-bold text-white tracking-wider">CH 08 • 433.750 MHz</span>
+        <button id="btn-next-channel" class="px-2.5 py-1 rounded-lg bg-panelCard border border-borderNavy text-tacticalCyan hover:bg-borderNavy font-bold cursor-pointer transition-colors tactical-btn">▶</button>
+      </div>
+    </div>
+
+    <!-- Center: Acoustic Spectrum Radar Orb -->
+    <div class="my-auto flex flex-col items-center justify-center py-2 relative">
+      <div class="radar-container flex items-center justify-center">
+        <div class="radar-ring"></div>
+        <div class="radar-ring"></div>
+        <div class="radar-ring"></div>
+        
+        <!-- Center Orb with Canvas Visualizer -->
+        <div class="w-36 h-36 rounded-full bg-[#0D1420] border-2 border-tacticalCyan/60 flex flex-col items-center justify-center relative shadow-[0_0_30px_rgba(56,189,248,0.25)] overflow-hidden">
+          <canvas id="canvas-radar" width="144" height="144" class="w-full h-full block"></canvas>
+          
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <svg id="icon-speaker" class="w-10 h-10 text-tacticalCyan opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+            </svg>
+            <span id="label-radar-status" class="text-[9px] font-mono text-tacticalCyan font-bold tracking-widest mt-1">MONITORING</span>
+          </div>
+        </div>
+      </div>
+
+      <p id="label-station-hint" class="text-xs text-gray-300 font-mono tracking-wider mt-2 text-center">
+        Awaiting RF MicroRadio packets on UDP :8989
+      </p>
+    </div>
+
+    <!-- LCD Ingress Display Card (High Contrast & Legibility) -->
+    <div id="card-ingress" class="lcd-receiver rounded-3xl p-4 my-2 text-left relative overflow-hidden transition-all duration-300">
+      <div class="flex items-center justify-between mb-1 pb-1.5 border-b border-borderNavyLight/60 font-mono text-[11px]">
+        <div class="flex items-center space-x-1.5">
+          <span id="ingress-badge-icon" class="text-tacticalCyan">
+            <svg class="w-3.5 h-3.5 inline" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+            </svg>
+          </span>
+          <span id="ingress-header" class="text-tacticalCyan font-bold tracking-wider">INCOMING VOICE • ALPHA-01</span>
+        </div>
+        <span id="ingress-timestamp" class="text-gray-300 font-bold">09:41:22</span>
+      </div>
+
+      <!-- Hindi Speech Display (Bright, Crisp Off-White Text) -->
+      <div id="ingress-speech-text" class="text-[15px] font-semibold text-white leading-relaxed my-2 min-h-[44px] break-words">
+        "गश्त दल सुरक्षित है • सीमा चौकी पर सब ठीक है"
+      </div>
+
+      <!-- Telemetry Pill & Audio Replay -->
+      <div class="flex items-center justify-between pt-2 border-t border-borderNavyLight/60 text-[11px] font-mono">
+        <span id="ingress-telemetry" class="text-tacticalCyan font-semibold tracking-wider">
+          18 Bytes • 99.92% Saved • 380 ms
+        </span>
+        <button id="btn-replay-voice" class="flex items-center space-x-1.5 text-tacticalAmber hover:text-white font-bold transition-colors cursor-pointer tactical-btn">
+          <svg class="w-3.5 h-3.5 text-tacticalAmber" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>REPLAY VOICE</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- BOTTOM TACTICAL TEST DOCK (ZERO EMOJIS, HIGH CONTRAST)   -->
+    <!-- ======================================================== -->
+    <div class="pt-3 border-t border-borderNavy">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-[10px] font-mono text-gray-300 font-bold tracking-widest uppercase">FIELD TELEMETRY SIMULATOR</span>
+        <span class="text-[9px] font-mono text-tacticalCyan bg-tacticalCyan/10 border border-tacticalCyan/30 px-2 py-0.5 rounded">ZERO-MIC RX</span>
+      </div>
+      
+      <div class="grid grid-cols-3 gap-2.5">
+        <!-- Button 1: Patrol Ingress -->
+        <button id="btn-sim-patrol" class="py-3 px-2 rounded-2xl bg-panelCard hover:bg-[#1E2B3E] border border-borderNavyLight text-white font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer shadow-md tactical-btn">
+          <div class="w-7 h-7 rounded-lg bg-tacticalCyan/15 border border-tacticalCyan/30 flex items-center justify-center mb-1">
+            <svg class="w-4 h-4 text-tacticalCyan" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z"/>
+            </svg>
+          </div>
+          <span class="text-[11px] font-mono tracking-wider text-white">PATROL RX</span>
+          <span class="text-[9px] text-gray-400 font-mono">Routine Ingress</span>
+        </button>
+
+        <!-- Button 2: Medevac Macro -->
+        <button id="btn-sim-medevac" class="py-3 px-2 rounded-2xl bg-panelCard hover:bg-[#2B231B] border border-amber-500/40 text-white font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer shadow-md tactical-btn">
+          <div class="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/40 flex items-center justify-center mb-1">
+            <svg class="w-4 h-4 text-tacticalAmber" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m-8-8h16"/>
+            </svg>
+          </div>
+          <span class="text-[11px] font-mono tracking-wider text-amber-300">MEDEVAC</span>
+          <span class="text-[9px] text-gray-400 font-mono">6-Byte Macro</span>
+        </button>
+
+        <!-- Button 3: SOS Distress -->
+        <button id="btn-sim-distress" class="py-3 px-2 rounded-2xl bg-red-950/40 hover:bg-red-900/50 border border-red-700 text-white font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer shadow-md tactical-btn">
+          <div class="w-7 h-7 rounded-lg bg-red-600/20 border border-red-500/50 flex items-center justify-center mb-1">
+            <svg class="w-4 h-4 text-crimsonDistress" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+          </div>
+          <span class="text-[11px] font-mono tracking-wider text-red-400">SOS ALARM</span>
+          <span class="text-[9px] text-gray-400 font-mono">High Priority</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="w-full max-w-lg text-center text-xs text-gray-400 font-mono py-2">
+    VaaniSetu Command Listening Station • Zero Microphone Permissions Required
+  </footer>
+
+  <!-- Audio Element for Auto-TTS Synthesis -->
+  <audio id="audio-playback" class="hidden"></audio>
+
+  <!-- ================= RECEIVER LOGIC ================= -->
+  <script>
+    let currentChannel = 8;
+    let isAutoTtsEnabled = true;
+    let lastAudioBase64 = null;
+    let lastPacketId = 0;
+    let isReceivingAnimation = false;
+
+    const channelFrequencies = {
+      1: "433.050", 2: "433.150", 3: "433.250", 4: "433.350",
+      5: "433.450", 6: "433.550", 7: "433.650", 8: "433.750",
+      9: "433.850", 10: "433.950", 11: "434.050", 12: "434.150",
+      13: "434.250", 14: "434.350", 15: "434.450", 16: "434.550"
+    };
+
+    // Elements
+    const labelChannel = document.getElementById("station-channel-label");
+    const labelRadarStatus = document.getElementById("label-radar-status");
+    const labelStationHint = document.getElementById("label-station-hint");
+    const cardIngress = document.getElementById("card-ingress");
+    const ingressHeader = document.getElementById("ingress-header");
+    const ingressBadgeIcon = document.getElementById("ingress-badge-icon");
+    const ingressTimestamp = document.getElementById("ingress-timestamp");
+    const ingressSpeech = document.getElementById("ingress-speech-text");
+    const ingressTelemetry = document.getElementById("ingress-telemetry");
+    const audioPlayback = document.getElementById("audio-playback");
+    const btnToggleTts = document.getElementById("btn-toggle-tts");
+    const ttsStatusLabel = document.getElementById("tts-status-label");
+    const ttsIconWrapper = document.getElementById("tts-icon-wrapper");
+
+    const canvas = document.getElementById("canvas-radar");
+    const ctx = canvas.getContext("2d");
+
+    function updateChannelDisplay() {
+      const freq = channelFrequencies[currentChannel] || "433.750";
+      labelChannel.textContent = `CH ${String(currentChannel).padStart(2, '0')} • ${freq} MHz`;
+    }
+
+    document.getElementById("btn-prev-channel").addEventListener("click", () => {
+      if (currentChannel > 1) { currentChannel--; updateChannelDisplay(); }
+    });
+    document.getElementById("btn-next-channel").addEventListener("click", () => {
+      if (currentChannel < 16) { currentChannel++; updateChannelDisplay(); }
+    });
+
+    // Auto-TTS Toggle
+    btnToggleTts.addEventListener("click", () => {
+      isAutoTtsEnabled = !isAutoTtsEnabled;
+      if (isAutoTtsEnabled) {
+        ttsStatusLabel.textContent = "AUTO-TTS: ON";
+        ttsIconWrapper.innerHTML = `
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          </svg>`;
+        btnToggleTts.classList.remove("bg-panelCard", "text-gray-400", "border-borderNavy");
+        btnToggleTts.classList.add("bg-tacticalCyan/15", "text-tacticalCyan", "border-tacticalCyan/50");
+      } else {
+        ttsStatusLabel.textContent = "AUTO-TTS: MUTED";
+        ttsIconWrapper.innerHTML = `
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l4-4m0 4l-4-4"/>
+          </svg>`;
+        btnToggleTts.classList.remove("bg-tacticalCyan/15", "text-tacticalCyan", "border-tacticalCyan/50");
+        btnToggleTts.classList.add("bg-panelCard", "text-gray-400", "border-borderNavy");
+      }
+    });
+
+    // Radar Canvas Animation
+    let angle = 0;
+    function drawRadar() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const r = cx - 4;
+
+      // Draw background grid circles
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.18)";
+      ctx.lineWidth = 1;
+      [0.3, 0.6, 0.9].forEach(factor => {
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * factor, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      // Sweep line
+      angle += 0.04;
+      const sweepX = cx + Math.cos(angle) * r;
+      const sweepY = cy + Math.sin(angle) * r;
+
+      const grad = ctx.createLinearGradient(cx, cy, sweepX, sweepY);
+      grad.addColorStop(0, "rgba(56, 189, 248, 0.45)");
+      grad.addColorStop(1, "rgba(56, 189, 248, 0.0)");
+
+      ctx.strokeStyle = isReceivingAnimation ? "#38BDF8" : "rgba(56, 189, 248, 0.4)";
+      ctx.lineWidth = isReceivingAnimation ? 3 : 1.5;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(sweepX, sweepY);
+      ctx.stroke();
+
+      requestAnimationFrame(drawRadar);
+    }
+    drawRadar();
+
+    // Trigger Ingress Animation & Audio (Zero Emojis, Clean Badges)
+    function displayIngress(packet) {
+      isReceivingAnimation = true;
+      labelRadarStatus.textContent = "INGRESS ACTIVE";
+      labelRadarStatus.style.color = packet.is_emergency ? "#EF4444" : "#38BDF8";
+
+      if (packet.is_emergency) {
+        cardIngress.classList.add("emergency-strobe");
+        ingressHeader.textContent = `EMERGENCY DISTRESS • CH ${String(packet.channel).padStart(2, '0')}`;
+        ingressHeader.style.color = "#EF4444";
+        ingressBadgeIcon.innerHTML = `
+          <svg class="w-3.5 h-3.5 inline text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>`;
+      } else {
+        cardIngress.classList.remove("emergency-strobe");
+        ingressHeader.textContent = `INCOMING VOICE • ALPHA-01 [CH ${String(packet.channel).padStart(2, '0')}]`;
+        ingressHeader.style.color = "#38BDF8";
+        ingressBadgeIcon.innerHTML = `
+          <svg class="w-3.5 h-3.5 inline text-tacticalCyan" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+          </svg>`;
+      }
+
+      ingressTimestamp.textContent = packet.timestamp || new Date().toLocaleTimeString();
+      ingressSpeech.textContent = `"${packet.receiver_text || packet.source_text}"`;
+
+      const bytes = packet.telemetry?.packet_size_bytes || 18;
+      const saved = packet.telemetry?.bandwidth_saving_pct || 99.92;
+      const lat = packet.telemetry?.total_e2e_latency_ms || 380;
+      ingressTelemetry.textContent = `${bytes} Bytes • ${saved}% Saved • ${lat} ms`;
+
+      if (packet.audio_base64) {
+        lastAudioBase64 = packet.audio_base64;
+        if (isAutoTtsEnabled) {
+          audioPlayback.src = "data:audio/wav;base64," + packet.audio_base64;
+          audioPlayback.play().catch(e => console.warn("Audio autoplay blocked by browser:", e));
+        }
+      }
+
+      setTimeout(() => {
+        isReceivingAnimation = false;
+        labelRadarStatus.textContent = "MONITORING";
+        labelRadarStatus.style.color = "#38BDF8";
+        cardIngress.classList.remove("emergency-strobe");
+      }, 4000);
+    }
+
+    // Replay Audio
+    document.getElementById("btn-replay-voice").addEventListener("click", () => {
+      if (lastAudioBase64) {
+        audioPlayback.src = "data:audio/wav;base64," + lastAudioBase64;
+        audioPlayback.play();
+      }
+    });
+
+    // Real-Time Ingress via Zero-Latency SSE + Fast Poll Fallback
+    function setupRealtimeIngress() {
+      let eventSource = null;
+      try {
+        eventSource = new EventSource("/api/events");
+        eventSource.onmessage = (event) => {
+          try {
+            const pkt = JSON.parse(event.data);
+            if (pkt && pkt.id && pkt.id > lastPacketId) {
+              if (!currentChannel || pkt.channel === currentChannel) {
+                displayIngress(pkt);
+                lastPacketId = pkt.id;
+              }
+            }
+          } catch (err) {
+            // quiet parse error
+          }
+        };
+        eventSource.onerror = () => {
+          if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+          }
+          startFastPolling();
+        };
+      } catch (e) {
+        startFastPolling();
+      }
+    }
+
+    async function pollIngress() {
+      try {
+        const res = await fetch(`/api/poll_ingress?last_id=${lastPacketId}&channel=${currentChannel}`);
+        const data = await res.json();
+        if (data.success && data.packets && data.packets.length > 0) {
+          for (const pkt of data.packets) {
+            if (pkt.id > lastPacketId) {
+              displayIngress(pkt);
+              lastPacketId = pkt.id;
+            }
+          }
+        }
+      } catch (e) {
+        // Silent poll error
+      }
+      setTimeout(pollIngress, 150);
+    }
+
+    function startFastPolling() {
+      setTimeout(pollIngress, 150);
+    }
+
+    setupRealtimeIngress();
+
+    // Instant Simulation Triggers (Zero Mic Needed)
+    document.getElementById("btn-sim-patrol").addEventListener("click", async () => {
+      try {
+        const res = await fetch("/api/simulate_ingress", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: "patrol", channel: currentChannel })
+        });
+        const data = await res.json();
+        if (data.success) {
+          displayIngress(data);
+          lastPacketId = data.id || lastPacketId;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    document.getElementById("btn-sim-medevac").addEventListener("click", async () => {
+      try {
+        const res = await fetch("/api/simulate_ingress", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: "medevac", channel: currentChannel })
+        });
+        const data = await res.json();
+        if (data.success) {
+          displayIngress(data);
+          lastPacketId = data.id || lastPacketId;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    document.getElementById("btn-sim-distress").addEventListener("click", async () => {
+      try {
+        const res = await fetch("/api/simulate_ingress", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: "distress", channel: currentChannel })
+        });
+        const data = await res.json();
+        if (data.success) {
+          displayIngress(data);
+          lastPacketId = data.id || lastPacketId;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    updateChannelDisplay();
+  </script>
+</body>
+</html>
