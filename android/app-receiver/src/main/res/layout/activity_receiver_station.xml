@@ -232,8 +232,8 @@
             android:layout_weight="1"
             android:background="@drawable/bg_dock_button"
             app:backgroundTint="@null"
-            android:text="🎙️ INGRESS"
-            android:textColor="#00E5FF"
+            android:text="INGRESS"
+            android:textColor="#38BDF8"
             android:textSize="12sp"
             android:textStyle="bold" />
 
@@ -247,7 +247,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_dock_button"
             app:backgroundTint="@null"
-            android:text="🚨 DISTRESS"
+            android:text="DISTRESS"
             android:textColor="#FF5252"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -261,8 +261,8 @@
             android:layout_weight="1"
             android:background="@drawable/bg_dock_button"
             app:backgroundTint="@null"
-            android:text="🔊 AUTO-TTS"
-            android:textColor="#00E676"
+            android:text="AUTO-TTS"
+            android:textColor="#38BDF8"
             android:textSize="12sp"
             android:textStyle="bold" />
     </LinearLayout>

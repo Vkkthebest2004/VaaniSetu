@@ -57,17 +57,24 @@
     </div>
 
     <!-- Standalone Interface Switcher Links -->
-    <div class="flex items-center space-x-1.5 text-xs bg-black/40 p-1 rounded-xl border border-borderDark">
-      <a href="/sender" class="px-2.5 py-1 rounded-lg hover:bg-tacticalGold/20 text-gray-300 hover:text-tacticalGold transition-all text-[11px] font-semibold flex items-center space-x-1">
-        <span>📻</span>
+    <div class="flex items-center space-x-1.5 text-xs bg-black/40 p-1 rounded-xl border border-borderDark font-mono">
+      <a href="/sender" class="px-2.5 py-1 rounded-lg hover:bg-tacticalGold/20 text-gray-300 hover:text-tacticalGold transition-all text-[11px] font-semibold flex items-center space-x-1.5">
+        <svg class="w-3.5 h-3.5 text-tacticalGold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z"/>
+        </svg>
         <span>SENDER ONLY</span>
       </a>
-      <a href="/receiver" class="px-2.5 py-1 rounded-lg hover:bg-tacticalGreen/20 text-gray-300 hover:text-tacticalGreen transition-all text-[11px] font-semibold flex items-center space-x-1">
-        <span>🎧</span>
+      <a href="/receiver" class="px-2.5 py-1 rounded-lg hover:bg-tacticalGreen/20 text-gray-300 hover:text-tacticalGreen transition-all text-[11px] font-semibold flex items-center space-x-1.5">
+        <svg class="w-3.5 h-3.5 text-tacticalGreen" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 18v-6a9 9 0 0118 0v6M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3v5zm-18 0a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3v5z"/>
+        </svg>
         <span>RECEIVER ONLY</span>
       </a>
-      <span class="px-2.5 py-1 rounded-lg bg-[#262833] text-white text-[11px] font-semibold">
-        📱 DUAL LAB
+      <span class="px-2.5 py-1 rounded-lg bg-[#262833] text-white text-[11px] font-semibold flex items-center space-x-1.5">
+        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+        </svg>
+        <span>DUAL LAB</span>
       </span>
     </div>
 
@@ -96,7 +103,9 @@
 
       <!-- Tactical Macros Menu (Opens Macros Drawer) -->
       <button onclick="openDrawer('macros')" class="px-3 py-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-[11px] font-semibold tracking-wider flex items-center space-x-1.5 transition-all cursor-pointer">
-        <span>⚡</span>
+        <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
         <span>MACROS (8)</span>
       </button>
 
@@ -116,8 +125,8 @@
       <!-- Audio Device Selector -->
       <div class="flex items-center space-x-1.5 bg-[#16171D] border border-borderDark rounded-xl px-2.5 py-1.5">
         <select id="master-mic-source" class="bg-transparent text-white text-xs focus:outline-none cursor-pointer">
-          <option value="hw_mic" selected>🎙️ CoreAudio Mic</option>
-          <option value="web_mic">🌐 Browser Mic</option>
+          <option value="hw_mic" selected>CoreAudio Mic (Hardware)</option>
+          <option value="web_mic">Browser Mic (Virtual)</option>
         </select>
       </div>
 
@@ -135,7 +144,7 @@
     <!-- -------------------------------------------- -->
     <div class="flex flex-col items-center">
       <div class="flex items-center justify-between w-full max-w-[390px] mb-2 px-2 text-xs">
-        <span class="font-mono text-champagne tracking-wider font-semibold">📱 SENDER (DEVICE A)</span>
+        <span class="font-mono text-champagne tracking-wider font-semibold">SENDER (DEVICE A)</span>
         <div class="flex space-x-1">
           <button onclick="switchView('tx', 'idle')" class="px-2 py-0.5 rounded text-[10px] bg-[#2E313A] text-white" id="tx-tab-idle">Home</button>
           <button onclick="switchView('tx', 'listening')" class="px-2 py-0.5 rounded text-[10px] bg-[#1E2026] text-subtleText hover:text-white" id="tx-tab-listening">Listening</button>
@@ -209,19 +218,27 @@
           <!-- Bottom Clean Navigation (Organized Menus) -->
           <footer class="w-full flex items-center justify-between px-3 pt-4 border-t border-[#1C1E24]">
             <button onclick="openDrawer('macros')" class="flex flex-col items-center text-subtleText hover:text-champagne transition-colors cursor-pointer">
-              <span class="text-base mb-0.5">⚡</span>
+              <svg class="w-4 h-4 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
               <span class="text-[9px] tracking-wider uppercase font-mono">Macros</span>
             </button>
             <button onclick="openDrawer('channels')" class="flex flex-col items-center text-subtleText hover:text-champagne transition-colors cursor-pointer">
-              <span class="text-base mb-0.5">📻</span>
+              <svg class="w-4 h-4 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M7.8 14.8a6 6 0 018.4 0M5 12a10 10 0 0114 0M12 6v6"/>
+              </svg>
               <span class="text-[9px] tracking-wider uppercase font-mono">Channels</span>
             </button>
             <button onclick="openDrawer('languages')" class="flex flex-col items-center text-subtleText hover:text-champagne transition-colors cursor-pointer">
-              <span class="text-base mb-0.5">🌐</span>
+              <svg class="w-4 h-4 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+              </svg>
               <span class="text-[9px] tracking-wider uppercase font-mono">Languages</span>
             </button>
             <button onclick="openDrawer('telemetry')" class="flex flex-col items-center text-subtleText hover:text-champagne transition-colors cursor-pointer">
-              <span class="text-base mb-0.5">📊</span>
+              <svg class="w-4 h-4 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
               <span class="text-[9px] tracking-wider uppercase font-mono">Telemetry</span>
             </button>
           </footer>
@@ -403,8 +420,8 @@
             <span class="text-[8px] font-mono text-green-400">Direct</span>
           </button>
           <button onclick="sendPresetDirect('मदद की ज़रूरत है, तुरंत सहायता भेजें', true)" class="text-left px-2.5 py-2 rounded-xl bg-red-950/30 hover:bg-red-900/30 text-red-300 border border-red-900/40 transition-all truncate cursor-pointer flex items-center justify-between">
-            <span>4. 🚨 "मदद की ज़रूरत है"</span>
-            <span class="text-[8px] font-mono text-red-400">Distress</span>
+            <span>4. "मदद की ज़रूरत है"</span>
+            <span class="text-[8px] font-mono text-red-400 font-bold">DISTRESS</span>
           </button>
         </div>
       </div>
@@ -416,7 +433,7 @@
     <!-- -------------------------------------------- -->
     <div class="flex flex-col items-center">
       <div class="flex items-center justify-between w-full max-w-[390px] mb-2 px-2 text-xs">
-        <span class="font-mono text-champagne tracking-wider font-semibold">📱 RECEIVER (DEVICE B)</span>
+        <span class="font-mono text-champagne tracking-wider font-semibold">RECEIVER (DEVICE B)</span>
         <div class="flex space-x-1">
           <button onclick="switchView('rx', 'idle')" class="px-2 py-0.5 rounded text-[10px] bg-[#2E313A] text-white" id="rx-tab-idle">Standby</button>
           <button onclick="switchView('rx', 'receiving')" class="px-2 py-0.5 rounded text-[10px] bg-[#1E2026] text-subtleText hover:text-white" id="rx-tab-receiving">Rx Wave</button>
@@ -442,7 +459,10 @@
           <div class="flex items-center space-x-1.5">
             <span class="text-xs tracking-[0.25em] font-semibold text-white/90">iTANTRA</span>
             <span class="px-1.5 py-0.5 rounded text-[8px] tracking-wider font-mono font-bold bg-green-500/20 text-green-300 border border-green-500/30">RX</span>
-            <span id="rx-mode-header-tag" class="text-[10px] font-mono text-green-400 bg-[#17181F] px-2 py-0.5 rounded-lg border border-borderDark">🟢 Direct Native</span>
+            <span id="rx-mode-header-tag" class="text-[10px] font-mono text-green-400 bg-[#17181F] px-2 py-0.5 rounded-lg border border-borderDark flex items-center space-x-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+              <span>Direct Native</span>
+            </span>
           </div>
           <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded border border-[#2E3139] bg-[#121317]/80 text-[10px] tracking-wider text-subtleText uppercase">
             <svg class="w-3 h-3 stroke-champagneMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L3 3m5.636 5.636a5 5 0 017.072 0m-7.072 0l2.829 2.829m-2.829-2.829L9 11m0 0l2.829 2.829" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path></svg>
@@ -613,9 +633,14 @@
     <div class="drawer-sheet">
       <div class="drawer-handle"></div>
       <div class="flex items-center justify-between mb-4">
-        <div>
-          <h2 class="text-base font-semibold text-white tracking-wide">⚡ Tactical Macros</h2>
-          <p class="text-[11px] text-subtleText font-mono">1-Click Emergency Distress Broadcast (6 Bytes)</p>
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          <div>
+            <h2 class="text-base font-semibold text-white tracking-wide">Tactical Macros</h2>
+            <p class="text-[11px] text-subtleText font-mono">1-Click Emergency Distress Broadcast (6 Bytes)</p>
+          </div>
         </div>
         <button onclick="closeDrawer('macros')" class="text-subtleText hover:text-white p-1 cursor-pointer">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round"/></svg>
@@ -623,43 +648,76 @@
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
-        <button onclick="sendMacroAndClose(1)" class="macro-card-btn">
-          <span class="text-2xl mb-1">🚑</span>
+        <button onclick="sendMacroAndClose(1)" class="macro-card-btn flex flex-col items-center justify-center p-3">
+          <div class="w-9 h-9 rounded-xl bg-red-950/60 border border-red-800/60 flex items-center justify-center mb-1.5">
+            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m-8-8h16"/>
+            </svg>
+          </div>
           <span class="text-xs font-semibold text-red-400">Medevac</span>
           <span class="text-[9px] text-subtleText text-center mt-0.5">Medical Evac</span>
         </button>
-        <button onclick="sendMacroAndClose(2)" class="macro-card-btn">
-          <span class="text-2xl mb-1">🔥</span>
+        <button onclick="sendMacroAndClose(2)" class="macro-card-btn flex flex-col items-center justify-center p-3">
+          <div class="w-9 h-9 rounded-xl bg-orange-950/60 border border-orange-800/60 flex items-center justify-center mb-1.5">
+            <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+            </svg>
+          </div>
           <span class="text-xs font-semibold text-orange-400">Fire Rescue</span>
           <span class="text-[9px] text-subtleText text-center mt-0.5">Dispatch Fire</span>
         </button>
-        <button onclick="sendMacroAndClose(3)" class="macro-card-btn">
-          <span class="text-2xl mb-1">🌊</span>
+        <button onclick="sendMacroAndClose(3)" class="macro-card-btn flex flex-col items-center justify-center p-3">
+          <div class="w-9 h-9 rounded-xl bg-blue-950/60 border border-blue-800/60 flex items-center justify-center mb-1.5">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 15c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M3 19c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M3 11c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2"/>
+            </svg>
+          </div>
           <span class="text-xs font-semibold text-blue-400">Flood Evac</span>
-          <span class="text-[9px] text-subtleText text-center mt-0.5">Water Level Rising</span>
+          <span class="text-[9px] text-subtleText text-center mt-0.5">Water Rising</span>
         </button>
-        <button onclick="sendMacroAndClose(4)" class="macro-card-btn">
-          <span class="text-2xl mb-1">🚨</span>
+        <button onclick="sendMacroAndClose(4)" class="macro-card-btn flex flex-col items-center justify-center p-3">
+          <div class="w-9 h-9 rounded-xl bg-red-950/60 border border-red-700/60 flex items-center justify-center mb-1.5">
+            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+          </div>
           <span class="text-xs font-semibold text-red-500">Ambush</span>
           <span class="text-[9px] text-subtleText text-center mt-0.5">Hostage / Attack</span>
         </button>
-        <button onclick="sendMacroAndClose(5)" class="macro-card-btn">
-          <span class="text-2xl mb-1">⚡</span>
+        <button onclick="sendMacroAndClose(5)" class="macro-card-btn flex flex-col items-center justify-center p-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-950/60 border border-amber-800/60 flex items-center justify-center mb-1.5">
+            <svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
           <span class="text-xs font-semibold text-amber-300">Need Support</span>
           <span class="text-[9px] text-subtleText text-center mt-0.5">Ammo & Logistics</span>
         </button>
-        <button onclick="sendMacroAndClose(6)" class="macro-card-btn">
-          <span class="text-2xl mb-1">🛡️</span>
+        <button onclick="sendMacroAndClose(6)" class="macro-card-btn flex flex-col items-center justify-center p-3">
+          <div class="w-9 h-9 rounded-xl bg-indigo-950/60 border border-indigo-800/60 flex items-center justify-center mb-1.5">
+            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4v6c0 5.25-3.5 10-8 11-4.5-1-8-5.75-8-11V7l8-4z"/>
+            </svg>
+          </div>
           <span class="text-xs font-semibold text-indigo-400">Perimeter</span>
           <span class="text-[9px] text-subtleText text-center mt-0.5">Security Alert</span>
         </button>
-        <button onclick="sendMacroAndClose(7)" class="macro-card-btn">
-          <span class="text-2xl mb-1">🟢</span>
+        <button onclick="sendMacroAndClose(7)" class="macro-card-btn flex flex-col items-center justify-center p-3">
+          <div class="w-9 h-9 rounded-xl bg-green-950/60 border border-green-800/60 flex items-center justify-center mb-1.5">
+            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
           <span class="text-xs font-semibold text-green-400">All Clear</span>
           <span class="text-[9px] text-subtleText text-center mt-0.5">Area Secured</span>
         </button>
-        <button onclick="sendMacroAndClose(8)" class="macro-card-btn">
-          <span class="text-2xl mb-1">🧭</span>
+        <button onclick="sendMacroAndClose(8)" class="macro-card-btn flex flex-col items-center justify-center p-3">
+          <div class="w-9 h-9 rounded-xl bg-teal-950/60 border border-teal-800/60 flex items-center justify-center mb-1.5">
+            <svg class="w-5 h-5 text-teal-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </div>
           <span class="text-xs font-semibold text-teal-300">Regroup</span>
           <span class="text-[9px] text-subtleText text-center mt-0.5">Rendezvous Point</span>
         </button>
@@ -667,7 +725,9 @@
 
       <div class="p-3 bg-red-950/30 border border-red-900/40 rounded-xl flex items-center justify-between">
         <div class="flex items-center space-x-2">
-          <span class="text-lg">🚨</span>
+          <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
           <span class="text-xs font-medium text-red-300">Continuous Warble Siren Mode</span>
         </div>
         <button onclick="toggleEmergencyMode()" class="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-bold font-mono">
@@ -683,9 +743,14 @@
     <div class="drawer-sheet">
       <div class="drawer-handle"></div>
       <div class="flex items-center justify-between mb-4">
-        <div>
-          <h2 class="text-base font-semibold text-white tracking-wide">📻 Radio Channels</h2>
-          <p class="text-[11px] text-subtleText font-mono">Select Active Transceiver Net (Channels 1-16)</p>
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M7.8 14.8a6 6 0 018.4 0M5 12a10 10 0 0114 0M12 6v6"/>
+          </svg>
+          <div>
+            <h2 class="text-base font-semibold text-white tracking-wide">Radio Channels</h2>
+            <p class="text-[11px] text-subtleText font-mono">Select Active Transceiver Net (Channels 1-16)</p>
+          </div>
         </div>
         <button onclick="closeDrawer('channels')" class="text-subtleText hover:text-white p-1 cursor-pointer">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round"/></svg>
@@ -737,8 +802,11 @@
 
       <div class="flex items-center justify-between p-3 bg-[#181920] border border-borderDark rounded-xl">
         <span class="text-xs text-subtleText font-mono">Test Military Roger Beep (1.2 kHz Pip):</span>
-        <button onclick="playRogerBeep()" class="px-3 py-1.5 bg-[#252833] hover:bg-[#2E313E] text-champagne rounded-lg text-xs font-mono font-bold cursor-pointer">
-          🔊 PLAY BEEP
+        <button onclick="playRogerBeep()" class="px-3 py-1.5 bg-[#252833] hover:bg-[#2E313E] text-champagne rounded-lg text-xs font-mono font-bold cursor-pointer flex items-center space-x-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          </svg>
+          <span>PLAY BEEP</span>
         </button>
       </div>
     </div>
@@ -750,9 +818,14 @@
     <div class="drawer-sheet">
       <div class="drawer-handle"></div>
       <div class="flex items-center justify-between mb-4">
-        <div>
-          <h2 class="text-base font-semibold text-white tracking-wide">🌐 Indian Languages & Modes</h2>
-          <p class="text-[11px] text-subtleText font-mono">Choose Spoken Input & Reception Mode</p>
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+          </svg>
+          <div>
+            <h2 class="text-base font-semibold text-white tracking-wide">Indian Languages & Modes</h2>
+            <p class="text-[11px] text-subtleText font-mono">Choose Spoken Input & Reception Mode</p>
+          </div>
         </div>
         <button onclick="closeDrawer('languages')" class="text-subtleText hover:text-white p-1 cursor-pointer">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round"/></svg>
@@ -764,12 +837,18 @@
         <span class="text-[10px] font-mono text-subtleText uppercase tracking-wider block mb-2 font-semibold">Reception Mode:</span>
         <div class="grid grid-cols-2 gap-2">
           <button onclick="setReceptionMode('direct')" id="rx-mode-btn-direct" class="p-3 rounded-xl border border-green-700/60 bg-green-950/50 text-green-300 flex flex-col items-start cursor-pointer">
-            <span class="text-xs font-bold">🟢 Direct Native (Hindi)</span>
-            <span class="text-[10px] text-green-400/80 mt-0.5">Exact natural speech, no translation</span>
+            <span class="text-xs font-bold flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-green-400"></span>
+              <span>Direct Native (Hindi)</span>
+            </span>
+            <span class="text-[10px] text-green-400/80 mt-1">Exact natural speech, no translation</span>
           </button>
           <button onclick="setReceptionMode('translate')" id="rx-mode-btn-translate" class="p-3 rounded-xl border border-borderDark bg-[#1A1C23] text-gray-300 flex flex-col items-start cursor-pointer">
-            <span class="text-xs font-bold">🌐 Cross-Lingual Translation</span>
-            <span class="text-[10px] text-subtleText mt-0.5">Translate to recipient Indian language</span>
+            <span class="text-xs font-bold flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+              <span>Cross-Lingual Translation</span>
+            </span>
+            <span class="text-[10px] text-subtleText mt-1">Translate to recipient Indian language</span>
           </button>
         </div>
       </div>
@@ -811,9 +890,14 @@
     <div class="drawer-sheet">
       <div class="drawer-handle"></div>
       <div class="flex items-center justify-between mb-4">
-        <div>
-          <h2 class="text-base font-semibold text-white tracking-wide">📊 Airtime Telemetry</h2>
-          <p class="text-[11px] text-subtleText font-mono">MicroRadio Binary Frame Inspector</p>
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          <div>
+            <h2 class="text-base font-semibold text-white tracking-wide">Airtime Telemetry</h2>
+            <p class="text-[11px] text-subtleText font-mono">MicroRadio Binary Frame Inspector</p>
+          </div>
         </div>
         <button onclick="closeDrawer('telemetry')" class="text-subtleText hover:text-white p-1 cursor-pointer">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round"/></svg>
@@ -1014,13 +1098,13 @@
         directLabel.textContent = "DIRECT NATIVE: ON";
         directPulse.className = "w-2 h-2 rounded-full bg-green-400 animate-pulse";
         directBtn.className = "px-3 py-1.5 rounded-xl border border-green-700/60 bg-green-950/40 text-green-300 hover:bg-green-900/40 text-[11px] font-semibold tracking-wider flex items-center space-x-1.5 transition-all cursor-pointer";
-        if (rxHeaderTag) rxHeaderTag.textContent = "🟢 Direct Native";
+        if (rxHeaderTag) rxHeaderTag.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-green-400 mr-1 inline-block"></span>Direct Native';
       } else {
         targetLanguage = 'ta';
         directLabel.textContent = "TRANSLATE: TAMIL";
         directPulse.className = "w-2 h-2 rounded-full bg-blue-400 animate-pulse";
         directBtn.className = "px-3 py-1.5 rounded-xl border border-blue-700/60 bg-blue-950/40 text-blue-300 hover:bg-blue-900/40 text-[11px] font-semibold tracking-wider flex items-center space-x-1.5 transition-all cursor-pointer";
-        if (rxHeaderTag) rxHeaderTag.textContent = "🌐 Translating";
+        if (rxHeaderTag) rxHeaderTag.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-sky-400 mr-1 inline-block"></span>Translating';
       }
     }
 
@@ -1379,8 +1463,10 @@
   <div id="modal-auth" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="w-full max-w-md bg-[#0F1015] border border-borderDark rounded-2xl p-6 shadow-2xl relative">
       <div class="flex items-center space-x-3 mb-4">
-        <div class="w-10 h-10 rounded-xl bg-[#1E2028] border border-champagne/40 flex items-center justify-center text-champagne text-xl">
-          📡
+        <div class="w-10 h-10 rounded-xl bg-[#1E2028] border border-champagne/40 flex items-center justify-center text-champagne">
+          <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M7.8 14.8a6 6 0 018.4 0M5 12a10 10 0 0114 0M12 6v6"/>
+          </svg>
         </div>
         <div>
           <h2 class="text-base font-bold tracking-wider text-white uppercase">iTANTRA TACTICAL GATEWAY</h2>
@@ -1394,7 +1480,9 @@
       <div class="grid grid-cols-2 gap-3 mb-4">
         <div id="web-mode-tx-card" onclick="selectWebMode('TX')" class="p-3 rounded-xl border-2 border-champagne bg-[#1A1C24] cursor-pointer transition-all">
           <div class="flex items-center justify-between mb-1">
-            <span class="text-lg">📡</span>
+            <svg class="w-5 h-5 text-champagne" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z"/>
+            </svg>
             <span id="web-tx-radio" class="w-3 h-3 rounded-full bg-champagne"></span>
           </div>
           <p class="text-xs font-bold text-white">SENDER (TX)</p>
@@ -1403,7 +1491,9 @@
 
         <div id="web-mode-rx-card" onclick="selectWebMode('RX')" class="p-3 rounded-xl border border-borderDark bg-[#14151B] cursor-pointer transition-all">
           <div class="flex items-center justify-between mb-1">
-            <span class="text-lg">📻</span>
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 18v-6a9 9 0 0118 0v6M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3v5zm-18 0a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3v5z"/>
+            </svg>
             <span id="web-rx-radio" class="w-3 h-3 rounded-full border border-subtleText"></span>
           </div>
           <p class="text-xs font-bold text-white/70">RECEIVER (RX)</p>

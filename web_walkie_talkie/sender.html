@@ -3,23 +3,27 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>VaaniSetu — Dedicated Field Sender Unit</title>
+  <title>VaaniSetu — Field Transmitter Unit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            tacticalGold: '#E5A93C',
-            tacticalGoldGlow: '#FFC857',
-            tacticalDark: '#0B0C10',
-            panelDark: '#14151B',
-            borderDark: '#262833',
-            lcdGreen: '#00E5FF',
-            crimsonDistress: '#FF3344'
+            tacticalAmber: '#F59E0B',
+            tacticalAmberDark: '#D97706',
+            tacticalAmberLight: '#FDE68A',
+            tacticalDark: '#0B0D13',
+            panelDark: '#121620',
+            panelCard: '#171D2A',
+            borderNavy: '#253144',
+            borderNavyLight: '#384863',
+            tacticalCyan: '#38BDF8',
+            crimsonDistress: '#EF4444',
+            readoutText: '#F8FAFC'
           },
           fontFamily: {
             sans: ['Outfit', '-apple-system', 'sans-serif'],
@@ -31,27 +35,27 @@
   </script>
   <style>
     body {
-      background-color: #07080A;
-      background-image: radial-gradient(circle at 50% 10%, rgba(229, 169, 60, 0.08) 0%, transparent 60%);
+      background-color: #080B10;
+      background-image: radial-gradient(circle at 50% 10%, rgba(245, 158, 11, 0.08) 0%, transparent 65%);
       font-family: 'Outfit', sans-serif;
     }
     .tactical-border {
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 40px -15px rgba(0, 0, 0, 0.9);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 24px 48px -12px rgba(0, 0, 0, 0.95);
     }
     .lcd-screen {
-      background: radial-gradient(ellipse at 50% 40%, #0e1318 0%, #05080c 100%);
-      border: 1px solid rgba(0, 229, 255, 0.2);
-      box-shadow: inset 0 0 25px rgba(0, 229, 255, 0.06), 0 4px 15px rgba(0, 0, 0, 0.6);
+      background: radial-gradient(ellipse at 50% 30%, #151D2A 0%, #0B1017 100%);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: inset 0 0 30px rgba(56, 189, 248, 0.06), 0 6px 20px rgba(0, 0, 0, 0.65);
     }
     .btn-ptt-3d {
-      background: radial-gradient(circle at 35% 30%, #2f323c 0%, #17181e 75%, #0d0e12 100%);
-      box-shadow: 0 16px 28px -6px rgba(0,0,0,0.9), inset 0 2px 2px rgba(255,255,255,0.2), inset 0 -4px 8px rgba(0,0,0,0.8);
+      background: radial-gradient(circle at 35% 30%, #2A3344 0%, #161D2A 75%, #0F131C 100%);
+      box-shadow: 0 16px 30px -6px rgba(0,0,0,0.9), inset 0 2px 2px rgba(255,255,255,0.22), inset 0 -4px 8px rgba(0,0,0,0.8);
       transition: all 0.08s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .btn-ptt-3d:active, .btn-ptt-3d.active {
       transform: scale(0.95) translateY(4px);
-      background: radial-gradient(circle at 50% 50%, #422a10 0%, #1f1406 80%);
-      box-shadow: 0 4px 12px rgba(229, 169, 60, 0.4), inset 0 3px 6px rgba(0,0,0,0.9);
+      background: radial-gradient(circle at 50% 50%, #452608 0%, #241403 80%);
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.45), inset 0 3px 6px rgba(0,0,0,0.9);
     }
     @keyframes pulse-ring {
       0% { transform: scale(0.95); opacity: 0.8; }
@@ -64,63 +68,88 @@
     .drawer-active {
       transform: translateY(0%) !important;
     }
+    .tactical-btn {
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tactical-btn:active {
+      transform: scale(0.97);
+    }
   </style>
 </head>
 
-<body class="text-white min-h-screen flex flex-col items-center justify-between p-3 sm:p-6 select-none">
+<body class="text-readoutText min-h-screen flex flex-col items-center justify-between p-3 sm:p-6 select-none">
 
   <!-- ================= MASTER TOP NAVIGATION BAR ================= -->
-  <header class="w-full max-w-lg flex items-center justify-between p-2.5 px-4 bg-[#111318] border border-borderDark rounded-2xl shadow-xl">
-    <div class="flex items-center space-x-2.5">
-      <div class="w-7 h-7 rounded-lg bg-amber-500/10 border border-tacticalGold/40 flex items-center justify-center">
-        <span class="text-tacticalGold font-bold text-xs">TX</span>
+  <header class="w-full max-w-lg flex items-center justify-between p-3 px-4 bg-panelDark border border-borderNavy rounded-2xl shadow-xl">
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-tacticalAmber/40 flex items-center justify-center">
+        <!-- Radio Tower / TX SVG -->
+        <svg class="w-4 h-4 text-tacticalAmber" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M7.8 14.8a6 6 0 018.4 0M5 12a10 10 0 0114 0M12 6v6"/>
+        </svg>
       </div>
       <div>
         <h1 class="text-xs font-bold tracking-widest text-white uppercase">VAANISETU SENDER</h1>
-        <p class="text-[9px] text-amber-400/70 font-mono">FIELD TRANSMITTER UNIT</p>
+        <p class="text-[10px] text-amber-400 font-mono font-semibold">FIELD TRANSMITTER UNIT</p>
       </div>
     </div>
 
-    <!-- Navigation Hub Buttons -->
-    <nav class="flex items-center space-x-1.5 text-xs">
-      <span class="px-2.5 py-1 rounded-xl bg-tacticalGold/20 border border-tacticalGold/60 text-tacticalGold font-semibold text-[11px]">
-        📻 SENDER
+    <!-- Clean Vector Navigation Hub Buttons (Zero Emojis) -->
+    <nav class="flex items-center space-x-1.5 text-xs font-mono">
+      <span class="px-3 py-1.5 rounded-xl bg-tacticalAmber/20 border border-tacticalAmber/60 text-amber-300 font-bold text-[11px] flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-tacticalAmber" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z"/>
+        </svg>
+        <span>SENDER</span>
       </span>
-      <a href="/receiver" class="px-2.5 py-1 rounded-xl bg-[#1A1C24] border border-borderDark text-gray-400 hover:text-white hover:border-gray-500 transition-colors text-[11px]">
-        🎧 RECEIVER
+
+      <a href="/receiver" class="px-3 py-1.5 rounded-xl bg-panelCard border border-borderNavy text-gray-300 hover:text-white hover:border-tacticalCyan/60 transition-colors text-[11px] font-semibold flex items-center space-x-1.5 tactical-btn">
+        <svg class="w-3.5 h-3.5 text-tacticalCyan" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 18v-6a9 9 0 0118 0v6M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3v5zm-18 0a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3v5z"/>
+        </svg>
+        <span>RECEIVER</span>
       </a>
-      <a href="/" class="px-2.5 py-1 rounded-xl bg-[#1A1C24] border border-borderDark text-gray-400 hover:text-white hover:border-gray-500 transition-colors text-[11px]">
-        📱 DUAL LAB
+
+      <a href="/" class="px-3 py-1.5 rounded-xl bg-panelCard border border-borderNavy text-gray-300 hover:text-white hover:border-gray-400 transition-colors text-[11px] font-semibold flex items-center space-x-1.5 tactical-btn">
+        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+        </svg>
+        <span>DUAL LAB</span>
       </a>
     </nav>
   </header>
 
   <!-- ================= STANDALONE SENDER WALKIE-TALKIE CHASSIS ================= -->
-  <main class="w-full max-w-[410px] my-auto bg-panelDark border-2 border-borderDark rounded-[44px] tactical-border p-5 flex flex-col justify-between shadow-2xl relative overflow-hidden" style="min-height: 690px;">
+  <main class="w-full max-w-[420px] my-auto bg-panelDark border-2 border-borderNavy rounded-[44px] tactical-border p-5 flex flex-col justify-between shadow-2xl relative overflow-hidden" style="min-height: 700px;">
     
     <!-- Top Antenna & Bevel Header -->
-    <div class="flex items-center justify-between pb-3 border-b border-white/5 text-[11px] font-mono">
+    <div class="flex items-center justify-between pb-3 border-b border-borderNavy text-xs font-mono">
       <div class="flex items-center space-x-2">
-        <span class="w-2 h-2 rounded-full bg-tacticalGold animate-pulse"></span>
-        <span class="text-tacticalGold font-bold tracking-wider">TX • ONLINE</span>
+        <span class="w-2.5 h-2.5 rounded-full bg-tacticalAmber animate-pulse shadow-[0_0_8px_#F59E0B]"></span>
+        <span class="text-tacticalAmber font-bold tracking-wider">TX • ONLINE</span>
       </div>
-      <div class="text-gray-400 flex items-center space-x-2">
-        <span>UDP :8989</span>
-        <span class="text-white/20">•</span>
-        <span id="label-hardware-mic" class="text-gray-300">🎙️ HW MIC</span>
+      <div class="text-gray-300 flex items-center space-x-2">
+        <span class="font-semibold">UDP :8989</span>
+        <span class="text-white/30">•</span>
+        <div id="label-hardware-mic" class="text-tacticalCyan font-semibold flex items-center space-x-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z"/>
+          </svg>
+          <span>HW MIC</span>
+        </div>
       </div>
     </div>
 
-    <!-- LCD Tactical Transceiver Display -->
-    <div class="lcd-screen rounded-3xl p-4 my-3 text-left relative overflow-hidden">
+    <!-- LCD Tactical Transceiver Display (High Contrast & Legibility) -->
+    <div class="lcd-screen rounded-3xl p-4 my-2 text-left relative overflow-hidden">
       <!-- LCD Header Bar -->
-      <div class="flex items-center justify-between mb-2 pb-2 border-b border-white/10 font-mono text-xs">
-        <div class="flex items-center space-x-1">
-          <button id="btn-prev-channel" class="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-tacticalGold hover:bg-black/60 cursor-pointer font-bold">◀</button>
-          <span id="lcd-channel-label" class="px-2 font-bold text-white tracking-wider">CH 08 • 433.750 MHz</span>
-          <button id="btn-next-channel" class="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-tacticalGold hover:bg-black/60 cursor-pointer font-bold">▶</button>
+      <div class="flex items-center justify-between mb-2 pb-2 border-b border-borderNavyLight/60 font-mono text-xs">
+        <div class="flex items-center space-x-1.5">
+          <button id="btn-prev-channel" class="px-2.5 py-0.5 rounded bg-panelCard border border-borderNavy text-tacticalAmber hover:bg-borderNavy cursor-pointer font-bold tactical-btn">◀</button>
+          <span id="lcd-channel-label" class="px-2.5 py-0.5 rounded bg-[#0A0E17] border border-borderNavy font-bold text-white tracking-wider">CH 08 • 433.750 MHz</span>
+          <button id="btn-next-channel" class="px-2.5 py-0.5 rounded bg-panelCard border border-borderNavy text-tacticalAmber hover:bg-borderNavy cursor-pointer font-bold tactical-btn">▶</button>
         </div>
-        <select id="select-language" class="bg-black/60 border border-white/10 text-tacticalGold text-[11px] rounded-lg px-2 py-1 outline-none cursor-pointer">
+        <select id="select-language" class="bg-panelCard border border-borderNavyLight text-amber-300 font-semibold text-[11px] rounded-lg px-2.5 py-1 outline-none cursor-pointer">
           <option value="hi" selected>Hindi (हिंदी)</option>
           <option value="bn">Bengali (বাংলা)</option>
           <option value="ta">Tamil (தமிழ்)</option>
@@ -135,29 +164,31 @@
         </select>
       </div>
 
-      <!-- Live Transcription / Speech Display -->
-      <div class="py-2">
-        <div id="lcd-status-title" class="text-[10px] font-mono text-gray-400 tracking-wider mb-1 flex items-center justify-between">
-          <span>LAST OUTGOING TRANSMISSION</span>
-          <span id="lcd-time-badge" class="text-tacticalGold font-bold">STANDBY</span>
+      <!-- Live Transcription / Speech Display (Crisp High-Contrast Text) -->
+      <div class="py-1">
+        <div id="lcd-status-title" class="text-[11px] font-mono text-gray-300 font-bold tracking-wider mb-1 flex items-center justify-between">
+          <span>LAST TRANSMISSION OUT</span>
+          <span id="lcd-time-badge" class="text-tacticalAmber font-bold bg-tacticalAmber/10 px-2 py-0.5 rounded border border-tacticalAmber/30">STANDBY</span>
         </div>
-        <div id="lcd-message-text" class="text-sm font-semibold text-white/95 leading-relaxed min-h-[44px] break-words">
+        <div id="lcd-message-text" class="text-[15px] font-semibold text-white leading-relaxed min-h-[44px] break-words">
           "गश्त दल सुरक्षित है • सीमा चौकी पर सब ठीक है"
         </div>
       </div>
 
       <!-- Audio Waveform Live Canvas -->
-      <div class="w-full h-8 mt-1 relative rounded-lg bg-black/50 overflow-hidden border border-white/5">
+      <div class="w-full h-8 mt-2 relative rounded-lg bg-[#080C14] overflow-hidden border border-borderNavyLight/60">
         <canvas id="canvas-waveform" width="360" height="32" class="w-full h-full block"></canvas>
       </div>
 
       <!-- Telemetry Pill & Sidetone Replay -->
-      <div class="flex items-center justify-between mt-3 pt-2 border-t border-white/10 text-[10px] font-mono">
-        <span id="lcd-telemetry-pill" class="text-cyan-400 tracking-wider">
+      <div class="flex items-center justify-between mt-3 pt-2 border-t border-borderNavyLight/60 text-[11px] font-mono">
+        <span id="lcd-telemetry-pill" class="text-tacticalCyan font-semibold tracking-wider">
           6 Bytes • 99.96% Saved • 210 ms
         </span>
-        <button id="btn-replay-sidetone" class="flex items-center space-x-1 text-tacticalGold hover:text-white transition-colors cursor-pointer" title="Replay captured mic audio">
-          <span>🔄</span>
+        <button id="btn-replay-sidetone" class="flex items-center space-x-1.5 text-tacticalAmber hover:text-white font-semibold transition-colors cursor-pointer tactical-btn" title="Replay captured mic audio">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
           <span>SIDETONE CHECK</span>
         </button>
       </div>
@@ -165,81 +196,136 @@
 
     <!-- Center: Giant Tactile 3D Push-To-Talk Button -->
     <div class="my-auto flex flex-col items-center justify-center py-2 relative">
-      <!-- Breathing Golden Halo -->
-      <div id="ptt-halo" class="absolute w-56 h-56 rounded-full border-2 border-tacticalGold/20 halo-pulse pointer-events-none"></div>
-      <div class="absolute w-44 h-44 rounded-full border border-tacticalGold/30 pointer-events-none"></div>
+      <!-- Breathing Tactical Amber Halo -->
+      <div id="ptt-halo" class="absolute w-56 h-56 rounded-full border-2 border-tacticalAmber/20 halo-pulse pointer-events-none"></div>
+      <div class="absolute w-44 h-44 rounded-full border border-tacticalAmber/30 pointer-events-none"></div>
 
       <!-- The 3D Push-To-Talk Button -->
-      <button id="btn-ptt-main" class="w-36 h-36 rounded-full btn-ptt-3d border-4 border-[#3A3D4A] flex flex-col items-center justify-center relative z-10 cursor-pointer select-none">
-        <svg id="ptt-mic-icon" class="w-12 h-12 text-tacticalGold transition-transform duration-100" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+      <button id="btn-ptt-main" class="w-36 h-36 rounded-full btn-ptt-3d border-4 border-[#354359] flex flex-col items-center justify-center relative z-10 cursor-pointer select-none">
+        <svg id="ptt-mic-icon" class="w-12 h-12 text-tacticalAmber transition-transform duration-100" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z"/>
         </svg>
-        <span id="ptt-label" class="text-[11px] font-mono font-bold tracking-widest text-tacticalGold mt-1">HOLD TO TALK</span>
+        <span id="ptt-label" class="text-[11px] font-mono font-bold tracking-widest text-amber-300 mt-1">HOLD TO TALK</span>
       </button>
 
-      <p id="ptt-hint" class="text-[11px] text-gray-400 font-mono tracking-wider mt-3 text-center">
-        Hold button or press <kbd class="px-1.5 py-0.5 rounded bg-black/60 border border-white/20 text-white text-[10px]">SPACEBAR</kbd>
+      <p id="ptt-hint" class="text-xs text-gray-300 font-mono tracking-wider mt-3 text-center">
+        Hold button or press <kbd class="px-2 py-0.5 rounded bg-panelCard border border-borderNavyLight text-white font-bold text-[10px]">SPACEBAR</kbd>
       </p>
     </div>
 
-    <!-- Bottom Tactical Controls Dock -->
-    <div class="grid grid-cols-3 gap-2.5 pt-3 border-t border-white/5">
-      <button id="btn-open-macros" class="py-2.5 px-2 rounded-2xl bg-[#1A1C24] hover:bg-[#222530] border border-tacticalGold/30 text-tacticalGold font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer">
-        <span class="text-sm">⚡</span>
-        <span class="text-[10px] tracking-wider mt-0.5">MACROS</span>
-      </button>
-
-      <button id="btn-quick-test" class="py-2.5 px-2 rounded-2xl bg-[#1A1C24] hover:bg-[#222530] border border-borderDark text-cyan-400 font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer">
-        <span class="text-sm">🎙️</span>
-        <span class="text-[10px] tracking-wider mt-0.5">TEST VOICE</span>
-      </button>
-
-      <button id="btn-sos-distress" class="py-2.5 px-2 rounded-2xl bg-red-950/40 hover:bg-red-900/40 border border-red-800 text-crimsonDistress font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer">
-        <span class="text-sm">🚨</span>
-        <span id="sos-label" class="text-[10px] tracking-wider mt-0.5">SOS BEACON</span>
-      </button>
-    </div>
-
-    <!-- Slide-Up Tactical Macros Sheet -->
-    <div id="sheet-macros" class="absolute inset-x-0 bottom-0 bg-[#161820] border-t-2 border-tacticalGold/50 rounded-t-[36px] p-5 shadow-2xl transition-transform duration-300 transform translate-y-full z-20">
-      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
-        <div class="flex items-center space-x-2">
-          <span class="text-tacticalGold text-base">⚡</span>
-          <span class="font-bold text-xs tracking-wider text-white">1-CLICK TACTICAL MACROS</span>
-        </div>
-        <button id="btn-close-macros" class="text-gray-400 hover:text-white text-xs px-2 py-1 rounded bg-black/40">✕ CLOSE</button>
+    <!-- ======================================================== -->
+    <!-- BOTTOM TACTICAL CONTROLS DOCK (ZERO EMOJIS, HIGH CONTRAST) -->
+    <!-- ======================================================== -->
+    <div class="pt-3 border-t border-borderNavy">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-[10px] font-mono text-gray-300 font-bold tracking-widest uppercase">FIELD TRANSMISSION CONTROLS</span>
+        <span class="text-[9px] font-mono text-tacticalAmber bg-tacticalAmber/10 border border-tacticalAmber/30 px-2 py-0.5 rounded">1-TOUCH</span>
       </div>
 
-      <div class="grid grid-cols-2 gap-2.5 text-left">
-        <button onclick="transmitMacro(1, 'तत्काल चिकित्सा सहायता और एम्बुलेंस की आवश्यकता है')" class="p-3 rounded-2xl bg-[#1E212B] hover:bg-red-950/60 border border-red-900/60 flex flex-col transition-all cursor-pointer">
-          <span class="text-base mb-1">🚑 MEDEVAC</span>
-          <span class="text-[10px] text-gray-300">Urgent medical evacuation</span>
-          <span class="text-[9px] text-amber-400/80 font-mono mt-1">6 Bytes • High Priority</span>
+      <div class="grid grid-cols-3 gap-2.5">
+        <!-- Button 1: Macros -->
+        <button id="btn-open-macros" class="py-3 px-2 rounded-2xl bg-panelCard hover:bg-[#20293A] border border-amber-500/40 text-white font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer shadow-md tactical-btn">
+          <div class="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/40 flex items-center justify-center mb-1">
+            <svg class="w-4 h-4 text-tacticalAmber" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <span class="text-[11px] font-mono tracking-wider text-amber-300">MACROS</span>
+          <span class="text-[9px] text-gray-400 font-mono">1-Click Fast</span>
         </button>
 
-        <button onclick="transmitMacro(2, 'आग की आपात स्थिति • अग्निशमन दल तत्काल भेजें')" class="p-3 rounded-2xl bg-[#1E212B] hover:bg-orange-950/60 border border-orange-900/60 flex flex-col transition-all cursor-pointer">
-          <span class="text-base mb-1">🔥 FIRE RESCUE</span>
-          <span class="text-[10px] text-gray-300">Dispatch fire team</span>
-          <span class="text-[9px] text-amber-400/80 font-mono mt-1">6 Bytes • Critical</span>
+        <!-- Button 2: Test Voice -->
+        <button id="btn-quick-test" class="py-3 px-2 rounded-2xl bg-panelCard hover:bg-[#1C283A] border border-tacticalCyan/40 text-white font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer shadow-md tactical-btn">
+          <div class="w-7 h-7 rounded-lg bg-tacticalCyan/15 border border-tacticalCyan/40 flex items-center justify-center mb-1">
+            <svg class="w-4 h-4 text-tacticalCyan" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+            </svg>
+          </div>
+          <span class="text-[11px] font-mono tracking-wider text-tacticalCyan">TEST VOICE</span>
+          <span class="text-[9px] text-gray-400 font-mono">Simulate TX</span>
         </button>
 
-        <button onclick="transmitMacro(3, 'जलस्तर बढ़ रहा है • तत्काल निकासी आवश्यक है')" class="p-3 rounded-2xl bg-[#1E212B] hover:bg-blue-950/60 border border-blue-900/60 flex flex-col transition-all cursor-pointer">
-          <span class="text-base mb-1">🌊 FLOOD EVAC</span>
-          <span class="text-[10px] text-gray-300">Water rising, boat rescue</span>
-          <span class="text-[9px] text-amber-400/80 font-mono mt-1">6 Bytes • Urgent</span>
+        <!-- Button 3: SOS Beacon -->
+        <button id="btn-sos-distress" class="py-3 px-2 rounded-2xl bg-red-950/40 hover:bg-red-900/50 border border-red-700 text-white font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer shadow-md tactical-btn">
+          <div class="w-7 h-7 rounded-lg bg-red-600/20 border border-red-500/50 flex items-center justify-center mb-1">
+            <svg class="w-4 h-4 text-crimsonDistress" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+          </div>
+          <span id="sos-label" class="text-[11px] font-mono tracking-wider text-red-400">SOS BEACON</span>
+          <span class="text-[9px] text-gray-400 font-mono">Distress Alert</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE-UP TACTICAL MACROS SHEET (ZERO EMOJIS, CLEAN SVGS) -->
+    <!-- ======================================================== -->
+    <div id="sheet-macros" class="absolute inset-x-0 bottom-0 bg-[#10151F] border-t-2 border-tacticalAmber/60 rounded-t-[36px] p-5 shadow-2xl transition-transform duration-300 transform translate-y-full z-20">
+      <div class="flex items-center justify-between pb-3 border-b border-borderNavy mb-3">
+        <div class="flex items-center space-x-2">
+          <svg class="w-4 h-4 text-tacticalAmber" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          <span class="font-bold text-xs tracking-wider text-white uppercase font-mono">1-CLICK TACTICAL MACROS</span>
+        </div>
+        <button id="btn-close-macros" class="text-gray-300 hover:text-white font-mono text-xs px-2.5 py-1 rounded bg-panelCard border border-borderNavy hover:bg-borderNavy transition-colors tactical-btn">CLOSE</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5 text-left font-sans">
+        <!-- Macro 1: Medevac -->
+        <button onclick="transmitMacro(1, 'तत्काल चिकित्सा सहायता और एम्बुलेंस की आवश्यकता है')" class="p-3 rounded-2xl bg-panelCard hover:bg-red-950/60 border border-red-800/60 flex flex-col transition-all cursor-pointer tactical-btn">
+          <div class="flex items-center space-x-1.5 text-red-400 font-bold text-xs mb-1 font-mono">
+            <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m-8-8h16"/>
+            </svg>
+            <span>MEDEVAC</span>
+          </div>
+          <span class="text-xs text-gray-200">Urgent medical evacuation</span>
+          <span class="text-[10px] text-amber-400 font-mono mt-1 font-semibold">6 Bytes • High Priority</span>
         </button>
 
-        <button onclick="transmitMacro(4, 'हमले की स्थिति • तत्काल बैकअप और कवर प्रदान करें')" class="p-3 rounded-2xl bg-[#1E212B] hover:bg-amber-950/60 border border-amber-900/60 flex flex-col transition-all cursor-pointer">
-          <span class="text-base mb-1">🛡️ AMBUSH</span>
-          <span class="text-[10px] text-gray-300">Immediate cover & backup</span>
-          <span class="text-[9px] text-amber-400/80 font-mono mt-1">6 Bytes • Tactical</span>
+        <!-- Macro 2: Fire Rescue -->
+        <button onclick="transmitMacro(2, 'आग की आपात स्थिति • अग्निशमन दल तत्काल भेजें')" class="p-3 rounded-2xl bg-panelCard hover:bg-orange-950/60 border border-orange-800/60 flex flex-col transition-all cursor-pointer tactical-btn">
+          <div class="flex items-center space-x-1.5 text-orange-400 font-bold text-xs mb-1 font-mono">
+            <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+            </svg>
+            <span>FIRE RESCUE</span>
+          </div>
+          <span class="text-xs text-gray-200">Dispatch fire suppression</span>
+          <span class="text-[10px] text-amber-400 font-mono mt-1 font-semibold">6 Bytes • Critical</span>
+        </button>
+
+        <!-- Macro 3: Flood Evac -->
+        <button onclick="transmitMacro(3, 'जलस्तर बढ़ रहा है • तत्काल निकासी आवश्यक है')" class="p-3 rounded-2xl bg-panelCard hover:bg-blue-950/60 border border-blue-800/60 flex flex-col transition-all cursor-pointer tactical-btn">
+          <div class="flex items-center space-x-1.5 text-blue-400 font-bold text-xs mb-1 font-mono">
+            <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 15c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M3 19c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M3 11c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2"/>
+            </svg>
+            <span>FLOOD EVAC</span>
+          </div>
+          <span class="text-xs text-gray-200">Water rising, boat rescue</span>
+          <span class="text-[10px] text-amber-400 font-mono mt-1 font-semibold">6 Bytes • Urgent</span>
+        </button>
+
+        <!-- Macro 4: Ambush / Cover -->
+        <button onclick="transmitMacro(4, 'हमले की स्थिति • तत्काल बैकअप और कवर प्रदान करें')" class="p-3 rounded-2xl bg-panelCard hover:bg-amber-950/60 border border-amber-800/60 flex flex-col transition-all cursor-pointer tactical-btn">
+          <div class="flex items-center space-x-1.5 text-amber-400 font-bold text-xs mb-1 font-mono">
+            <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 4v6c0 5.25-3.5 10-8 11-4.5-1-8-5.75-8-11V7l8-4z"/>
+            </svg>
+            <span>AMBUSH</span>
+          </div>
+          <span class="text-xs text-gray-200">Tactical cover & support</span>
+          <span class="text-[10px] text-amber-400 font-mono mt-1 font-semibold">6 Bytes • Urgent</span>
         </button>
       </div>
     </div>
 
   </main>
 
-  <footer class="w-full max-w-lg text-center text-[11px] text-gray-500 font-mono py-2">
+  <footer class="w-full max-w-lg text-center text-xs text-gray-400 font-mono py-2">
     VaaniSetu MicroRadio Mesh Transmitter • 100% Offline Air-Gapped Operation
   </footer>
 
@@ -295,9 +381,9 @@
 
     // Draw idle line on canvas
     function drawIdleCanvas() {
-      ctx.fillStyle = "#06090e";
+      ctx.fillStyle = "#080C14";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = "rgba(0, 229, 255, 0.25)";
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.3)";
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(0, canvas.height / 2);
@@ -308,10 +394,10 @@
 
     function drawActiveWaveform() {
       if (!isPttActive) return;
-      ctx.fillStyle = "rgba(6, 9, 14, 0.3)";
+      ctx.fillStyle = "rgba(8, 12, 20, 0.35)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.strokeStyle = "#E5A93C";
+      ctx.strokeStyle = "#F59E0B";
       ctx.lineWidth = 2;
       ctx.beginPath();
       const sliceWidth = canvas.width / 32;
@@ -333,9 +419,9 @@
       isPttActive = true;
       btnPtt.classList.add("active");
       pttLabel.textContent = "TRANSMITTING";
-      pttLabel.style.color = "#FF4444";
+      pttLabel.style.color = "#EF4444";
       pttHint.textContent = "Microphone active • Recording 16kHz audio...";
-      pttHalo.style.borderColor = "rgba(255, 68, 68, 0.5)";
+      pttHalo.style.borderColor = "rgba(239, 68, 68, 0.5)";
 
       // Tell backend hardware mic to start recording
       try {
@@ -352,9 +438,9 @@
       isPttActive = false;
       btnPtt.classList.remove("active");
       pttLabel.textContent = "HOLD TO TALK";
-      pttLabel.style.color = "#E5A93C";
+      pttLabel.style.color = "#F59E0B";
       pttHint.textContent = "Hold button or press SPACEBAR";
-      pttHalo.style.borderColor = "rgba(229, 169, 60, 0.2)";
+      pttHalo.style.borderColor = "rgba(245, 158, 11, 0.25)";
       cancelAnimationFrame(waveAnimId);
       drawIdleCanvas();
 

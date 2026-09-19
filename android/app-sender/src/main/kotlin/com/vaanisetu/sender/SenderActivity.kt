@@ -331,7 +331,7 @@ class SenderActivity : AppCompatActivity() {
         isEmergencyDistressActive = !isEmergencyDistressActive
 
         if (isEmergencyDistressActive) {
-            btnDockSos.text = "🚨 ACTIVE"
+            btnDockSos.text = "ACTIVE"
             btnDockSos.setTextColor(Color.WHITE)
             btnDockSos.setBackgroundColor(Color.parseColor("#D32F2F"))
 
@@ -339,7 +339,7 @@ class SenderActivity : AppCompatActivity() {
                 meshRouter.sendTacticalMacro(TacticalMacro.SEARCH_RESCUE, channel = currentChannel, language = IndicLanguage.HINDI)
 
                 withContext(Dispatchers.Main) {
-                    tvMsgHeader.text = "🚨 EMERGENCY DISTRESS BROADCAST"
+                    tvMsgHeader.text = "EMERGENCY DISTRESS BROADCAST"
                     tvMsgText.text = "अत्यंत आपातकालीन स्थिति • तत्काल सहायता भेजें"
                     tvMsgTelemetry.text = "6 Bytes • HIGH PRIORITY • OVERRIDE"
                 }
@@ -347,7 +347,7 @@ class SenderActivity : AppCompatActivity() {
                 alertManager.triggerDistressAlert(audioPlayer = audioPlayer, durationSec = 1.2f)
             }
         } else {
-            btnDockSos.text = "🚨 SOS"
+            btnDockSos.text = "SOS"
             btnDockSos.setTextColor(Color.parseColor("#FF5252"))
             btnDockSos.setBackgroundResource(R.drawable.bg_dock_button)
             alertManager.cancelAlarm()

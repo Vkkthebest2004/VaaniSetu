@@ -118,10 +118,14 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="📡"
-                        android:textSize="20sp" />
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_dock_button"
+                        android:text="TX"
+                        android:textColor="#E5A93C"
+                        android:textStyle="bold"
+                        android:textSize="12sp" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -184,10 +188,14 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="📻"
-                        android:textSize="20sp" />
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_dock_button"
+                        android:text="RX"
+                        android:textColor="#38BDF8"
+                        android:textStyle="bold"
+                        android:textSize="12sp" />
 
                     <LinearLayout
                         android:layout_width="0dp"

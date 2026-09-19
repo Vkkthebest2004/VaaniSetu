@@ -144,11 +144,11 @@ class ReceiverStationActivity : AppCompatActivity() {
         btnDockAutoTts.setOnClickListener {
             isAutoTtsEnabled = !isAutoTtsEnabled
             if (isAutoTtsEnabled) {
-                btnDockAutoTts.text = "🔊 AUTO-TTS"
-                btnDockAutoTts.setTextColor(Color.parseColor("#00E676"))
+                btnDockAutoTts.text = "AUTO-TTS: ON"
+                btnDockAutoTts.setTextColor(Color.parseColor("#38BDF8"))
                 tvRxHint.text = "Auto-synthesizing incoming speech via Neural TTS"
             } else {
-                btnDockAutoTts.text = "🔇 MUTED"
+                btnDockAutoTts.text = "AUTO-TTS: MUTED"
                 btnDockAutoTts.setTextColor(Color.parseColor("#9E9E9E"))
                 tvRxHint.text = "Text-only monitoring • Neural TTS disabled"
             }
@@ -208,13 +208,13 @@ class ReceiverStationActivity : AppCompatActivity() {
                 tvRxStatus.setTextColor(Color.parseColor("#00E5FF"))
 
                 if (packet.isEmergency) {
-                    tvRxMsgHeader.text = "🚨 EMERGENCY DISTRESS ($sourceIp)"
+                    tvRxMsgHeader.text = "EMERGENCY DISTRESS ($sourceIp)"
                     tvRxMsgHeader.setTextColor(Color.parseColor("#FF5252"))
                     tvRxMsgText.text = text
                     tvRxMsgTelemetry.text = "%d Bytes • HIGH PRIORITY OVERRIDE".format(packet.pack().size)
                 } else {
                     tvRxMsgHeader.text = "INCOMING VOICE (CH %02d)".format(packet.channel)
-                    tvRxMsgHeader.setTextColor(Color.parseColor("#00E676"))
+                    tvRxMsgHeader.setTextColor(Color.parseColor("#38BDF8"))
                     tvRxMsgText.text = text
                     val savedPercent = 99.92f
                     tvRxMsgTelemetry.text = "%d Bytes • %.2f%% Saved • 380 ms".format(packet.pack().size, savedPercent)
@@ -235,7 +235,7 @@ class ReceiverStationActivity : AppCompatActivity() {
 
             viewRxHalo.postDelayed({
                 tvRxStatus.text = "MONITORING CH %02d".format(currentChannel)
-                tvRxStatus.setTextColor(Color.parseColor("#00E676"))
+                tvRxStatus.setTextColor(Color.parseColor("#38BDF8"))
             }, 3500)
         }
     }
@@ -248,7 +248,7 @@ class ReceiverStationActivity : AppCompatActivity() {
         ).random()
 
         tvRxMsgHeader.text = "INGRESS FROM ALPHA-01 (CH %02d • HINDI)".format(currentChannel)
-        tvRxMsgHeader.setTextColor(Color.parseColor("#00E676"))
+        tvRxMsgHeader.setTextColor(Color.parseColor("#38BDF8"))
         tvRxMsgText.text = sampleIngress
         tvRxMsgTelemetry.text = "18 Bytes • 99.92% Saved • 380 ms"
 
@@ -265,7 +265,7 @@ class ReceiverStationActivity : AppCompatActivity() {
 
     private fun simulateDistressIngress() {
         val distressText = "आपातकालीन स्थिति • तत्काल एम्बुलेंस सहायता भेजें"
-        tvRxMsgHeader.text = "🚨 EMERGENCY DISTRESS (BRAVO-02)"
+        tvRxMsgHeader.text = "EMERGENCY DISTRESS (BRAVO-02)"
         tvRxMsgHeader.setTextColor(Color.parseColor("#FF5252"))
         tvRxMsgText.text = distressText
         tvRxMsgTelemetry.text = "6 Bytes • HIGH PRIORITY OVERRIDE"

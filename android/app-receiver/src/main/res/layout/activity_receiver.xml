@@ -343,7 +343,7 @@
                 android:layout_height="48dp"
                 android:background="@drawable/bg_chip_callsign"
                 android:gravity="center"
-                android:text="🎙️ SIMULATE SENDER SPEECH: &quot;गश्त दल सुरक्षित है&quot;"
+                android:text="SIMULATE SENDER SPEECH: &quot;गश्त दल सुरक्षित है&quot;"
                 android:textColor="#E5A93C"
                 android:textSize="12sp" />
 
@@ -354,7 +354,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_chip_callsign"
                 android:gravity="center"
-                android:text="🚑 SIMULATE TACTICAL MEDEVAC (6 BYTES)"
+                android:text="SIMULATE TACTICAL MEDEVAC (6 BYTES)"
                 android:textColor="#FFB74D"
                 android:textSize="12sp" />
 
@@ -365,7 +365,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_chip_callsign"
                 android:gravity="center"
-                android:text="🚨 SIMULATE EMERGENCY SOS DISTRESS ALARM"
+                android:text="SIMULATE EMERGENCY SOS DISTRESS ALARM"
                 android:textColor="#EF5350"
                 android:textSize="12sp" />
         </LinearLayout>

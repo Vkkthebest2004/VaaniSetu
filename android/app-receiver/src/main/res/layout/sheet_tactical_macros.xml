@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
         android:letterSpacing="0.1"
-        android:text="⚡ TACTICAL MACROS"
+        android:text="TACTICAL MACROS"
         android:textColor="#FFFFFF"
         android:textSize="16sp" />
 
@@ -48,7 +48,7 @@
             android:layout_margin="4dp"
             android:background="@drawable/bg_dock_button"
             app:backgroundTint="@null"
-            android:text="🚑  MEDEVAC"
+            android:text="MEDEVAC"
             android:textColor="#FF5252"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -61,7 +61,7 @@
             android:layout_margin="4dp"
             android:background="@drawable/bg_dock_button"
             app:backgroundTint="@null"
-            android:text="🔥  FIRE RESCUE"
+            android:text="FIRE RESCUE"
             android:textColor="#FFA726"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -74,7 +74,7 @@
             android:layout_margin="4dp"
             android:background="@drawable/bg_dock_button"
             app:backgroundTint="@null"
-            android:text="🌊  FLOOD EVAC"
+            android:text="FLOOD EVAC"
             android:textColor="#42A5F5"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -87,7 +87,7 @@
             android:layout_margin="4dp"
             android:background="@drawable/bg_dock_button"
             app:backgroundTint="@null"
-            android:text="🚨  AMBUSH / SOS"
+            android:text="AMBUSH / SOS"
             android:textColor="#FF1744"
             android:textSize="13sp"
             android:textStyle="bold" />

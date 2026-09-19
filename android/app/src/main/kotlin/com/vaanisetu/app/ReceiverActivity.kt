@@ -238,7 +238,7 @@ class ReceiverActivity : AppCompatActivity() {
     private fun simulateIngressMacro(macro: TacticalMacro, sender: String) {
         displayIncomingMessage(
             header = "TACTICAL MACRO INGRESS FROM $sender (CH %02d)".format(currentChannel),
-            text = "🚑 [TACTICAL MACRO]: तत्काल चिकित्सा सहायता और एम्बुलेंस की आवश्यकता है",
+            text = "[TACTICAL MACRO]: तत्काल चिकित्सा सहायता और एम्बुलेंस की आवश्यकता है",
             packetSize = 6,
             latencyMs = 210
         )
@@ -255,7 +255,7 @@ class ReceiverActivity : AppCompatActivity() {
 
     private fun simulateIngressDistress(text: String, sender: String) {
         displayIncomingMessage(
-            header = "🚨 EMERGENCY DISTRESS ALARM FROM $sender (CH %02d)".format(currentChannel),
+            header = "EMERGENCY DISTRESS ALARM FROM $sender (CH %02d)".format(currentChannel),
             text = text,
             packetSize = 12,
             latencyMs = 180

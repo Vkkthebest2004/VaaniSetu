@@ -70,9 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("/api/status");
       const data = await res.json();
       if (data.hardware_mic) {
-        console.log("🎙️ Server active hardware mic:", data.hardware_mic);
+        console.log("[MIC] Server active hardware mic:", data.hardware_mic);
         if (audioSourceSelect && audioSourceSelect.options[0]) {
-          audioSourceSelect.options[0].text = `🎙️ Mac Hardware Mic (${data.hardware_mic}) — Recommended`;
+          audioSourceSelect.options[0].text = `Mac Hardware Mic (${data.hardware_mic}) — Recommended`;
         }
       }
     } catch (e) {
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   emergencyToggle.addEventListener("change", () => {
     const rxPrio = document.getElementById("rx-screen-prio");
     if (emergencyToggle.checked) {
-      rxPrio.innerText = "🚨 DISTRESS";
+      rxPrio.innerText = "DISTRESS ACTIVE";
       rxPrio.style.color = "var(--accent-red)";
       document.body.style.boxShadow = "inset 0 0 40px rgba(255, 61, 0, 0.25)";
     } else {
@@ -157,13 +157,13 @@ document.addEventListener("DOMContentLoaded", () => {
       scriptProcessor.connect(audioContext.destination);
 
       micInitialized = true;
-      console.log("✅ Browser microphone initialized at sample rate:", audioContext.sampleRate);
+      console.log("[MIC] Browser microphone initialized at sample rate:", audioContext.sampleRate);
       return true;
     } catch (err) {
       console.error("Browser microphone access error:", err);
       txStatusIndicator.innerText = "MIC PERMISSION ERROR";
       txStatusIndicator.style.color = "var(--accent-red)";
-      txScreenText.innerText = "⚠️ Browser mic access denied. Switching to 'Mac Hardware Mic' recommended!";
+      txScreenText.innerText = "[ERROR] Browser mic access denied. Switching to 'Mac Hardware Mic' recommended!";
       return false;
     }
   }
@@ -280,7 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 1. Direct Mac Hardware Microphone
       txStatusIndicator.innerText = "TRANSMITTING (MAC MIC DIRECT)";
       txStatusIndicator.style.color = "var(--accent-red)";
-      txScreenText.innerText = "🎙️ Recording on MacBook Pro Microphone... (Speak now, release to send)";
+      txScreenText.innerText = "Recording on Hardware Microphone... (Speak now, release to send)";
 
       try {
         await fetch("/api/hw_ptt_start", { method: "POST" });
@@ -307,7 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
       pttAudioBuffers = [];
       txStatusIndicator.innerText = "TRANSMITTING (BROWSER MIC)";
       txStatusIndicator.style.color = "var(--accent-red)";
-      txScreenText.innerText = "🎙️ Speaking into browser mic... (Release PTT button to send)";
+      txScreenText.innerText = "Speaking into microphone... (Release PTT button to send)";
       startBrowserWaveformVisualization();
     }
   }
@@ -320,7 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
     pttBtn.classList.remove("active");
     txStatusIndicator.innerText = "PROCESSING";
     txStatusIndicator.style.color = "var(--accent-amber)";
-    txScreenText.innerText = "⚡ Transcribing speech & creating neural radio packet...";
+    txScreenText.innerText = "Transcribing speech & compressing neural radio packet...";
 
     if (hwPollInterval) {
       clearInterval(hwPollInterval);
@@ -351,13 +351,13 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           txStatusIndicator.innerText = "NO SPEECH DETECTED";
           txStatusIndicator.style.color = "var(--accent-red)";
-          txScreenText.innerText = "⚠️ " + (data.error || "No speech detected. Hold PTT and speak into your MacBook Pro microphone.");
+          txScreenText.innerText = data.error || "No speech detected. Hold PTT and speak into your microphone.";
         }
       } catch (err) {
         console.error("HW PTT stop error:", err);
         txStatusIndicator.innerText = "LINK ERROR";
         txStatusIndicator.style.color = "var(--accent-red)";
-        txScreenText.innerText = "⚠️ Hardware microphone communication error.";
+        txScreenText.innerText = "Hardware microphone communication error.";
       }
       return;
     }
@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
         transmitMessage({ text: fallback });
       } else {
         txStatusIndicator.innerText = "IDLE";
-        txScreenText.innerText = "⚠️ No audio captured. Hold PTT longer while speaking.";
+        txScreenText.innerText = "No audio captured. Hold PTT longer while speaking.";
       }
       return;
     }
@@ -507,13 +507,13 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         txStatusIndicator.innerText = "TX REJECTED";
         txStatusIndicator.style.color = "var(--accent-red)";
-        txScreenText.innerText = "⚠️ " + (data.error || "Speech could not be recognized.");
+        txScreenText.innerText = data.error || "Speech could not be recognized.";
       }
     } catch (err) {
       console.error("Transmission error:", err);
       txStatusIndicator.innerText = "LINK ERROR";
       txStatusIndicator.style.color = "var(--accent-red)";
-      txScreenText.innerText = "⚠️ Transmission link error.";
+      txScreenText.innerText = "Transmission link error.";
     }
   }
 
@@ -524,7 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
     txScreenText.innerText = `Sent: "${data.text}"`;
 
     // 2. Update Receiver Screen
-    rxStatusIndicator.innerText = data.is_emergency ? "🚨 EMERGENCY ALERT" : "RECEIVING (RX)";
+    rxStatusIndicator.innerText = data.is_emergency ? "DISTRESS ALERT" : "RECEIVING (RX)";
     rxStatusIndicator.style.color = data.is_emergency ? "var(--accent-red)" : "var(--accent-green)";
     rxScreenText.innerText = `Received: "${data.text}"`;
 
@@ -542,11 +542,11 @@ document.addEventListener("DOMContentLoaded", () => {
     speakerWaves.classList.add("active");
     if (data.is_emergency) {
       speakerWaves.classList.add("emergency");
-      speakerStatusLabel.innerText = "🚨 HIGH-VOLUME NON-INTERRUPTIBLE VOICE PLAYBACK";
+      speakerStatusLabel.innerText = "CRITICAL DISTRESS VOICE PLAYBACK";
       speakerStatusLabel.style.color = "var(--accent-red)";
     } else {
       speakerWaves.classList.remove("emergency");
-      speakerStatusLabel.innerText = "🔊 PLAYING VOICE NOTE";
+      speakerStatusLabel.innerText = "PLAYING VOICE SYNTHESIS";
       speakerStatusLabel.style.color = "var(--accent-green)";
     }
 
@@ -572,7 +572,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const timestamp = new Date().toLocaleTimeString();
     feedItem.innerHTML = `
       <div class="feed-meta">CH ${data.channel} &bull; ${data.language_name} &bull; ${timestamp} &bull; ${data.telemetry.packet_size_bytes}B (${data.telemetry.total_e2e_latency_ms}ms)</div>
-      <div>${data.is_emergency ? "🚨 " : ""}"${data.text}"</div>
+      <div>${data.is_emergency ? "[DISTRESS] " : ""}"${data.text}"</div>
     `;
     feedLog.prepend(feedItem);
   }

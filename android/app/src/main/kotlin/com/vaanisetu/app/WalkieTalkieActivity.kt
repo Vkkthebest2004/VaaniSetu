@@ -284,16 +284,16 @@ class WalkieTalkieActivity : AppCompatActivity() {
     private fun toggleEmergencyDistress() {
         isEmergencyDistressActive = !isEmergencyDistressActive
         if (isEmergencyDistressActive) {
-            btnDockSos.text = "🚨 ACTIVE"
+            btnDockSos.text = "ACTIVE"
             btnDockSos.setBackgroundColor(Color.parseColor("#E53935"))
-            tvMsgHeader.text = "🚨 EMERGENCY DISTRESS BROADCAST"
+            tvMsgHeader.text = "EMERGENCY DISTRESS BROADCAST"
             tvMsgText.text = "अत्यंत आपातकालीन स्थिति • तत्काल सहायता भेजें"
             tvMsgTelemetry.text = "12 Bytes • HIGH PRIORITY • OVERRIDE"
             lifecycleScope.launch(Dispatchers.IO) {
                 alertManager.triggerDistressAlert("अत्यंत आपातकालीन स्थिति", nativeTts, audioPlayer)
             }
         } else {
-            btnDockSos.text = "🚨 SOS"
+            btnDockSos.text = "SOS"
             btnDockSos.setBackgroundResource(R.drawable.bg_chip_callsign)
             alertManager.cancelAlarm()
         }

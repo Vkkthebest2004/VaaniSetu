@@ -81,7 +81,7 @@ class HardwareRecorder:
                 callback=callback,
             )
             self.stream.start()
-            print(f"🎙️ Opened hardware mic stream on device {dev_idx}: {dev_info.get('name', 'Default Mic') if isinstance(dev_info, dict) else 'Default'}")
+            print(f"[MIC-STREAM] Opened hardware mic stream on device {dev_idx}: {dev_info.get('name', 'Default Mic') if isinstance(dev_info, dict) else 'Default'}")
         except Exception as e:
             print(f"Error starting hardware mic stream: {e}")
 
@@ -231,7 +231,7 @@ async def handle_hw_ptt_stop(request):
     language = IndicLanguage.from_code(lang_code)
 
     audio_data = _hw_recorder.stop()
-    print(f"🎙️ Mac Hardware Mic: Stopped recording. Captured {len(audio_data)} samples ({len(audio_data)/16000:.2f}s).")
+    print(f"[HW-MIC] Stopped recording. Captured {len(audio_data)} samples ({len(audio_data)/16000:.2f}s).")
 
     if len(audio_data) < 2400:  # Less than 0.15s
         return web.json_response({
@@ -241,7 +241,7 @@ async def handle_hw_ptt_stop(request):
 
     peak = float(np.max(np.abs(audio_data)))
     rms = float(np.sqrt(np.mean(audio_data ** 2)))
-    print(f"🎙️ Audio stats: peak={peak:.4f}, rms={rms:.4f}")
+    print(f"[AUDIO-STATS] peak={peak:.4f}, rms={rms:.4f}")
 
     if peak < 0.003:
         return web.json_response({
@@ -261,7 +261,7 @@ async def handle_hw_ptt_stop(request):
     else:
         text = ""
     stt_latency_ms = (time.perf_counter() - t0) * 1000
-    print(f"📝 Multilingual STT recognized text [{lang_code}]: '{text}' in {stt_latency_ms:.1f}ms")
+    print(f"[STT-INFERENCE] Recognized text [{lang_code}]: '{text}' in {stt_latency_ms:.1f}ms")
 
     if not text:
         return web.json_response({
@@ -316,7 +316,7 @@ async def handle_transmit(request):
             audio_duration_sec = len(audio_data) / sr
             peak = float(np.max(np.abs(audio_data))) if len(audio_data) > 0 else 0.0
 
-            print(f"🎙️ Received browser audio: {len(audio_bytes)} bytes, {audio_duration_sec:.2f}s, sr={sr}, peak={peak:.4f}")
+            print(f"[BROWSER-AUDIO] Received browser audio: {len(audio_bytes)} bytes, {audio_duration_sec:.2f}s, sr={sr}, peak={peak:.4f}")
 
             if peak < 0.003 or len(audio_data) < int(sr * 0.15):
                 return web.json_response({
@@ -333,7 +333,7 @@ async def handle_transmit(request):
                     lang_code = detected_lang
                     language = IndicLanguage.from_code(detected_lang)
             stt_latency_ms = (time.perf_counter() - t0) * 1000
-            print(f"📝 Multilingual STT recognized text [{lang_code}]: '{text}' in {stt_latency_ms:.1f}ms")
+            print(f"[STT-INFERENCE] Recognized text [{lang_code}]: '{text}' in {stt_latency_ms:.1f}ms")
 
             if not text:
                 return web.json_response({
@@ -581,7 +581,7 @@ TACTICAL_MACRO_DEFINITIONS = [
         "id": 1,
         "name": "MEDICAL_EVAC",
         "title": "Medical Evac",
-        "icon": "🚑",
+        "icon": "MEDEVAC",
         "priority": "HIGH",
         "phrase_hi": "आपातकालीन चिकित्सा सहायता की तत्काल आवश्यकता है",
         "phrase_en": "Immediate medical evacuation required",
@@ -592,7 +592,7 @@ TACTICAL_MACRO_DEFINITIONS = [
         "id": 2,
         "name": "FIRE_RESCUE",
         "title": "Fire Rescue",
-        "icon": "🔥",
+        "icon": "FIRE",
         "priority": "CRITICAL",
         "phrase_hi": "आग फैल रही है, अग्निशमन दल तुरंत भेजें",
         "phrase_en": "Fire spreading rapidly, dispatch fire rescue",
@@ -603,7 +603,7 @@ TACTICAL_MACRO_DEFINITIONS = [
         "id": 3,
         "name": "FLOOD_EVAC",
         "title": "Flood Evac",
-        "icon": "🌊",
+        "icon": "FLOOD",
         "priority": "HIGH",
         "phrase_hi": "जलस्तर बढ़ रहा है, नाव बचाव दल भेजें",
         "phrase_en": "Water level rising rapidly, dispatch boat rescue",
@@ -614,7 +614,7 @@ TACTICAL_MACRO_DEFINITIONS = [
         "id": 4,
         "name": "HOSTAGE_AMBUSH",
         "title": "Hostage / Ambush",
-        "icon": "🚨",
+        "icon": "AMBUSH",
         "priority": "DISTRESS",
         "phrase_hi": "हम पर हमला हुआ है, तुरंत सुदृढ़ीकरण भेजें",
         "phrase_en": "Under ambush attack, send immediate reinforcements",
@@ -625,7 +625,7 @@ TACTICAL_MACRO_DEFINITIONS = [
         "id": 5,
         "name": "NEED_AMMO",
         "title": "Need Support",
-        "icon": "⚡",
+        "icon": "SUPPORT",
         "priority": "MEDIUM",
         "phrase_hi": "रसद और उपकरण की आवश्यकता है",
         "phrase_en": "Logistics and equipment resupply needed",
@@ -636,7 +636,7 @@ TACTICAL_MACRO_DEFINITIONS = [
         "id": 6,
         "name": "PERIMETER_BREACH",
         "title": "Perimeter Alert",
-        "icon": "🛡️",
+        "icon": "PERIMETER",
         "priority": "HIGH",
         "phrase_hi": "सुरक्षा घेरा टूट गया है, सतर्क रहें",
         "phrase_en": "Perimeter compromised, all units stay alert",
@@ -647,7 +647,7 @@ TACTICAL_MACRO_DEFINITIONS = [
         "id": 7,
         "name": "ALL_CLEAR",
         "title": "All Clear",
-        "icon": "🟢",
+        "icon": "ALL_CLEAR",
         "priority": "NORMAL",
         "phrase_hi": "क्षेत्र सुरक्षित है, सब कुछ नियंत्रण में है",
         "phrase_en": "Sector all clear, situation under control",
@@ -658,7 +658,7 @@ TACTICAL_MACRO_DEFINITIONS = [
         "id": 8,
         "name": "RENDEZVOUS",
         "title": "Rendezvous Point",
-        "icon": "🧭",
+        "icon": "REGROUP",
         "priority": "NORMAL",
         "phrase_hi": "निर्धारित संपर्क बिंदु पर एकत्र हों",
         "phrase_en": "Regroup at designated rendezvous coordinates",
@@ -790,6 +790,6 @@ def create_app():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
-    print(f"📻 Starting iTantra Walkie-Talkie on http://localhost:{port}")
+    print(f"[TACTICAL-SERVER] Starting VaaniSetu Transceiver on http://localhost:{port}")
     app = create_app()
     web.run_app(app, host="0.0.0.0", port=port)

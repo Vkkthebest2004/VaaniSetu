@@ -232,7 +232,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_dock_button"
             app:backgroundTint="@null"
-            android:text="⚡ MACROS"
+            android:text="MACROS"
             android:textColor="#FFCA28"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -247,7 +247,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_dock_button"
             app:backgroundTint="@null"
-            android:text="🎙️ TRANSMIT"
+            android:text="TEST TX"
             android:textColor="#00E5FF"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -261,7 +261,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_dock_button"
             app:backgroundTint="@null"
-            android:text="🚨 SOS"
+            android:text="SOS"
             android:textColor="#FF5252"
             android:textSize="12sp"
             android:textStyle="bold" />
