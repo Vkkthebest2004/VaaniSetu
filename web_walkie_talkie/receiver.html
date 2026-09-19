@@ -427,15 +427,44 @@
       }
     });
 
-    // Real-Time Ingress Polling
+    // Real-Time Ingress via Zero-Latency SSE + Fast Poll Fallback
+    function setupRealtimeIngress() {
+      let eventSource = null;
+      try {
+        eventSource = new EventSource("/api/events");
+        eventSource.onmessage = (event) => {
+          try {
+            const pkt = JSON.parse(event.data);
+            if (pkt && pkt.id && pkt.id > lastPacketId) {
+              if (!currentChannel || pkt.channel === currentChannel) {
+                displayIngress(pkt);
+                lastPacketId = pkt.id;
+              }
+            }
+          } catch (err) {
+            // quiet parse error
+          }
+        };
+        eventSource.onerror = () => {
+          if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+          }
+          startFastPolling();
+        };
+      } catch (e) {
+        startFastPolling();
+      }
+    }
+
     async function pollIngress() {
       try {
         const res = await fetch(`/api/poll_ingress?last_id=${lastPacketId}&channel=${currentChannel}`);
         const data = await res.json();
         if (data.success && data.packets && data.packets.length > 0) {
           for (const pkt of data.packets) {
-            displayIngress(pkt);
             if (pkt.id > lastPacketId) {
+              displayIngress(pkt);
               lastPacketId = pkt.id;
             }
           }
@@ -443,9 +472,14 @@
       } catch (e) {
         // Silent poll error
       }
-      setTimeout(pollIngress, 800);
+      setTimeout(pollIngress, 150);
     }
-    pollIngress();
+
+    function startFastPolling() {
+      setTimeout(pollIngress, 150);
+    }
+
+    setupRealtimeIngress();
 
     // Instant Simulation Triggers (Zero Mic Needed)
     document.getElementById("btn-sim-patrol").addEventListener("click", async () => {

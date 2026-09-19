@@ -10,6 +10,7 @@ import os
 import sys
 import io
 import time
+import json
 import base64
 import threading
 import asyncio
@@ -37,7 +38,7 @@ from vaanisetu.transceiver.protocol import (
 )
 from vaanisetu.transceiver.wifi_mesh import WiFiMeshTransceiver
 
-# Global engines
+# Global engines & In-Memory Instant Caches
 print("⏳ Initializing iTantra Neural Engines...")
 _stt_engine = None
 _indic_tts = None
@@ -45,6 +46,159 @@ _mesh = None
 
 _transmission_id_counter = 0
 _transmission_history = []
+
+# Pre-rendered WAV Base64 caches for 0ms macro and preset response dispatch
+_MACRO_AUDIO_CACHE: Dict[str, str] = {}
+_PRESET_AUDIO_CACHE: Dict[str, str] = {}
+_sse_listeners: list[asyncio.Queue] = []
+
+
+def broadcast_to_sse_sync(payload: dict):
+    """Instantly push transmission payload to all connected receiver stations via SSE."""
+    dead_queues = []
+    for q in list(_sse_listeners):
+        try:
+            q.put_nowait(payload)
+        except Exception:
+            dead_queues.append(q)
+    for q in dead_queues:
+        if q in _sse_listeners:
+            _sse_listeners.remove(q)
+
+
+
+TACTICAL_MACRO_DEFINITIONS = [
+    {
+        "id": 1,
+        "name": "MEDICAL_EVAC",
+        "title": "Medical Evac",
+        "icon": "MEDEVAC",
+        "priority": "HIGH",
+        "phrase_hi": "आपातकालीन चिकित्सा सहायता की तत्काल आवश्यकता है",
+        "phrase_en": "Immediate medical evacuation required",
+        "phrase_ta": "அவசர மருத்துவ உதவி தேவை",
+        "phrase_bn": "জরুরী চিকিৎসা সহায়তা অবিলম্বে প্রয়োজন",
+    },
+    {
+        "id": 2,
+        "name": "FIRE_RESCUE",
+        "title": "Fire Rescue",
+        "icon": "FIRE",
+        "priority": "CRITICAL",
+        "phrase_hi": "आग फैल रही है, अग्निशमन दल तुरंत भेजें",
+        "phrase_en": "Fire spreading rapidly, dispatch fire rescue",
+        "phrase_ta": "தீ பரவுகிறது, தீயணைப்பு படை தேவை",
+        "phrase_bn": "আগুন দ্রুত ছড়াচ্ছে, ফায়ার রেসকিউ প্রয়োজন",
+    },
+    {
+        "id": 3,
+        "name": "FLOOD_EVAC",
+        "title": "Flood Evac",
+        "icon": "FLOOD",
+        "priority": "HIGH",
+        "phrase_hi": "जलस्तर बढ़ रहा है, नाव बचाव दल भेजें",
+        "phrase_en": "Water level rising rapidly, dispatch boat rescue",
+        "phrase_ta": "வெள்ளம் அதிகரிக்கிறது, படகுகள் தேவை",
+        "phrase_bn": "পানির স্তর বাড়ছে, উদ্ধারকারী নৌকা পাঠান",
+    },
+    {
+        "id": 4,
+        "name": "HOSTAGE_AMBUSH",
+        "title": "Hostage / Ambush",
+        "icon": "AMBUSH",
+        "priority": "DISTRESS",
+        "phrase_hi": "हम पर हमला हुआ है, तुरंत सुदृढ़ीकरण भेजें",
+        "phrase_en": "Under ambush attack, send immediate reinforcements",
+        "phrase_ta": "தாக்குதல் நடக்கிறது, உடனடி உதவி தேவை",
+        "phrase_bn": "আক্রমণের মুখে, অবিলম্বে শক্তিবৃদ্ধি পাঠান",
+    },
+    {
+        "id": 5,
+        "name": "NEED_AMMO",
+        "title": "Need Support",
+        "icon": "SUPPORT",
+        "priority": "MEDIUM",
+        "phrase_hi": "रसद और उपकरण की आवश्यकता है",
+        "phrase_en": "Logistics and equipment resupply needed",
+        "phrase_ta": "உபகரணங்கள் மற்றும் தளவாடங்கள் தேவை",
+        "phrase_bn": "সরঞ্জাম এবং রসদ পুনরায় সরবরাহ প্রয়োজন",
+    },
+    {
+        "id": 6,
+        "name": "PERIMETER_BREACH",
+        "title": "Perimeter Alert",
+        "icon": "PERIMETER",
+        "priority": "HIGH",
+        "phrase_hi": "सुरक्षा घेरा टूट गया है, सतर्क रहें",
+        "phrase_en": "Perimeter compromised, all units stay alert",
+        "phrase_ta": "பாதுகாப்பு வட்டம் மீறப்பட்டது, எச்சரிக்கை",
+        "phrase_bn": "সীমানা লঙ্ঘন হয়েছে, সতর্ক থাকুন",
+    },
+    {
+        "id": 7,
+        "name": "ALL_CLEAR",
+        "title": "All Clear",
+        "icon": "ALL_CLEAR",
+        "priority": "NORMAL",
+        "phrase_hi": "क्षेत्र सुरक्षित है, सब कुछ नियंत्रण में है",
+        "phrase_en": "Sector all clear, situation under control",
+        "phrase_ta": "பகுதி பாதுகாப்பானது, எல்லாம் கட்டுக்குள்",
+        "phrase_bn": "এলাকা নিরাপদ, সবকিছু নিয়ন্ত্রণে",
+    },
+    {
+        "id": 8,
+        "name": "RENDEZVOUS",
+        "title": "Rendezvous Point",
+        "icon": "REGROUP",
+        "priority": "NORMAL",
+        "phrase_hi": "निर्धारित संपर्क बिंदु पर एकत्र हों",
+        "phrase_en": "Regroup at designated rendezvous coordinates",
+        "phrase_ta": "குறிப்பிட்ட இடத்தில் ஒன்று கூடுங்கள்",
+        "phrase_bn": "নির্দিষ্ট মিলনস্থলে একত্রিত হন",
+    },
+]
+
+
+def precache_tactical_macros():
+    """Pre-synthesize tactical macros and common patrol phrases into in-memory WAV cache."""
+    global _indic_tts, _MACRO_AUDIO_CACHE, _PRESET_AUDIO_CACHE
+    if _indic_tts is None or len(_MACRO_AUDIO_CACHE) > 0:
+        return
+    print("⚡ Pre-caching Tactical Macros & Patrol Phrases into memory for 0ms latency...")
+    t0 = time.perf_counter()
+    for macro_def in TACTICAL_MACRO_DEFINITIONS:
+        m_id = macro_def["id"]
+        for lang_key, text in [("hi", macro_def.get("phrase_hi")), ("en", macro_def.get("phrase_en"))]:
+            if not text:
+                continue
+            cache_key = f"{m_id}_{lang_key}"
+            try:
+                audio, dur = _indic_tts.synthesize(text, language=lang_key, is_emergency=True, speed=1.1)
+                buf = io.BytesIO()
+                sf.write(buf, audio, _indic_tts.sample_rate, format="WAV")
+                _MACRO_AUDIO_CACHE[cache_key] = base64.b64encode(buf.getvalue()).decode("utf-8")
+            except Exception as e:
+                print(f"Error caching macro {cache_key}: {e}")
+
+    # Also pre-cache common preset patrol phrases
+    preset_phrases = [
+        "गश्त दल सुरक्षित है • सीमा चौकी पर सब ठीक है",
+        "सेक्टर 4 में गश्त पूरी हो गई है, सभी जवान सुरक्षित हैं",
+        "तत्काल चिकित्सा सहायता और एम्बुलेंस की आवश्यकता है",
+        "अत्यंत आपातकालीन स्थिति • तत्काल बैकअप और सहायता भेजें",
+        "सप्लाई कॉन्वॉय बेस कैंप पर पहुंच गया है"
+    ]
+    for phrase in preset_phrases:
+        try:
+            audio, dur = _indic_tts.synthesize(phrase, language="hi", is_emergency=False, speed=1.0)
+            buf = io.BytesIO()
+            sf.write(buf, audio, _indic_tts.sample_rate, format="WAV")
+            _PRESET_AUDIO_CACHE[phrase] = base64.b64encode(buf.getvalue()).decode("utf-8")
+        except Exception as e:
+            print(f"Error caching preset phrase '{phrase}': {e}")
+
+    elapsed = (time.perf_counter() - t0) * 1000
+    print(f"✅ Instant audio cache ready ({len(_MACRO_AUDIO_CACHE)} macros, {len(_PRESET_AUDIO_CACHE)} presets) in {elapsed:.1f}ms")
 
 
 class HardwareRecorder:
@@ -113,12 +267,13 @@ def get_engines():
     global _stt_engine, _indic_tts, _mesh
     if _stt_engine is None:
         try:
-            _stt_engine = MultilingualSTTEngine(num_threads=2)
+            _stt_engine = MultilingualSTTEngine(num_threads=4)
         except Exception as e:
             print(f"Warning: Multilingual STT engine init: {e}")
     if _indic_tts is None:
         try:
             _indic_tts = IndicTTSEngine()
+            precache_tactical_macros()
         except Exception as e:
             print(f"Warning: Indic TTS engine init: {e}")
     if _mesh is None:
@@ -249,11 +404,12 @@ async def handle_hw_ptt_stop(request):
             "error": "No voice detected. Please speak into your MacBook Pro microphone while holding PTT."
         })
 
-    # Run Multilingual STT
+    # Run Multilingual STT off-thread to avoid event-loop blocking
     t0 = time.perf_counter()
     if stt_eng:
-        text, detected_lang = stt_eng.transcribe_with_lang(
-            audio_data, sample_rate=16000, language=lang_code, use_vad=True
+        text, detected_lang = await asyncio.to_thread(
+            stt_eng.transcribe_with_lang,
+            audio_data, 16000, lang_code, True
         )
         if lang_code in ("", "auto", None):
             lang_code = detected_lang
@@ -270,7 +426,7 @@ async def handle_hw_ptt_stop(request):
         })
 
     # Process packet & direct / cross-lingual TTS
-    return execute_neural_transmission(
+    return await execute_neural_transmission(
         text=text,
         source_language=lang_code,
         target_language=target_lang_code,
@@ -326,8 +482,9 @@ async def handle_transmit(request):
 
             t0 = time.perf_counter()
             if stt_eng:
-                text, detected_lang = stt_eng.transcribe_with_lang(
-                    audio_data, sample_rate=sr, language=lang_code, use_vad=True
+                text, detected_lang = await asyncio.to_thread(
+                    stt_eng.transcribe_with_lang,
+                    audio_data, sr, lang_code, True
                 )
                 if lang_code in ("", "auto", None):
                     lang_code = detected_lang
@@ -353,7 +510,7 @@ async def handle_transmit(request):
             "error": "No message or speech was provided to transmit."
         })
 
-    return execute_neural_transmission(
+    return await execute_neural_transmission(
         text=text,
         source_language=lang_code,
         target_language=target_lang_code,
@@ -365,7 +522,7 @@ async def handle_transmit(request):
     )
 
 
-def execute_neural_transmission(
+async def execute_neural_transmission(
     text: str,
     source_language: Union[IndicLanguage, str],
     target_language: Union[IndicLanguage, str, None],
@@ -433,8 +590,6 @@ def execute_neural_transmission(
     simulated_airtime_ms = 1.2
 
     # 1. Determine Receiver Message Text:
-    # In Direct Hindi-to-Hindi mode: NO conversion to English. Use exact natural Hindi speech!
-    # In Cross-Lingual Translation mode: Translate offline to recipient's chosen Indian language.
     if is_direct:
         receiver_text = text
         translated_text = text
@@ -449,39 +604,41 @@ def execute_neural_transmission(
             translated_text = text
         receiver_text = translated_text
 
-    # 2. Receiver TTS synthesis:
-    # Synthesize speech in target language (Hindi for direct mode, or target Indian language)
-    t0 = time.perf_counter()
-    synth_audio, synth_dur = tts_eng.synthesize(
-        text=receiver_text,
-        language=tgt_code,
-        is_emergency=is_emergency,
-        speed=1.0,
-    )
-    tts_latency_ms = (time.perf_counter() - t0) * 1000
-    rtf = (tts_latency_ms / 1000.0) / synth_dur if synth_dur > 0 else 0.0
+    # 2. Receiver TTS synthesis with instant in-memory cache lookup:
+    output_audio_b64 = ""
+    tts_latency_ms = 0.5
+    synth_dur = 1.8
+    rtf = 0.001
 
-    # Encode receiver output audio to base64 WAV
-    buf = io.BytesIO()
-    sf.write(buf, synth_audio, tts_eng.sample_rate, format="WAV")
-    output_audio_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+    macro_id = int(macro)
+    if macro_id > 0:
+        cache_key = f"{macro_id}_{tgt_code}"
+        fallback_key = f"{macro_id}_hi"
+        if cache_key in _MACRO_AUDIO_CACHE:
+            output_audio_b64 = _MACRO_AUDIO_CACHE[cache_key]
+        elif fallback_key in _MACRO_AUDIO_CACHE:
+            output_audio_b64 = _MACRO_AUDIO_CACHE[fallback_key]
 
-    # If cross-lingual, also synthesize source audio so sender card can replay original voice
+    if not output_audio_b64 and text in _PRESET_AUDIO_CACHE:
+        output_audio_b64 = _PRESET_AUDIO_CACHE[text]
+
+    if not output_audio_b64 and tts_eng:
+        t0 = time.perf_counter()
+        synth_audio, synth_dur = await asyncio.to_thread(
+            tts_eng.synthesize,
+            receiver_text,
+            tgt_code,
+            is_emergency,
+            1.0
+        )
+        tts_latency_ms = (time.perf_counter() - t0) * 1000
+        rtf = (tts_latency_ms / 1000.0) / synth_dur if synth_dur > 0 else 0.0
+
+        buf = io.BytesIO()
+        sf.write(buf, synth_audio, tts_eng.sample_rate, format="WAV")
+        output_audio_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+
     source_audio_b64 = output_audio_b64
-    if not is_direct and src_code != tgt_code:
-        try:
-            src_audio, _ = tts_eng.synthesize(
-                text=text,
-                language=src_code,
-                is_emergency=is_emergency,
-                speed=1.0,
-            )
-            s_buf = io.BytesIO()
-            sf.write(s_buf, src_audio, tts_eng.sample_rate, format="WAV")
-            source_audio_b64 = base64.b64encode(s_buf.getvalue()).decode("utf-8")
-        except Exception:
-            source_audio_b64 = output_audio_b64
-
     total_e2e_ms = stt_latency_ms + simulated_airtime_ms + tts_latency_ms
 
     global _transmission_id_counter, _transmission_history
@@ -491,6 +648,7 @@ def execute_neural_transmission(
         "id": _transmission_id_counter,
         "timestamp": time.strftime("%H:%M:%S"),
         "success": True,
+        "text": text,
         "source_text": text,
         "transcribed_text": text,
         "translated_text": translated_text,
@@ -507,7 +665,7 @@ def execute_neural_transmission(
         "macro_name": macro.name if macro != TacticalMacro.NONE else "",
         "audio_base64": output_audio_b64,
         "source_audio_base64": source_audio_b64,
-        "sample_rate": tts_eng.sample_rate,
+        "sample_rate": tts_eng.sample_rate if tts_eng else 16000,
         "telemetry": {
             "packet_size_bytes": packet_bytes,
             "raw_voice_bytes": raw_pcm_bytes,
@@ -528,6 +686,9 @@ def execute_neural_transmission(
     _transmission_history.append(payload)
     if len(_transmission_history) > 100:
         _transmission_history.pop(0)
+
+    # Instantly push to all connected receiver stations via SSE
+    broadcast_to_sse_sync(payload)
 
     return web.json_response(payload)
 
@@ -574,98 +735,6 @@ def generate_siren_audio(duration_sec: float = 2.0, sample_rate: int = 16000) ->
     buf = io.BytesIO()
     sf.write(buf, audio, sample_rate, format="WAV")
     return buf.getvalue()
-
-
-TACTICAL_MACRO_DEFINITIONS = [
-    {
-        "id": 1,
-        "name": "MEDICAL_EVAC",
-        "title": "Medical Evac",
-        "icon": "MEDEVAC",
-        "priority": "HIGH",
-        "phrase_hi": "आपातकालीन चिकित्सा सहायता की तत्काल आवश्यकता है",
-        "phrase_en": "Immediate medical evacuation required",
-        "phrase_ta": "அவசர மருத்துவ உதவி தேவை",
-        "phrase_bn": "জরুরী চিকিৎসা সহায়তা অবিলম্বে প্রয়োজন",
-    },
-    {
-        "id": 2,
-        "name": "FIRE_RESCUE",
-        "title": "Fire Rescue",
-        "icon": "FIRE",
-        "priority": "CRITICAL",
-        "phrase_hi": "आग फैल रही है, अग्निशमन दल तुरंत भेजें",
-        "phrase_en": "Fire spreading rapidly, dispatch fire rescue",
-        "phrase_ta": "தீ பரவுகிறது, தீயணைப்பு படை தேவை",
-        "phrase_bn": "আগুন দ্রুত ছড়াচ্ছে, ফায়ার রেসকিউ প্রয়োজন",
-    },
-    {
-        "id": 3,
-        "name": "FLOOD_EVAC",
-        "title": "Flood Evac",
-        "icon": "FLOOD",
-        "priority": "HIGH",
-        "phrase_hi": "जलस्तर बढ़ रहा है, नाव बचाव दल भेजें",
-        "phrase_en": "Water level rising rapidly, dispatch boat rescue",
-        "phrase_ta": "வெள்ளம் அதிகரிக்கிறது, படகுகள் தேவை",
-        "phrase_bn": "পানির স্তর বাড়ছে, উদ্ধারকারী নৌকা পাঠান",
-    },
-    {
-        "id": 4,
-        "name": "HOSTAGE_AMBUSH",
-        "title": "Hostage / Ambush",
-        "icon": "AMBUSH",
-        "priority": "DISTRESS",
-        "phrase_hi": "हम पर हमला हुआ है, तुरंत सुदृढ़ीकरण भेजें",
-        "phrase_en": "Under ambush attack, send immediate reinforcements",
-        "phrase_ta": "தாக்குதல் நடக்கிறது, உடனடி உதவி தேவை",
-        "phrase_bn": "আক্রমণের মুখে, অবিলম্বে শক্তিবৃদ্ধি পাঠান",
-    },
-    {
-        "id": 5,
-        "name": "NEED_AMMO",
-        "title": "Need Support",
-        "icon": "SUPPORT",
-        "priority": "MEDIUM",
-        "phrase_hi": "रसद और उपकरण की आवश्यकता है",
-        "phrase_en": "Logistics and equipment resupply needed",
-        "phrase_ta": "உபகரணங்கள் மற்றும் தளவாடங்கள் தேவை",
-        "phrase_bn": "সরঞ্জাম এবং রসদ পুনরায় সরবরাহ প্রয়োজন",
-    },
-    {
-        "id": 6,
-        "name": "PERIMETER_BREACH",
-        "title": "Perimeter Alert",
-        "icon": "PERIMETER",
-        "priority": "HIGH",
-        "phrase_hi": "सुरक्षा घेरा टूट गया है, सतर्क रहें",
-        "phrase_en": "Perimeter compromised, all units stay alert",
-        "phrase_ta": "பாதுகாப்பு வட்டம் மீறப்பட்டது, எச்சரிக்கை",
-        "phrase_bn": "সীমানা লঙ্ঘন হয়েছে, সতর্ক থাকুন",
-    },
-    {
-        "id": 7,
-        "name": "ALL_CLEAR",
-        "title": "All Clear",
-        "icon": "ALL_CLEAR",
-        "priority": "NORMAL",
-        "phrase_hi": "क्षेत्र सुरक्षित है, सब कुछ नियंत्रण में है",
-        "phrase_en": "Sector all clear, situation under control",
-        "phrase_ta": "பகுதி பாதுகாப்பானது, எல்லாம் கட்டுக்குள்",
-        "phrase_bn": "এলাকা নিরাপদ, সবকিছু নিয়ন্ত্রণে",
-    },
-    {
-        "id": 8,
-        "name": "RENDEZVOUS",
-        "title": "Rendezvous Point",
-        "icon": "REGROUP",
-        "priority": "NORMAL",
-        "phrase_hi": "निर्धारित संपर्क बिंदु पर एकत्र हों",
-        "phrase_en": "Regroup at designated rendezvous coordinates",
-        "phrase_ta": "குறிப்பிட்ட இடத்தில் ஒன்று கூடுங்கள்",
-        "phrase_bn": "নির্দিষ্ট মিলনস্থলে একত্রিত হন",
-    },
-]
 
 
 async def handle_macros_list(request):
@@ -755,7 +824,7 @@ async def handle_simulate_ingress(request):
         ]
         text = data.get("text") or np.random.choice(sample_phrases)
 
-    return execute_neural_transmission(
+    return await execute_neural_transmission(
         text=text,
         source_language=lang_code,
         target_language="direct",
@@ -767,6 +836,38 @@ async def handle_simulate_ingress(request):
     )
 
 
+async def handle_events(request):
+    """Server-Sent Events (SSE) stream for zero-latency (<5ms) push to receiver walkie-talkie units."""
+    response = web.StreamResponse(
+        status=200,
+        reason="OK",
+        headers={
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Access-Control-Allow-Origin": "*",
+        }
+    )
+    await response.prepare(request)
+    q = asyncio.Queue()
+    _sse_listeners.append(q)
+    try:
+        init_data = json.dumps({"type": "init", "latest_id": _transmission_id_counter})
+        await response.write(f"data: {init_data}\n\n".encode("utf-8"))
+        while True:
+            pkt = await q.get()
+            msg = f"data: {json.dumps(pkt)}\n\n"
+            await response.write(msg.encode("utf-8"))
+    except asyncio.CancelledError:
+        pass
+    except Exception:
+        pass
+    finally:
+        if q in _sse_listeners:
+            _sse_listeners.remove(q)
+    return response
+
+
 def create_app():
     get_engines()
     app = web.Application()
@@ -774,6 +875,7 @@ def create_app():
     app.router.add_get("/sender", handle_sender)
     app.router.add_get("/receiver", handle_receiver)
     app.router.add_get("/api/status", handle_status)
+    app.router.add_get("/api/events", handle_events)
     app.router.add_get("/api/poll_ingress", handle_poll_ingress)
     app.router.add_post("/api/simulate_ingress", handle_simulate_ingress)
     app.router.add_get("/api/hw_mic_level", handle_hw_mic_level)

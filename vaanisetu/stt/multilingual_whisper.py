@@ -160,13 +160,44 @@ class MultilingualSTTEngine:
                     language=lang_code,
                     task="transcribe",
                     num_threads=self.num_threads,
-                    tail_paddings=8000,
+                    tail_paddings=0,
                 )
                 self._recognizers[lang_code] = rec
                 dur = (time.perf_counter() - t0) * 1000
                 lang_display = self.SUPPORTED_LANGUAGES.get(lang_code, lang_code or "Auto-Detect")
                 print(f"   [STT] Loaded Whisper instance for {lang_display} [{lang_code or 'auto'}] in {dur:.1f}ms")
             return self._recognizers[lang_code]
+
+    @staticmethod
+    def trim_silence(
+        audio: np.ndarray,
+        sample_rate: int = 16000,
+        threshold: float = 0.012,
+        pad_sec: float = 0.15,
+    ) -> np.ndarray:
+        """
+        Fast energy-based trimmer for leading and trailing silence/dead-air.
+        Preserves pad_sec head/tail margin so initial and final phonemes are never clipped.
+        """
+        if len(audio) == 0:
+            return audio
+        frame_len = int(sample_rate * 0.02)  # 20ms frames
+        n_frames = len(audio) // frame_len
+        if n_frames < 3:
+            return audio
+
+        frames = audio[: n_frames * frame_len].reshape(n_frames, frame_len)
+        energy = np.sqrt(np.mean(frames ** 2, axis=1))
+        speech_frames = np.where(energy > threshold)[0]
+
+        if len(speech_frames) == 0:
+            return audio
+
+        pad_frames = int(pad_sec / 0.02)
+        start_frame = max(0, speech_frames[0] - pad_frames)
+        end_frame = min(n_frames, speech_frames[-1] + pad_frames + 1)
+
+        return audio[start_frame * frame_len : end_frame * frame_len]
 
     def transcribe_array(
         self,
@@ -244,6 +275,11 @@ class MultilingualSTTEngine:
         whisper_lang = "bn" if target_lang == "or" else target_lang
         recognizer = self._get_recognizer(whisper_lang)
 
+        # Fast trim leading/trailing dead air to minimize Whisper attention matrix length
+        speech_audio = self.trim_silence(conditioned, sample_rate=self.sample_rate)
+        if len(speech_audio) < int(self.sample_rate * 0.15):
+            speech_audio = conditioned
+
         stream = recognizer.create_stream()
         prompt = self.LANGUAGE_PROMPT_BIAS.get(target_lang or whisper_lang)
         if prompt:
@@ -251,7 +287,7 @@ class MultilingualSTTEngine:
                 stream.set_option("prompt", prompt)
             except Exception:
                 pass
-        stream.accept_waveform(self.sample_rate, conditioned)
+        stream.accept_waveform(self.sample_rate, speech_audio)
         recognizer.decode_stream(stream)
 
         raw_text = stream.result.text.strip()
