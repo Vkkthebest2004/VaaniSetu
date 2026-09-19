@@ -123,4 +123,29 @@ class CoreTransceiverUnitTest {
         assertNotNull(hindi)
         assertTrue(hindi.isNotBlank())
     }
+
+    @Test
+    fun testTransmissionResultDataModel() {
+        val result = SenderPipeline.TransmissionResult(
+            text = "सुरक्षित",
+            audio = FloatArray(1600),
+            byteCount = 10,
+            channel = 8,
+            isMacro = false
+        )
+        assertEquals("सुरक्षित", result.text)
+        assertEquals(8, result.channel)
+        assertEquals(10, result.byteCount)
+        assertFalse(result.isMacro)
+    }
+
+    @Test
+    fun testAudioResultDataModel() {
+        val audioResult = ReceiverPipeline.AudioResult(
+            samples = FloatArray(800),
+            isEmergency = true
+        )
+        assertEquals(800, audioResult.samples.size)
+        assertTrue(audioResult.isEmergency)
+    }
 }

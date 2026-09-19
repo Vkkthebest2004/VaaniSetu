@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """
-Model Downloader — Download STT and TTS models for VaaniSetu.
+Model Downloader — Download STT, VAD, and TTS models for VaaniSetu.
 
-Run this once to download all required models:
-    python scripts/download_models.py
-
-This requires internet access (one-time only).
-After downloading, VaaniSetu runs fully offline.
+Supports selective downloading by target application:
+    python scripts/download_models.py --target sender    # Only STT and VAD models
+    python scripts/download_models.py --target receiver  # Only TTS models
+    python scripts/download_models.py --target all       # All models
 """
 
 import os
@@ -14,6 +13,7 @@ import sys
 import tarfile
 import urllib.request
 import shutil
+import argparse
 from pathlib import Path
 
 # Add project root to path
@@ -28,6 +28,7 @@ MODELS = {
         "target_dir": PROJECT_ROOT / "models" / "stt",
         "extracted_name": "sherpa-onnx-zipformer-small-en-2023-06-26",
         "size_mb": 107,
+        "app": "sender",
     },
     "tts": {
         "name": "Piper VITS en_US-lessac-low",
@@ -35,6 +36,7 @@ MODELS = {
         "target_dir": PROJECT_ROOT / "models" / "tts",
         "extracted_name": "vits-piper-en_US-lessac-low",
         "size_mb": 64,
+        "app": "receiver",
     },
     "vad": {
         "name": "Silero VAD (ONNX)",
@@ -43,6 +45,7 @@ MODELS = {
         "extracted_name": "silero_vad.onnx",
         "size_mb": 1,
         "is_direct_file": True,
+        "app": "sender",
     },
 }
 
@@ -115,13 +118,35 @@ def download_model(model_key: str) -> bool:
 
 
 def main():
+    parser = argparse.ArgumentParser(description="VaaniSetu Model Downloader")
+    parser.add_argument(
+        "--target",
+        choices=["all", "sender", "receiver"],
+        default="all",
+        help="Download models for specific target application (default: all)"
+    )
+    parser.add_argument(
+        "models",
+        nargs="*",
+        help="Optional explicit model keys to download (e.g. stt, tts, vad)"
+    )
+    args = parser.parse_args()
+
     print("=" * 60)
     print("  VaaniSetu — Model Downloader")
-    print("  This requires internet access (one-time only)")
+    print(f"  Target: {args.target.upper()}")
     print("=" * 60)
 
-    # Parse optional arguments
-    models_to_download = sys.argv[1:] if len(sys.argv) > 1 else list(MODELS.keys())
+    if args.models:
+        models_to_download = args.models
+    elif args.target == "sender":
+        models_to_download = ["stt", "vad"]
+        print("  🎯 Selected Sender models: Speech-to-Text (STT) + VAD (TTS excluded)")
+    elif args.target == "receiver":
+        models_to_download = ["tts"]
+        print("  🎯 Selected Receiver models: Neural Text-to-Speech (TTS) (STT/VAD excluded)")
+    else:
+        models_to_download = list(MODELS.keys())
 
     results = {}
     for key in models_to_download:
@@ -136,11 +161,11 @@ def main():
     print(f"{'='*60}")
     for key, success in results.items():
         status = "✅ Ready" if success else "❌ Failed"
-        print(f"  {MODELS[key]['name']}: {status}")
+        print(f"  [{MODELS[key]['app'].upper()}] {MODELS[key]['name']}: {status}")
     print(f"{'='*60}")
 
     if all(results.values()):
-        print("\n🎉 All models ready! VaaniSetu can now run fully offline.")
+        print("\n🎉 All requested models ready! VaaniSetu can run fully offline.")
         return 0
     else:
         print("\n⚠️  Some downloads failed. Check your internet connection and try again.")

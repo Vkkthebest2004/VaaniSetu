@@ -16,12 +16,27 @@ By fusing on-device neural Speech-to-Text (STT), neural Text-to-Speech (TTS), an
 
 ## 📱 Separate Sender & Receiver Applications (Live Android Apps)
 
-VaaniSetu provides **two dedicated standalone Android applications** that install and run side-by-side:
+VaaniSetu provides **two dedicated standalone Android applications** that install and run side-by-side on the same device or across separate phones:
 
 | VaaniSetu Sender (`com.vaanisetu.sender`) | VaaniSetu Receiver (`com.vaanisetu.receiver`) |
 | :---: | :---: |
 | <img src="docs/screenshots/sender_app_transceiver.png" width="280" alt="VaaniSetu Sender App" /> | <img src="docs/screenshots/receiver_app_station.png" width="280" alt="VaaniSetu Receiver App" /> |
 | **Field Transceiver Unit**: 3D PTT Button, offline STT, 6-byte binary broadcast, tactical emergency macros | **Command Listening Station**: Acoustic spectrum monitor, packet decode, auto-neural Indic TTS readout |
+
+### 🔒 Complete Features & Neural Models Separation Matrix
+
+To optimize memory, CPU, and APK footprints for field deployment, all features, permissions, and neural models are **strictly isolated**:
+
+| Dimension | VaaniSetu Sender (`com.vaanisetu.sender`) | VaaniSetu Receiver (`com.vaanisetu.receiver`) |
+| :--- | :--- | :--- |
+| **Role & Purpose** | Field Voice Transceiver & Emergency Transmitter | Command Listening Station & Indic Voice Synthesizer |
+| **Android Permissions** | `RECORD_AUDIO`, `INTERNET`, `ACCESS_WIFI_STATE`, `VIBRATE` | `INTERNET`, `ACCESS_WIFI_STATE`, `VIBRATE`, `FOREGROUND_SERVICE`<br>*(Strictly zero `RECORD_AUDIO` permission)* |
+| **Dedicated Neural Models** | • **Speech-to-Text (STT)**: Whisper Tiny / Zipformer Small (`models/stt/`)<br>• **Voice Activity Detection**: Silero VAD ONNX (`models/vad/`)<br>• **Domain Adapters**: Indic military vocabulary (`models/indic_adapter/`) | • **Text-to-Speech (TTS)**: Piper VITS Hindi Rohan / English Lessac (`models/tts/`)<br>• **Phoneme Database**: eSpeak-NG Indic dictionary (`espeak-ng-data/`)<br>• **Tokens**: Character & phoneme mapping (`tokens.txt`) |
+| **Omitted Models** | **Strictly ZERO TTS models**: No Piper VITS, no neural vocoders, no eSpeak data | **Strictly ZERO STT models**: No Whisper/Zipformer weights, no VAD weights |
+| **Runtime Pipeline** | `SenderPipeline` & `SenderModelManager` (Mic → VAD → STT → Rescorer → Packet Pack → Mesh TX) | `ReceiverPipeline` & `ReceiverModelManager` (Mesh RX → Packet Unpack → CRC → Neural TTS → Speaker) |
+| **Local Audio Feedback** | Sidetone / Mic Loopback (replays actual recorded mic PCM) & tactical roger beeps | Dual-tone warble emergency siren (800-1200Hz) & Indic neural voice playback |
+| **CLI Runner** | `python scripts/run_sender.py --channel 8` (TTS excluded from RAM) | `python scripts/run_receiver.py --channel 8` (STT & Mic excluded from RAM) |
+| **Model Sync (ADB)** | `./scripts/sync_app_models.sh sender` | `./scripts/sync_app_models.sh receiver` |
 
 ### Additional Interactive Features
 
@@ -190,7 +205,34 @@ adb install -r app-sender/build/outputs/apk/debug/app-sender-debug.apk
 adb install -r app-receiver/build/outputs/apk/debug/app-receiver-debug.apk
 ```
 
-### 2. Tactical Web Walkie-Talkie Simulator
+### 2. Standalone Terminal CLI Runners (Pure Sender & Pure Receiver)
+You can test the isolated field transmitter and command listening station directly from separate terminal windows without running the web server or Android studio:
+
+```bash
+# Terminal 1 — Pure Command Listening Station (Receiver CLI)
+# Listens on UDP:8989, decodes MicroRadio frames, and speaks via Indic Neural TTS
+python scripts/run_receiver.py --channel 8
+
+# Terminal 2 — Pure Field Transmitter Unit (Sender CLI)
+# Captures Mac microphone audio, transcribes with offline STT, and broadcasts binary packets
+python scripts/run_sender.py --channel 8
+```
+
+### 3. Selective Model Management & Device Synchronization
+Download and push only the exact neural weights required for each specific device role:
+
+```bash
+# 1. Selectively download models
+python scripts/download_models.py --target sender    # Downloads only STT (Zipformer) + VAD (Silero)
+python scripts/download_models.py --target receiver  # Downloads only Indic Neural TTS (Piper VITS)
+python scripts/download_models.py --target all       # Downloads all models
+
+# 2. Synchronize models to connected Android devices via ADB
+./scripts/sync_app_models.sh sender    # Pushes STT/VAD to /sdcard/.../com.vaanisetu.sender/
+./scripts/sync_app_models.sh receiver  # Pushes TTS to /sdcard/.../com.vaanisetu.receiver/
+```
+
+### 4. Tactical Web Walkie-Talkie Simulator
 The web application provides a dual-phone tactical simulation interface with slide-up drawers:
 ```bash
 # Start the web backend server
@@ -200,7 +242,7 @@ python web_walkie_talkie/server.py
 # -> http://localhost:8080
 ```
 
-### 3. Standalone Native C++ Core
+### 5. Standalone Native C++ Core
 For maximum performance without Python or Android dependencies:
 ```bash
 cd cpp
@@ -215,12 +257,12 @@ cmake --build .
 ./vaanisetu_tts_cli "Emergency medical team dispatched" output.wav
 ```
 
-### 4. Python Testing & Verification
+### 6. Python Testing & Verification
 ```bash
 # Activate virtual environment
 source .venv/bin/activate
 
-# Run all 59 automated test suites
+# Run automated test suites
 pytest tests/
 ```
 

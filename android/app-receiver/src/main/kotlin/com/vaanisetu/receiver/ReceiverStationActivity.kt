@@ -14,13 +14,21 @@ import com.vaanisetu.core.MeshRouter
 import com.vaanisetu.core.MicroRadioPacket
 import com.vaanisetu.core.NativeTTS
 import com.vaanisetu.core.P2PTransport
-import com.vaanisetu.core.TacticalMacro
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
  * Dedicated VaaniSetu Command Listening Station (Receiver).
+ *
+ * Exclusively handles:
+ * - Continuous UDP Mesh listening on port 8989
+ * - MicroRadio binary packet unpacking & CRC-16 verification
+ * - Offline Indic Neural Text-to-Speech (Piper VITS) voice synthesis
+ * - AudioTrack low-latency speaker playback
+ * - High-priority tactical warble siren & emergency distress decode
+ *
+ * Strictly NO microphone recording or Speech-to-Text (STT) models.
  */
 class ReceiverStationActivity : AppCompatActivity() {
 
@@ -29,6 +37,7 @@ class ReceiverStationActivity : AppCompatActivity() {
     private val meshRouter = MeshRouter(port = 8989, defaultChannel = 8)
     private val p2pTransport = P2PTransport(port = 8988)
     private lateinit var alertManager: EmergencyAlertManager
+    private lateinit var modelManager: ReceiverModelManager
 
     private var currentChannel: Int = 8
     private var isAutoTtsEnabled: Boolean = true
@@ -66,6 +75,8 @@ class ReceiverStationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_receiver_station)
 
         alertManager = EmergencyAlertManager(this)
+        modelManager = ReceiverModelManager(this)
+
         bindViews()
         setupListeners()
         setupEngines()
@@ -153,12 +164,21 @@ class ReceiverStationActivity : AppCompatActivity() {
 
     private fun setupEngines() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val modelBase = getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath
-            nativeTts.init(
-                modelPath = "$modelBase/models/tts/en_US-lessac-low.onnx",
-                tokensPath = "$modelBase/models/tts/tokens.txt",
-                dataDirPath = "$modelBase/models/tts/espeak-ng-data"
-            )
+            val paths = modelManager.resolveTtsPaths()
+            if (paths != null) {
+                nativeTts.init(
+                    modelPath = paths.model,
+                    tokensPath = paths.tokens,
+                    dataDirPath = paths.dataDir
+                )
+            } else {
+                val modelBase = getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath
+                nativeTts.init(
+                    modelPath = "$modelBase/models/tts/en_US-lessac-low.onnx",
+                    tokensPath = "$modelBase/models/tts/tokens.txt",
+                    dataDirPath = "$modelBase/models/tts/espeak-ng-data"
+                )
+            }
         }
     }
 

@@ -7,8 +7,14 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import com.vaanisetu.core.AudioPlayer
-import com.vaanisetu.core.NativeTTS
+import com.vaanisetu.core.EmergencySirenGenerator
 
+/**
+ * Dedicated Emergency Distress Alert Manager for VaaniSetu Sender.
+ *
+ * Sounds high-priority hardware warble siren and triggers tactile Morse SOS vibration.
+ * Operates purely with algorithmic waveform generation — zero TTS neural model required.
+ */
 class EmergencyAlertManager(private val context: Context) {
 
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -21,9 +27,8 @@ class EmergencyAlertManager(private val context: Context) {
     }
 
     suspend fun triggerDistressAlert(
-        alertText: String,
-        nativeTts: NativeTTS,
-        audioPlayer: AudioPlayer
+        audioPlayer: AudioPlayer,
+        durationSec: Float = 1.0f
     ) {
         val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
         audioManager.setStreamVolume(AudioManager.STREAM_ALARM, maxVolume, AudioManager.FLAG_SHOW_UI)
@@ -36,9 +41,10 @@ class EmergencyAlertManager(private val context: Context) {
             vibrator?.vibrate(sosPattern, -1)
         }
 
-        val alertSamples = nativeTts.synthesize(alertText, speed = 1.15f)
-        if (alertSamples.isNotEmpty()) {
-            audioPlayer.play(alertSamples)
+        // Generate high-intensity emergency warble tone mathematically (zero neural model needed)
+        val sirenTone = EmergencySirenGenerator.generateSiren(durationSec = durationSec)
+        if (sirenTone.isNotEmpty()) {
+            audioPlayer.play(sirenTone)
         }
     }
 

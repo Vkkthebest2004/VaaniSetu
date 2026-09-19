@@ -21,10 +21,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.vaanisetu.core.AudioPlayer
 import com.vaanisetu.core.AudioRecorder
+import com.vaanisetu.core.EmergencySirenGenerator
 import com.vaanisetu.core.IndicLanguage
 import com.vaanisetu.core.MeshRouter
 import com.vaanisetu.core.NativeSTT
-import com.vaanisetu.core.NativeTTS
 import com.vaanisetu.core.P2PTransport
 import com.vaanisetu.core.TacticalMacro
 import kotlinx.coroutines.Dispatchers
@@ -33,21 +33,30 @@ import kotlinx.coroutines.withContext
 
 /**
  * Dedicated VaaniSetu Field Transceiver Unit (Sender).
+ *
+ * Exclusively handles:
+ * - Microphone audio recording & acoustic preprocessing
+ * - Offline Speech-to-Text (STT) inference & tactical rescoring
+ * - MicroRadio binary packet compression & CRC-16 encoding
+ * - Mesh UDP transmission on port 8989
+ * - 1-Click Tactical Emergency Macros drawer & SOS distress strobe
+ *
+ * Strictly NO Text-to-Speech (TTS) models or synthesis.
  */
 class SenderActivity : AppCompatActivity() {
 
     private val nativeStt = NativeSTT()
-    private val nativeTts = NativeTTS()
     private val audioRecorder = AudioRecorder()
     private val audioPlayer = AudioPlayer()
     private val p2pTransport = P2PTransport(port = 8988)
     private val meshRouter = MeshRouter(port = 8989, defaultChannel = 8)
     private lateinit var alertManager: EmergencyAlertManager
+    private lateinit var modelManager: SenderModelManager
 
     private var currentChannel: Int = 8
     private var isEmergencyDistressActive: Boolean = false
     private val recordedAudioChunks = mutableListOf<FloatArray>()
-    private var lastBroadcastedAudio: FloatArray? = null
+    private var lastRecordedAudio: FloatArray? = null
 
     // UI Views
     private lateinit var btnPrevChannel: Button
@@ -81,6 +90,8 @@ class SenderActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sender)
 
         alertManager = EmergencyAlertManager(this)
+        modelManager = SenderModelManager(this)
+
         bindViews()
         setupListeners()
         checkPermissions()
@@ -131,8 +142,9 @@ class SenderActivity : AppCompatActivity() {
 
         setupPttTouchListener()
 
+        // Sidetone / Mic Loopback Check: Replays actual raw recorded mic audio
         btnReplayAudio.setOnClickListener {
-            lastBroadcastedAudio?.let { audio ->
+            lastRecordedAudio?.let { audio ->
                 lifecycleScope.launch(Dispatchers.IO) {
                     audioPlayer.play(audio)
                 }
@@ -157,19 +169,20 @@ class SenderActivity : AppCompatActivity() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     triggerHapticClick()
-                    btnPtt3d.animate().scaleX(0.92f).scaleY(0.92f).setDuration(80).start()
+                    val pressAnim = AnimationUtils.loadAnimation(this, R.anim.anim_ptt_press)
+                    btnPtt3d.startAnimation(pressAnim)
                     tvPttStatus.text = "TRANSMITTING..."
                     tvPttStatus.setTextColor(Color.parseColor("#FF5252"))
-                    tvModeHint.text = "Recording 16kHz audio stream • Release to send"
+                    tvModeHint.text = "Recording 16kHz audio • STT processing active"
                     startRecording()
                     true
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    triggerHapticClick()
-                    btnPtt3d.animate().scaleX(1.0f).scaleY(1.0f).setDuration(120).start()
+                    val releaseAnim = AnimationUtils.loadAnimation(this, R.anim.anim_ptt_release)
+                    btnPtt3d.startAnimation(releaseAnim)
                     tvPttStatus.text = "PROCESSING..."
                     tvPttStatus.setTextColor(Color.parseColor("#00E5FF"))
-                    tvModeHint.text = "Synthesizing MicroRadio packet..."
+                    tvModeHint.text = "Encoding MicroRadio packet..."
                     stopRecordingAndTransmit()
                     true
                 }
@@ -209,7 +222,17 @@ class SenderActivity : AppCompatActivity() {
                 return@launch
             }
 
-            val transcription = nativeStt.transcribe(fullAudio).trim()
+            lastRecordedAudio = fullAudio
+
+            val transcription = if (nativeStt.isInitialized) {
+                try {
+                    nativeStt.transcribe(fullAudio).trim()
+                } catch (_: Exception) {
+                    ""
+                }
+            } else {
+                ""
+            }
             val textToSend = if (transcription.isNotBlank()) transcription else "गश्त दल सुरक्षित है"
 
             meshRouter.sendVoiceNote(
@@ -218,8 +241,11 @@ class SenderActivity : AppCompatActivity() {
                 language = IndicLanguage.HINDI
             )
 
-            val synthesizedVoice = nativeTts.synthesize(textToSend, speed = 1.0f)
-            lastBroadcastedAudio = synthesizedVoice
+            // Tactical roger beep on successful transmission
+            val rogerBeep = EmergencySirenGenerator.generateSiren(durationSec = 0.08f)
+            if (rogerBeep.isNotEmpty()) {
+                audioPlayer.play(rogerBeep)
+            }
 
             withContext(Dispatchers.Main) {
                 tvMsgHeader.text = "OUTGOING BROADCAST (CH %02d)".format(currentChannel)
@@ -246,16 +272,15 @@ class SenderActivity : AppCompatActivity() {
                 language = IndicLanguage.HINDI
             )
 
-            val audio = nativeTts.synthesize(testText, speed = 1.0f)
-            lastBroadcastedAudio = audio
+            val chirpTone = EmergencySirenGenerator.generateSiren(durationSec = 0.12f)
+            if (chirpTone.isNotEmpty()) {
+                audioPlayer.play(chirpTone)
+            }
 
             withContext(Dispatchers.Main) {
                 tvMsgHeader.text = "OUTGOING BROADCAST (CH %02d)".format(currentChannel)
                 tvMsgText.text = testText
                 tvMsgTelemetry.text = "%d Bytes • 99.96%% Saved • 180 ms".format(testText.toByteArray().size + 4)
-                if (audio.isNotEmpty()) {
-                    audioPlayer.play(audio)
-                }
             }
         }
     }
@@ -285,20 +310,19 @@ class SenderActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun broadcastMacro(macro: TacticalMacro, text: String) {
+    private fun broadcastMacro(macro: TacticalMacro, fallbackHindi: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             meshRouter.sendTacticalMacro(macro, channel = currentChannel, language = IndicLanguage.HINDI)
 
-            val audio = nativeTts.synthesize(text, speed = 1.0f)
-            lastBroadcastedAudio = audio
+            val chirp = EmergencySirenGenerator.generateSiren(durationSec = 0.10f)
+            if (chirp.isNotEmpty()) {
+                audioPlayer.play(chirp)
+            }
 
             withContext(Dispatchers.Main) {
-                tvMsgHeader.text = "🚨 TACTICAL MACRO BROADCAST"
-                tvMsgText.text = text
-                tvMsgTelemetry.text = "6 Bytes • 99.96% Saved • 60 ms"
-                if (audio.isNotEmpty()) {
-                    audioPlayer.play(audio)
-                }
+                tvMsgHeader.text = "MACRO BROADCAST (CH %02d)".format(currentChannel)
+                tvMsgText.text = fallbackHindi
+                tvMsgTelemetry.text = "6 Bytes • HIGH PRIORITY • MACRO"
             }
         }
     }
@@ -320,11 +344,7 @@ class SenderActivity : AppCompatActivity() {
                     tvMsgTelemetry.text = "6 Bytes • HIGH PRIORITY • OVERRIDE"
                 }
 
-                alertManager.triggerDistressAlert(
-                    alertText = "आपातकालीन चेतावनी, तत्काल सहायता भेजें",
-                    nativeTts = nativeTts,
-                    audioPlayer = audioPlayer
-                )
+                alertManager.triggerDistressAlert(audioPlayer = audioPlayer, durationSec = 1.2f)
             }
         } else {
             btnDockSos.text = "🚨 SOS"
@@ -347,20 +367,25 @@ class SenderActivity : AppCompatActivity() {
 
     private fun setupEngines() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val modelBase = getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath
-            nativeStt.init(
-                encoderPath = "$modelBase/models/stt/encoder.int8.onnx",
-                decoderPath = "$modelBase/models/stt/decoder.onnx",
-                joinerPath = "$modelBase/models/stt/joiner.int8.onnx",
-                tokensPath = "$modelBase/models/stt/tokens.txt",
-                vadModelPath = "$modelBase/models/vad/silero_vad.onnx"
-            )
-
-            nativeTts.init(
-                modelPath = "$modelBase/models/tts/en_US-lessac-low.onnx",
-                tokensPath = "$modelBase/models/tts/tokens.txt",
-                dataDirPath = "$modelBase/models/tts/espeak-ng-data"
-            )
+            val paths = modelManager.resolveSttPaths()
+            if (paths != null) {
+                nativeStt.init(
+                    encoderPath = paths.encoder,
+                    decoderPath = paths.decoder,
+                    joinerPath = paths.joiner,
+                    tokensPath = paths.tokens,
+                    vadModelPath = paths.vad
+                )
+            } else {
+                val modelBase = getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath
+                nativeStt.init(
+                    encoderPath = "$modelBase/models/stt/encoder.int8.onnx",
+                    decoderPath = "$modelBase/models/stt/decoder.onnx",
+                    joinerPath = "$modelBase/models/stt/joiner.int8.onnx",
+                    tokensPath = "$modelBase/models/stt/tokens.txt",
+                    vadModelPath = "$modelBase/models/vad/silero_vad.onnx"
+                )
+            }
         }
     }
 
@@ -394,7 +419,6 @@ class SenderActivity : AppCompatActivity() {
         meshRouter.close()
         p2pTransport.close()
         nativeStt.close()
-        nativeTts.close()
         alertManager.cancelAlarm()
     }
 }
