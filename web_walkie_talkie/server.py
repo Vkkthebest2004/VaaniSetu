@@ -43,6 +43,9 @@ _stt_engine = None
 _indic_tts = None
 _mesh = None
 
+_transmission_id_counter = 0
+_transmission_history = []
+
 
 class HardwareRecorder:
     """Zero-overhead hardware microphone recorder on macOS CoreAudio."""
@@ -481,12 +484,17 @@ def execute_neural_transmission(
 
     total_e2e_ms = stt_latency_ms + simulated_airtime_ms + tts_latency_ms
 
-    return web.json_response({
+    global _transmission_id_counter, _transmission_history
+    _transmission_id_counter += 1
+
+    payload = {
+        "id": _transmission_id_counter,
+        "timestamp": time.strftime("%H:%M:%S"),
         "success": True,
-        "text": text,
+        "source_text": text,
+        "transcribed_text": text,
         "translated_text": translated_text,
-        "translation": translated_text,  # For backwards compatibility
-        "is_direct": is_direct,
+        "receiver_text": receiver_text,
         "source_language": src_code,
         "source_language_name": get_language_display_name(src_code),
         "target_language": tgt_code,
@@ -496,6 +504,7 @@ def execute_neural_transmission(
         "language_name": get_language_display_name(src_code),
         "is_emergency": is_emergency,
         "macro_id": int(macro),
+        "macro_name": macro.name if macro != TacticalMacro.NONE else "",
         "audio_base64": output_audio_b64,
         "source_audio_base64": source_audio_b64,
         "sample_rate": tts_eng.sample_rate,
@@ -514,7 +523,13 @@ def execute_neural_transmission(
             "acoustic_front_end_active": True,
             "tactical_rescorer_active": True,
         }
-    })
+    }
+
+    _transmission_history.append(payload)
+    if len(_transmission_history) > 100:
+        _transmission_history.pop(0)
+
+    return web.json_response(payload)
 
 
 def generate_roger_beep(sample_rate: int = 16000) -> bytes:
@@ -681,11 +696,86 @@ async def handle_hw_mic_level(request):
     })
 
 
+async def handle_sender(request):
+    """Serve dedicated Field Transmitter Unit interface."""
+    html_path = PROJECT_ROOT / "web_walkie_talkie" / "sender.html"
+    return web.FileResponse(html_path)
+
+
+async def handle_receiver(request):
+    """Serve dedicated Command Listening Station interface."""
+    html_path = PROJECT_ROOT / "web_walkie_talkie" / "receiver.html"
+    return web.FileResponse(html_path)
+
+
+async def handle_poll_ingress(request):
+    """Poll for new transmissions since last_id for real-time receiver listening."""
+    last_id = int(request.query.get("last_id", 0))
+    ch_param = request.query.get("channel")
+    channel_filter = int(ch_param) if ch_param and ch_param.isdigit() else None
+
+    new_packets = [
+        tx for tx in _transmission_history
+        if tx["id"] > last_id and (channel_filter is None or tx["channel"] == channel_filter)
+    ]
+    return web.json_response({
+        "success": True,
+        "packets": new_packets,
+        "latest_id": _transmission_id_counter
+    })
+
+
+async def handle_simulate_ingress(request):
+    """Simulate a field voice or tactical macro transmission for receiver testing."""
+    data = await request.json() if request.can_read_body else {}
+    kind = data.get("type", "patrol")
+    channel = int(data.get("channel", 8))
+    lang_code = data.get("language", "hi")
+
+    if kind == "medevac":
+        macro = TacticalMacro.MEDICAL_URGENT
+        text = "तत्काल चिकित्सा सहायता और एम्बुलेंस की आवश्यकता है"
+        is_emergency = True
+    elif kind == "fire":
+        macro = TacticalMacro.FIRE_RESCUE
+        text = "आग की आपात स्थिति • अग्निशमन दल तत्काल भेजें"
+        is_emergency = True
+    elif kind == "distress" or kind == "sos":
+        macro = TacticalMacro.SEARCH_RESCUE
+        text = "अत्यंत आपातकालीन स्थिति • तत्काल बैकअप और सहायता भेजें"
+        is_emergency = True
+    else:
+        macro = TacticalMacro.NONE
+        is_emergency = False
+        sample_phrases = [
+            "गश्त दल सुरक्षित है • सीमा चौकी पर सब ठीक है",
+            "सेक्टर 4 में गश्त पूरी हो गई है, सभी जवान सुरक्षित हैं",
+            "सप्लाई कॉन्वॉय बेस कैंप पर पहुंच गया है",
+            "चेकपोस्ट अल्फा पर दृश्यता सामान्य है"
+        ]
+        text = data.get("text") or np.random.choice(sample_phrases)
+
+    return execute_neural_transmission(
+        text=text,
+        source_language=lang_code,
+        target_language="direct",
+        channel=channel,
+        is_emergency=is_emergency,
+        audio_duration_sec=2.2,
+        stt_latency_ms=65.0,
+        macro=macro
+    )
+
+
 def create_app():
     get_engines()
     app = web.Application()
     app.router.add_get("/", handle_index)
+    app.router.add_get("/sender", handle_sender)
+    app.router.add_get("/receiver", handle_receiver)
     app.router.add_get("/api/status", handle_status)
+    app.router.add_get("/api/poll_ingress", handle_poll_ingress)
+    app.router.add_post("/api/simulate_ingress", handle_simulate_ingress)
     app.router.add_get("/api/hw_mic_level", handle_hw_mic_level)
     app.router.add_get("/api/macros", handle_macros_list)
     app.router.add_get("/api/roger_beep", handle_roger_beep_audio)

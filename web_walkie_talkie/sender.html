@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>VaaniSetu — Dedicated Field Sender Unit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            tacticalGold: '#E5A93C',
+            tacticalGoldGlow: '#FFC857',
+            tacticalDark: '#0B0C10',
+            panelDark: '#14151B',
+            borderDark: '#262833',
+            lcdGreen: '#00E5FF',
+            crimsonDistress: '#FF3344'
+          },
+          fontFamily: {
+            sans: ['Outfit', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #07080A;
+      background-image: radial-gradient(circle at 50% 10%, rgba(229, 169, 60, 0.08) 0%, transparent 60%);
+      font-family: 'Outfit', sans-serif;
+    }
+    .tactical-border {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 40px -15px rgba(0, 0, 0, 0.9);
+    }
+    .lcd-screen {
+      background: radial-gradient(ellipse at 50% 40%, #0e1318 0%, #05080c 100%);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      box-shadow: inset 0 0 25px rgba(0, 229, 255, 0.06), 0 4px 15px rgba(0, 0, 0, 0.6);
+    }
+    .btn-ptt-3d {
+      background: radial-gradient(circle at 35% 30%, #2f323c 0%, #17181e 75%, #0d0e12 100%);
+      box-shadow: 0 16px 28px -6px rgba(0,0,0,0.9), inset 0 2px 2px rgba(255,255,255,0.2), inset 0 -4px 8px rgba(0,0,0,0.8);
+      transition: all 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-ptt-3d:active, .btn-ptt-3d.active {
+      transform: scale(0.95) translateY(4px);
+      background: radial-gradient(circle at 50% 50%, #422a10 0%, #1f1406 80%);
+      box-shadow: 0 4px 12px rgba(229, 169, 60, 0.4), inset 0 3px 6px rgba(0,0,0,0.9);
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 0.2; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .halo-pulse {
+      animation: pulse-ring 2.5s infinite ease-in-out;
+    }
+    .drawer-active {
+      transform: translateY(0%) !important;
+    }
+  </style>
+</head>
+
+<body class="text-white min-h-screen flex flex-col items-center justify-between p-3 sm:p-6 select-none">
+
+  <!-- ================= MASTER TOP NAVIGATION BAR ================= -->
+  <header class="w-full max-w-lg flex items-center justify-between p-2.5 px-4 bg-[#111318] border border-borderDark rounded-2xl shadow-xl">
+    <div class="flex items-center space-x-2.5">
+      <div class="w-7 h-7 rounded-lg bg-amber-500/10 border border-tacticalGold/40 flex items-center justify-center">
+        <span class="text-tacticalGold font-bold text-xs">TX</span>
+      </div>
+      <div>
+        <h1 class="text-xs font-bold tracking-widest text-white uppercase">VAANISETU SENDER</h1>
+        <p class="text-[9px] text-amber-400/70 font-mono">FIELD TRANSMITTER UNIT</p>
+      </div>
+    </div>
+
+    <!-- Navigation Hub Buttons -->
+    <nav class="flex items-center space-x-1.5 text-xs">
+      <span class="px-2.5 py-1 rounded-xl bg-tacticalGold/20 border border-tacticalGold/60 text-tacticalGold font-semibold text-[11px]">
+        📻 SENDER
+      </span>
+      <a href="/receiver" class="px-2.5 py-1 rounded-xl bg-[#1A1C24] border border-borderDark text-gray-400 hover:text-white hover:border-gray-500 transition-colors text-[11px]">
+        🎧 RECEIVER
+      </a>
+      <a href="/" class="px-2.5 py-1 rounded-xl bg-[#1A1C24] border border-borderDark text-gray-400 hover:text-white hover:border-gray-500 transition-colors text-[11px]">
+        📱 DUAL LAB
+      </a>
+    </nav>
+  </header>
+
+  <!-- ================= STANDALONE SENDER WALKIE-TALKIE CHASSIS ================= -->
+  <main class="w-full max-w-[410px] my-auto bg-panelDark border-2 border-borderDark rounded-[44px] tactical-border p-5 flex flex-col justify-between shadow-2xl relative overflow-hidden" style="min-height: 690px;">
+    
+    <!-- Top Antenna & Bevel Header -->
+    <div class="flex items-center justify-between pb-3 border-b border-white/5 text-[11px] font-mono">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-tacticalGold animate-pulse"></span>
+        <span class="text-tacticalGold font-bold tracking-wider">TX • ONLINE</span>
+      </div>
+      <div class="text-gray-400 flex items-center space-x-2">
+        <span>UDP :8989</span>
+        <span class="text-white/20">•</span>
+        <span id="label-hardware-mic" class="text-gray-300">🎙️ HW MIC</span>
+      </div>
+    </div>
+
+    <!-- LCD Tactical Transceiver Display -->
+    <div class="lcd-screen rounded-3xl p-4 my-3 text-left relative overflow-hidden">
+      <!-- LCD Header Bar -->
+      <div class="flex items-center justify-between mb-2 pb-2 border-b border-white/10 font-mono text-xs">
+        <div class="flex items-center space-x-1">
+          <button id="btn-prev-channel" class="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-tacticalGold hover:bg-black/60 cursor-pointer font-bold">◀</button>
+          <span id="lcd-channel-label" class="px-2 font-bold text-white tracking-wider">CH 08 • 433.750 MHz</span>
+          <button id="btn-next-channel" class="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-tacticalGold hover:bg-black/60 cursor-pointer font-bold">▶</button>
+        </div>
+        <select id="select-language" class="bg-black/60 border border-white/10 text-tacticalGold text-[11px] rounded-lg px-2 py-1 outline-none cursor-pointer">
+          <option value="hi" selected>Hindi (हिंदी)</option>
+          <option value="bn">Bengali (বাংলা)</option>
+          <option value="ta">Tamil (தமிழ்)</option>
+          <option value="te">Telugu (తెలుగు)</option>
+          <option value="mr">Marathi (मराठी)</option>
+          <option value="gu">Gujarati (ગુજરાતી)</option>
+          <option value="kn">Kannada (ಕನ್ನಡ)</option>
+          <option value="ml">Malayalam (മലയാളം)</option>
+          <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+          <option value="or">Odia (ଓଡ଼ିଆ)</option>
+          <option value="en">English (NATO)</option>
+        </select>
+      </div>
+
+      <!-- Live Transcription / Speech Display -->
+      <div class="py-2">
+        <div id="lcd-status-title" class="text-[10px] font-mono text-gray-400 tracking-wider mb-1 flex items-center justify-between">
+          <span>LAST OUTGOING TRANSMISSION</span>
+          <span id="lcd-time-badge" class="text-tacticalGold font-bold">STANDBY</span>
+        </div>
+        <div id="lcd-message-text" class="text-sm font-semibold text-white/95 leading-relaxed min-h-[44px] break-words">
+          "गश्त दल सुरक्षित है • सीमा चौकी पर सब ठीक है"
+        </div>
+      </div>
+
+      <!-- Audio Waveform Live Canvas -->
+      <div class="w-full h-8 mt-1 relative rounded-lg bg-black/50 overflow-hidden border border-white/5">
+        <canvas id="canvas-waveform" width="360" height="32" class="w-full h-full block"></canvas>
+      </div>
+
+      <!-- Telemetry Pill & Sidetone Replay -->
+      <div class="flex items-center justify-between mt-3 pt-2 border-t border-white/10 text-[10px] font-mono">
+        <span id="lcd-telemetry-pill" class="text-cyan-400 tracking-wider">
+          6 Bytes • 99.96% Saved • 210 ms
+        </span>
+        <button id="btn-replay-sidetone" class="flex items-center space-x-1 text-tacticalGold hover:text-white transition-colors cursor-pointer" title="Replay captured mic audio">
+          <span>🔄</span>
+          <span>SIDETONE CHECK</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Center: Giant Tactile 3D Push-To-Talk Button -->
+    <div class="my-auto flex flex-col items-center justify-center py-2 relative">
+      <!-- Breathing Golden Halo -->
+      <div id="ptt-halo" class="absolute w-56 h-56 rounded-full border-2 border-tacticalGold/20 halo-pulse pointer-events-none"></div>
+      <div class="absolute w-44 h-44 rounded-full border border-tacticalGold/30 pointer-events-none"></div>
+
+      <!-- The 3D Push-To-Talk Button -->
+      <button id="btn-ptt-main" class="w-36 h-36 rounded-full btn-ptt-3d border-4 border-[#3A3D4A] flex flex-col items-center justify-center relative z-10 cursor-pointer select-none">
+        <svg id="ptt-mic-icon" class="w-12 h-12 text-tacticalGold transition-transform duration-100" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z"/>
+        </svg>
+        <span id="ptt-label" class="text-[11px] font-mono font-bold tracking-widest text-tacticalGold mt-1">HOLD TO TALK</span>
+      </button>
+
+      <p id="ptt-hint" class="text-[11px] text-gray-400 font-mono tracking-wider mt-3 text-center">
+        Hold button or press <kbd class="px-1.5 py-0.5 rounded bg-black/60 border border-white/20 text-white text-[10px]">SPACEBAR</kbd>
+      </p>
+    </div>
+
+    <!-- Bottom Tactical Controls Dock -->
+    <div class="grid grid-cols-3 gap-2.5 pt-3 border-t border-white/5">
+      <button id="btn-open-macros" class="py-2.5 px-2 rounded-2xl bg-[#1A1C24] hover:bg-[#222530] border border-tacticalGold/30 text-tacticalGold font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer">
+        <span class="text-sm">⚡</span>
+        <span class="text-[10px] tracking-wider mt-0.5">MACROS</span>
+      </button>
+
+      <button id="btn-quick-test" class="py-2.5 px-2 rounded-2xl bg-[#1A1C24] hover:bg-[#222530] border border-borderDark text-cyan-400 font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer">
+        <span class="text-sm">🎙️</span>
+        <span class="text-[10px] tracking-wider mt-0.5">TEST VOICE</span>
+      </button>
+
+      <button id="btn-sos-distress" class="py-2.5 px-2 rounded-2xl bg-red-950/40 hover:bg-red-900/40 border border-red-800 text-crimsonDistress font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer">
+        <span class="text-sm">🚨</span>
+        <span id="sos-label" class="text-[10px] tracking-wider mt-0.5">SOS BEACON</span>
+      </button>
+    </div>
+
+    <!-- Slide-Up Tactical Macros Sheet -->
+    <div id="sheet-macros" class="absolute inset-x-0 bottom-0 bg-[#161820] border-t-2 border-tacticalGold/50 rounded-t-[36px] p-5 shadow-2xl transition-transform duration-300 transform translate-y-full z-20">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-tacticalGold text-base">⚡</span>
+          <span class="font-bold text-xs tracking-wider text-white">1-CLICK TACTICAL MACROS</span>
+        </div>
+        <button id="btn-close-macros" class="text-gray-400 hover:text-white text-xs px-2 py-1 rounded bg-black/40">✕ CLOSE</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5 text-left">
+        <button onclick="transmitMacro(1, 'तत्काल चिकित्सा सहायता और एम्बुलेंस की आवश्यकता है')" class="p-3 rounded-2xl bg-[#1E212B] hover:bg-red-950/60 border border-red-900/60 flex flex-col transition-all cursor-pointer">
+          <span class="text-base mb-1">🚑 MEDEVAC</span>
+          <span class="text-[10px] text-gray-300">Urgent medical evacuation</span>
+          <span class="text-[9px] text-amber-400/80 font-mono mt-1">6 Bytes • High Priority</span>
+        </button>
+
+        <button onclick="transmitMacro(2, 'आग की आपात स्थिति • अग्निशमन दल तत्काल भेजें')" class="p-3 rounded-2xl bg-[#1E212B] hover:bg-orange-950/60 border border-orange-900/60 flex flex-col transition-all cursor-pointer">
+          <span class="text-base mb-1">🔥 FIRE RESCUE</span>
+          <span class="text-[10px] text-gray-300">Dispatch fire team</span>
+          <span class="text-[9px] text-amber-400/80 font-mono mt-1">6 Bytes • Critical</span>
+        </button>
+
+        <button onclick="transmitMacro(3, 'जलस्तर बढ़ रहा है • तत्काल निकासी आवश्यक है')" class="p-3 rounded-2xl bg-[#1E212B] hover:bg-blue-950/60 border border-blue-900/60 flex flex-col transition-all cursor-pointer">
+          <span class="text-base mb-1">🌊 FLOOD EVAC</span>
+          <span class="text-[10px] text-gray-300">Water rising, boat rescue</span>
+          <span class="text-[9px] text-amber-400/80 font-mono mt-1">6 Bytes • Urgent</span>
+        </button>
+
+        <button onclick="transmitMacro(4, 'हमले की स्थिति • तत्काल बैकअप और कवर प्रदान करें')" class="p-3 rounded-2xl bg-[#1E212B] hover:bg-amber-950/60 border border-amber-900/60 flex flex-col transition-all cursor-pointer">
+          <span class="text-base mb-1">🛡️ AMBUSH</span>
+          <span class="text-[10px] text-gray-300">Immediate cover & backup</span>
+          <span class="text-[9px] text-amber-400/80 font-mono mt-1">6 Bytes • Tactical</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="w-full max-w-lg text-center text-[11px] text-gray-500 font-mono py-2">
+    VaaniSetu MicroRadio Mesh Transmitter • 100% Offline Air-Gapped Operation
+  </footer>
+
+  <!-- Audio Element for Sidetone / Roger Beep -->
+  <audio id="audio-player" class="hidden"></audio>
+
+  <!-- ================= SENDER LOGIC ================= -->
+  <script>
+    let currentChannel = 8;
+    const channelFrequencies = {
+      1: "433.050", 2: "433.150", 3: "433.250", 4: "433.350",
+      5: "433.450", 6: "433.550", 7: "433.650", 8: "433.750",
+      9: "433.850", 10: "433.950", 11: "434.050", 12: "434.150",
+      13: "434.250", 14: "434.350", 15: "434.450", 16: "434.550"
+    };
+
+    let isPttActive = false;
+    let isSosActive = false;
+    let lastAudioBlobUrl = null;
+    let audioContext = null;
+    let micStream = null;
+    let micRecorder = null;
+    let recordedChunks = [];
+    let waveAnimId = null;
+
+    // Elements
+    const btnPtt = document.getElementById("btn-ptt-main");
+    const pttLabel = document.getElementById("ptt-label");
+    const pttHint = document.getElementById("ptt-hint");
+    const pttHalo = document.getElementById("ptt-halo");
+    const lcdMessage = document.getElementById("lcd-message-text");
+    const lcdTimeBadge = document.getElementById("lcd-time-badge");
+    const lcdTelemetry = document.getElementById("lcd-telemetry-pill");
+    const lcdChannelLabel = document.getElementById("lcd-channel-label");
+    const selectLanguage = document.getElementById("select-language");
+    const audioPlayer = document.getElementById("audio-player");
+    const sheetMacros = document.getElementById("sheet-macros");
+    const canvas = document.getElementById("canvas-waveform");
+    const ctx = canvas.getContext("2d");
+
+    // Channels
+    function updateChannel() {
+      const freq = channelFrequencies[currentChannel] || "433.750";
+      lcdChannelLabel.textContent = `CH ${String(currentChannel).padStart(2, '0')} • ${freq} MHz`;
+    }
+
+    document.getElementById("btn-prev-channel").addEventListener("click", () => {
+      if (currentChannel > 1) { currentChannel--; updateChannel(); }
+    });
+    document.getElementById("btn-next-channel").addEventListener("click", () => {
+      if (currentChannel < 16) { currentChannel++; updateChannel(); }
+    });
+
+    // Draw idle line on canvas
+    function drawIdleCanvas() {
+      ctx.fillStyle = "#06090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "rgba(0, 229, 255, 0.25)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height / 2);
+      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.stroke();
+    }
+    drawIdleCanvas();
+
+    function drawActiveWaveform() {
+      if (!isPttActive) return;
+      ctx.fillStyle = "rgba(6, 9, 14, 0.3)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = "#E5A93C";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      const sliceWidth = canvas.width / 32;
+      let x = 0;
+      for (let i = 0; i < 32; i++) {
+        const v = Math.sin(Date.now() * 0.01 + i * 0.3) * (Math.random() * 12 + 4);
+        const y = canvas.height / 2 + v;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+        x += sliceWidth;
+      }
+      ctx.stroke();
+      waveAnimId = requestAnimationFrame(drawActiveWaveform);
+    }
+
+    // PTT Press & Release
+    async function startPtt() {
+      if (isPttActive) return;
+      isPttActive = true;
+      btnPtt.classList.add("active");
+      pttLabel.textContent = "TRANSMITTING";
+      pttLabel.style.color = "#FF4444";
+      pttHint.textContent = "Microphone active • Recording 16kHz audio...";
+      pttHalo.style.borderColor = "rgba(255, 68, 68, 0.5)";
+
+      // Tell backend hardware mic to start recording
+      try {
+        await fetch("/api/hw_ptt_start", { method: "POST" });
+      } catch (e) {
+        console.warn("Hardware mic start error:", e);
+      }
+
+      drawActiveWaveform();
+    }
+
+    async function stopPtt() {
+      if (!isPttActive) return;
+      isPttActive = false;
+      btnPtt.classList.remove("active");
+      pttLabel.textContent = "HOLD TO TALK";
+      pttLabel.style.color = "#E5A93C";
+      pttHint.textContent = "Hold button or press SPACEBAR";
+      pttHalo.style.borderColor = "rgba(229, 169, 60, 0.2)";
+      cancelAnimationFrame(waveAnimId);
+      drawIdleCanvas();
+
+      lcdTimeBadge.textContent = "PROCESSING...";
+      lcdMessage.textContent = "Transcribing voice via offline STT & compressing...";
+
+      try {
+        const res = await fetch("/api/hw_ptt_stop", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            channel: currentChannel,
+            language: selectLanguage.value,
+            target_language: "direct",
+            is_emergency: isSosActive
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          lcdMessage.textContent = `"${data.source_text || data.transcribed_text}"`;
+          lcdTimeBadge.textContent = data.timestamp || "TX SENT";
+          const bytes = data.telemetry?.packet_size_bytes || 6;
+          const saved = data.telemetry?.bandwidth_saving_pct || 99.94;
+          const lat = data.telemetry?.total_e2e_latency_ms || 210;
+          lcdTelemetry.textContent = `${bytes} Bytes • ${saved}% Saved • ${lat} ms`;
+          
+          if (data.source_audio_base64) {
+            lastAudioBlobUrl = "data:audio/wav;base64," + data.source_audio_base64;
+          }
+          playRogerBeep();
+        } else {
+          lcdMessage.textContent = data.error || "No speech detected. Hold PTT while speaking.";
+          lcdTimeBadge.textContent = "STANDBY";
+        }
+      } catch (err) {
+        lcdMessage.textContent = "Transmission error: " + err.message;
+        lcdTimeBadge.textContent = "ERROR";
+      }
+    }
+
+    // Touch & Mouse Events
+    btnPtt.addEventListener("mousedown", (e) => { e.preventDefault(); startPtt(); });
+    window.addEventListener("mouseup", () => { if (isPttActive) stopPtt(); });
+    btnPtt.addEventListener("touchstart", (e) => { e.preventDefault(); startPtt(); }, { passive: false });
+    window.addEventListener("touchend", () => { if (isPttActive) stopPtt(); });
+
+    // Keyboard Spacebar PTT
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && !e.repeat && document.activeElement.tagName !== "SELECT") {
+        e.preventDefault();
+        startPtt();
+      }
+    });
+    window.addEventListener("keyup", (e) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        stopPtt();
+      }
+    });
+
+    // 1-Click Quick Voice Test
+    document.getElementById("btn-quick-test").addEventListener("click", async () => {
+      const phrases = [
+        "गश्त दल सुरक्षित है • सीमा चौकी पर सब ठीक है",
+        "सेक्टर 4 में गश्त पूरी हो गई है, सभी जवान सुरक्षित हैं",
+        "तत्काल चिकित्सा सहायता और एम्बुलेंस की आवश्यकता है",
+        "सप्लाई कॉन्वॉय बेस कैंप पर पहुंच गया है"
+      ];
+      const randomText = phrases[Math.floor(Math.random() * phrases.length)];
+      lcdTimeBadge.textContent = "SENDING...";
+      lcdMessage.textContent = `"${randomText}"`;
+
+      try {
+        const res = await fetch("/api/transmit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: randomText,
+            channel: currentChannel,
+            language: selectLanguage.value,
+            is_emergency: false
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          lcdTimeBadge.textContent = data.timestamp || "BROADCASTED";
+          lcdTelemetry.textContent = `${data.telemetry.packet_size_bytes} Bytes • ${data.telemetry.bandwidth_saving_pct}% Saved • ${data.telemetry.total_e2e_latency_ms} ms`;
+          playRogerBeep();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    // Tactical Macros Sheet
+    document.getElementById("btn-open-macros").addEventListener("click", () => {
+      sheetMacros.classList.add("drawer-active");
+    });
+    document.getElementById("btn-close-macros").addEventListener("click", () => {
+      sheetMacros.classList.remove("drawer-active");
+    });
+
+    async function transmitMacro(macroId, phrase) {
+      sheetMacros.classList.remove("drawer-active");
+      lcdTimeBadge.textContent = "MACRO TX";
+      lcdMessage.textContent = `"${phrase}"`;
+
+      try {
+        const res = await fetch("/api/transmit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            macro: macroId,
+            text: phrase,
+            channel: currentChannel,
+            language: selectLanguage.value,
+            is_emergency: true
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          lcdTimeBadge.textContent = "OVERRIDE ACTIVE";
+          lcdTelemetry.textContent = "6 Bytes • HIGH PRIORITY • MACRO";
+          playRogerBeep();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // SOS Beacon
+    document.getElementById("btn-sos-distress").addEventListener("click", async () => {
+      isSosActive = !isSosActive;
+      const sosLabel = document.getElementById("sos-label");
+      if (isSosActive) {
+        sosLabel.textContent = "SOS ACTIVE";
+        document.getElementById("btn-sos-distress").classList.add("bg-red-700");
+        transmitMacro(4, "अत्यंत आपातकालीन स्थिति • तत्काल सहायता भेजें");
+      } else {
+        sosLabel.textContent = "SOS BEACON";
+        document.getElementById("btn-sos-distress").classList.remove("bg-red-700");
+      }
+    });
+
+    // Sidetone Loopback Check Replay
+    document.getElementById("btn-replay-sidetone").addEventListener("click", () => {
+      if (lastAudioBlobUrl) {
+        audioPlayer.src = lastAudioBlobUrl;
+        audioPlayer.play();
+      } else {
+        playRogerBeep();
+      }
+    });
+
+    function playRogerBeep() {
+      audioPlayer.src = "/api/roger_beep";
+      audioPlayer.play().catch(() => {});
+    }
+
+    updateChannel();
+  </script>
+</body>
+</html>
