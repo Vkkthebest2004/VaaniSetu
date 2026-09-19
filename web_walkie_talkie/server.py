@@ -202,62 +202,67 @@ def precache_tactical_macros():
 
 
 class HardwareRecorder:
-    """Zero-overhead hardware microphone recorder on macOS CoreAudio."""
+    """Zero-overhead hardware microphone recorder on macOS CoreAudio with persistent background stream."""
 
     def __init__(self):
         self.frames = []
         self.stream = None
         self.is_recording = False
         self.latest_peak = 0.0
+        self._lock = threading.Lock()
+        self._initialized = False
+
+    def _ensure_stream(self):
+        """Lazy-initialize a persistent CoreAudio input stream once."""
+        if self._initialized and self.stream is not None:
+            return
+
+        with self._lock:
+            if self._initialized and self.stream is not None:
+                return
+
+            def callback(indata, frame_count, time_info, status):
+                peak = float(np.max(np.abs(indata)))
+                self.latest_peak = peak
+                if self.is_recording:
+                    self.frames.append(indata.copy())
+
+            try:
+                dev_info = sd.query_devices(kind="input")
+                dev_idx = dev_info["index"]
+            except Exception:
+                dev_idx = None
+
+            try:
+                self.stream = sd.InputStream(
+                    samplerate=16000,
+                    channels=1,
+                    dtype="float32",
+                    device=dev_idx,
+                    callback=callback,
+                )
+                self.stream.start()
+                self._initialized = True
+                dev_name = dev_info.get("name", "Default") if isinstance(dev_info, dict) else "Default"
+                print(f"[MIC-STREAM] Persistent hardware mic stream active on device {dev_idx}: {dev_name}")
+            except Exception as e:
+                print(f"Warning: Persistent hardware mic stream init error: {e}")
+                self._initialized = False
 
     def start(self):
+        """Arm recording buffer immediately without stream teardown/re-creation."""
+        self._ensure_stream()
         self.frames = []
         self.is_recording = True
-        self.latest_peak = 0.0
-
-        def callback(indata, frame_count, time_info, status):
-            if self.is_recording:
-                self.frames.append(indata.copy())
-                self.latest_peak = float(np.max(np.abs(indata)))
-
-        try:
-            dev_info = sd.query_devices(kind="input")
-            dev_idx = dev_info["index"]
-        except Exception:
-            dev_idx = None
-
-        try:
-            self.stream = sd.InputStream(
-                samplerate=16000,
-                channels=1,
-                dtype="float32",
-                device=dev_idx,
-                callback=callback,
-            )
-            self.stream.start()
-            print(f"[MIC-STREAM] Opened hardware mic stream on device {dev_idx}: {dev_info.get('name', 'Default Mic') if isinstance(dev_info, dict) else 'Default'}")
-        except Exception as e:
-            print(f"Error starting hardware mic stream: {e}")
 
     def stop(self) -> np.ndarray:
+        """Disarm recording buffer immediately (0ms, no CoreAudio HAL deadlock)."""
         self.is_recording = False
-        self.latest_peak = 0.0
-        stream = self.stream
-        self.stream = None
-
-        if stream:
-            def _close_stream():
-                try:
-                    stream.stop()
-                    stream.close()
-                except Exception as e:
-                    print(f"Stream close error: {e}")
-            t = threading.Thread(target=_close_stream, daemon=True)
-            t.start()
-
         if not self.frames:
             return np.array([], dtype=np.float32)
-        return np.concatenate(self.frames).flatten()
+        captured = np.concatenate(self.frames).flatten()
+        self.frames = []
+        return captured
 
 
 _hw_recorder = HardwareRecorder()
